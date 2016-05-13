@@ -1,7 +1,5 @@
 #include <iostream>
 #include "poissonSolver.h"
-#include <dolfin.h>
-#include <memory>
 
 
 int main() {
