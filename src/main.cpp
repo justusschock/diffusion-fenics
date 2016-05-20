@@ -5,15 +5,16 @@
 int main() {
     try {
 
+
         //setup mesh and solution
         auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
 
-        dolfin::Function u = Poisson::solvePDE(mesh, dolfin::Constant(0.0));
+        Poisson::Initial initial;
 
-        dolfin::File file("poisson.pvd");
-        file << u;
 
-        dolfin::plot(u);
+        auto u  = std::make_shared<dolfin::Function>(Poisson::solvePDE(mesh, dolfin::Constant(0), initial));
+
+        dolfin::plot(*u);
         dolfin::interactive();
 
 
