@@ -29,7 +29,7 @@ set(CMAKE_CXX_FLAGS "${DOLFIN_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
 include_directories(${DOLFIN_INCLUDE_DIRS})
 include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.cpp poissonSolver.h poissonProblem.h)
+set(SOURCE_FILES main.cpp poissonSolver.h poissonProblem1D.h poissonProblem2D.h poissonProblem3D.h)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

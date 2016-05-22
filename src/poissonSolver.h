@@ -5,7 +5,7 @@
 #ifndef DIFFUSION_FENICS_POISSONSOLVER_H
 #define DIFFUSION_FENICS_POISSONSOLVER_H
 #include <dolfin.h>
-#include "poissonProblem.h"
+
 
 namespace Poisson {
 
@@ -39,30 +39,35 @@ namespace Poisson {
         }
     };
 
+    template <class FunctionSpace, class LinearForm, class BilinearForm>
     auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant dirichletBoundary, dolfin::Expression& initial) -> dolfin::Function {
+
         //create FunctionSpace
-        auto V = std::make_shared<poissonProblem::FunctionSpace>(mesh);
+
+        //default FunctionSpace and variational forms(necessary for setting derived classes for each dimension)
+        auto V = std::make_shared<FunctionSpace>(mesh);
+        auto a = std::make_shared<BilinearForm>(V, V);
+        auto L = std::make_shared<LinearForm>(V);
+
+
         dolfin::Function u(V);
         u.interpolate(initial);
+
 
         //Define boundary condition
         auto u0 = std::make_shared<dolfin::Constant>(dirichletBoundary);
         auto boundary = std::make_shared<DirichletBoundary>();
         dolfin::DirichletBC bc(V, u0, boundary);
 
-        //Define variational forms
-        poissonProblem::BilinearForm a(V, V);
-        poissonProblem::LinearForm L(V);
-
 
         //Set Boundary Condition for Problem
-        auto f = std::make_shared<Source>();
-        auto g = std::make_shared<dUdN>();
-        L.f = *f;
-        L.g = *g;
+        Source f;
+        dUdN g;
+        L->g = g;
+        L->f = f;
 
         //Compute solution
-        dolfin::solve(a == L, u, bc);
+        dolfin::solve(*a == *L, u, bc);
 
         return u;
 

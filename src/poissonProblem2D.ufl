@@ -1,4 +1,4 @@
-#Define Poisson PDE:
+#Define Poisson PDE in 2D:
 
 element = FiniteElement("Lagrange", triangle, 1)
 
