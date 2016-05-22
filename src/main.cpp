@@ -16,38 +16,34 @@ int main(int argc, char* argv[]) {
         const int dim = 2;
         Poisson::Initial initial;
 
-        //default mesh and solution (necessary for derived classes)
-        auto mesh = std::make_shared<dolfin::Mesh>();
-        std::shared_ptr<void> u(void*);
 
         //set meshes and solutions for different dimensions (1D-3D)
         if(dim == 1) {
             using namespace poissonProblem1D;
-            mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            u = std::make_shared<dolfin::Function>
+            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
+            auto u = std::make_shared<dolfin::Function>
                     (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
+            dolfin::plot(*u);
+            dolfin::interactive();
         }
         else if(dim == 2) {
             using namespace poissonProblem2D;
-            mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            u = std::make_shared<dolfin::Function>
+            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
+            auto u = std::make_shared<dolfin::Function>
                     (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
+            dolfin::plot(*u);
+            dolfin::interactive();
         }
         else if (dim == 3) {
             using namespace poissonProblem3D;
-            mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            u = std::make_shared<dolfin::Function>
+            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
+            auto u = std::make_shared<dolfin::Function>
                     (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
+            dolfin::plot(*u);
+            dolfin::interactive();
         }
         else
             throw std::string("Wrong dimension Parameter");
-
-
-
-
-        dolfin::plot(*u);
-        dolfin::interactive();
-
 
         return 0;
 

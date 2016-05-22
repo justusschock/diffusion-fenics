@@ -39,6 +39,7 @@ namespace Poisson {
         }
     };
 
+    //TODO: implement solver for multiple dimensions in this function (search solution for usage of different namespaces)
     template <class FunctionSpace, class LinearForm, class BilinearForm>
     auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant dirichletBoundary, dolfin::Expression& initial) -> dolfin::Function {
 
@@ -46,11 +47,13 @@ namespace Poisson {
 
         //default FunctionSpace and variational forms(necessary for setting derived classes for each dimension)
         auto V = std::make_shared<FunctionSpace>(mesh);
-        auto a = std::make_shared<BilinearForm>(V, V);
-        auto L = std::make_shared<LinearForm>(V);
+        BilinearForm a(V, V);
+        LinearForm L(V);
 
 
         dolfin::Function u(V);
+
+        //TODO: implement initial values (not working yet)
         u.interpolate(initial);
 
 
@@ -63,11 +66,11 @@ namespace Poisson {
         //Set Boundary Condition for Problem
         Source f;
         dUdN g;
-        L->g = g;
-        L->f = f;
+        L.g = g;
+        L.f = f;
 
         //Compute solution
-        dolfin::solve(*a == *L, u, bc);
+        dolfin::solve(a == L, u, bc);
 
         return u;
 
