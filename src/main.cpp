@@ -2,9 +2,6 @@
 
 //includes for Poisson-PDE:
 #include "poissonSolver.h"
-#include "poissonProblem1D.h"
-#include "poissonProblem2D.h"
-#include "poissonProblem3D.h"
 
 
 int main(int argc, char* argv[]) {
@@ -13,37 +10,33 @@ int main(int argc, char* argv[]) {
         dolfin::init(argc, argv);
 
         //dimension and initial values
-        const int dim = 2;
+        const int dim = 3;
         Poisson::Initial initial;
+        dolfin::Constant dirichlet(0.0);
+
+        dolfin::FunctionSpace fSpace();
+        //initial mesh and solution (used for overwriting it in each dimension
+        auto mesh = std::make_shared<dolfin::Mesh>();
+
 
 
         //set meshes and solutions for different dimensions (1D-3D)
         if(dim == 1) {
-            using namespace poissonProblem1D;
-            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            auto u = std::make_shared<dolfin::Function>
-                    (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
-            dolfin::plot(*u);
-            dolfin::interactive();
+            mesh.reset(new dolfin::UnitIntervalMesh(32));
         }
         else if(dim == 2) {
-            using namespace poissonProblem2D;
-            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            auto u = std::make_shared<dolfin::Function>
-                    (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
-            dolfin::plot(*u);
-            dolfin::interactive();
+            mesh.reset(new dolfin::UnitSquareMesh(32, 32));
         }
         else if (dim == 3) {
-            using namespace poissonProblem3D;
-            auto mesh = std::make_shared<dolfin::UnitSquareMesh>(32, 32);
-            auto u = std::make_shared<dolfin::Function>
-                    (Poisson::solvePDE<FunctionSpace, LinearForm, BilinearForm>(mesh, dolfin::Constant(0), initial));
-            dolfin::plot(*u);
-            dolfin::interactive();
+            mesh.reset(new dolfin::UnitCubeMesh(32,32,32));
         }
         else
             throw std::string("Wrong dimension Parameter");
+
+        auto u = std::make_shared<dolfin::Function>(Poisson::solvePDE<dim>(mesh,dirichlet,initial));
+        dolfin::plot(*u);
+        dolfin::interactive();
+
 
         return 0;
 
@@ -58,5 +51,6 @@ int main(int argc, char* argv[]) {
     }
     catch (...) {
         std::cout << "An unknown error has occured" << std::endl;
+        return 1;
     }
 }
