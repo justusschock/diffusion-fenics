@@ -8,12 +8,18 @@ For the build-process [CMake (2.8.15or above)](https://cmake.org/) and [GNU make
 
 #Set Up#
 To setup the project make sure, all dependencies are installed and working well.
-Clone this repository into the folder, you wish to work at and open a terminal in directory.
+Clone this repository into the folder, you wish to work at and open a terminal in directory's src-folder.
 
 In this terminal with 
 ```
-#!python
+#!terminal
 ffc -l dolfin *.ufl
-
 ```
 you can update the c++-headerfiles by compiling the .ufl-files.
+
+After doing this, change the terminal's working directory to the directory containing this repository and run 
+```
+#!terminal
+cmake ./
+```
+to generate the makefiles for your system.
