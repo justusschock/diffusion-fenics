@@ -1,0 +1,19 @@
+This repository is for solving Partial Differential Equations (PDEs) in a numerical way.
+
+# Dependencies #
+This repository is based on [FEniCS-Project (1.6.0 or above)](http://fenicsproject.org/)
+Essentially needed parts of the FEniCs-Project are dolfin, UFL, FFC and UFC.
+
+For the build-process [CMake (2.8.15or above)](https://cmake.org/) and [GNU make (4.2 or above)](http://www.gnu.org/software/make/) are recommed.
+
+#Set Up#
+To setup the project make sure, all dependencies are installed and working well.
+Clone this repository into the folder, you wish to work at and open a terminal in directory.
+
+In this terminal with 
+```
+#!python
+ffc -l dolfin *.ufl
+
+```
+you can update the c++-headerfiles by compiling the .ufl-files.
