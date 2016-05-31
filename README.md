@@ -23,3 +23,18 @@ After doing this, change the terminal's working directory to the directory conta
 cmake ./
 ```
 to generate the makefiles for your system.
+
+Compiling this application can be done by running 
+```
+#!terminal
+make
+```
+in the home-directory of this project.
+
+After compiling, the application can be started by running
+```
+#!terminal
+./diffusion-fenics
+```
+in the build-directory.
+To start this application with specified arguments please take a lokk at the [FEniCs Manual](https://launchpadlibrarian.net/84116499/fenics-manual-2011-10-31.pdf)
