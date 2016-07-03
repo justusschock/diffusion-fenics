@@ -1,23 +1,29 @@
 #include <iostream>
 
-//includes for Poisson-PDE:
-#include "poissonSolver.h"
+//includes for PDEs:
+#include "PoissonPDE/poissonSolver.h"
+//#include "ConvectionDiffusionPDE/convectionDiffusionSolver.h"
+#include "pdeHelper.h"
 
 
 int main(int argc, char* argv[]) {
     try {
 
+        enum{
+            poisson,
+            diffusion
+        };
+
+        int equation = poisson;
+
         dolfin::init(argc, argv);
 
-        //dimension and initial values
-        const int dim = 3;
-        Poisson::Initial initial;
-        dolfin::Constant dirichlet(0.0);
+        //dimension
+        const int dim = 2;
 
-        dolfin::FunctionSpace fSpace();
-        //initial mesh and solution (used for overwriting it in each dimension
+
+        //initial mesh and solution (used for overwriting it for each dimension)
         auto mesh = std::make_shared<dolfin::Mesh>();
-
 
 
         //set meshes and solutions for different dimensions (1D-3D)
@@ -32,10 +38,24 @@ int main(int argc, char* argv[]) {
         }
         else
             throw std::string("Wrong dimension Parameter");
+        dolfin::FunctionSpace functionSpace();
+        Initial initial;
+        dolfin::Constant dirichlet(0.0);
+        dUdN neumann;
+        Source source;
+        dolfin::Constant velocity(2.3E-5);
 
-        auto u = std::make_shared<dolfin::Function>(Poisson::solvePDE<dim>(mesh,dirichlet,initial));
-        dolfin::plot(*u);
-        dolfin::interactive();
+        if(equation == poisson) {
+            dolfin::Function u = Poisson::solvePDE<dim>(mesh, dirichlet, initial, source, neumann);
+            dolfin::plot(u);
+            dolfin::interactive();
+        }
+        else if(equation == diffusion){
+            //u = convectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source, neumann);
+        }
+        else
+            throw std::string("Wrong equation selected");
+
 
 
         return 0;

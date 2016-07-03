@@ -1,0 +1,19 @@
+#Define Convetion-Diffusion PDE in 1D
+
+scalar = FiniteElement("Lagrange", interval, 1)
+vector = VectorElement("Lagrange", interval, 2)
+
+u = TrialFunction(scalar)
+v  = TestFunction(scalar)
+u0 = Coefficient(scalar)
+b  = Coefficient(vector)
+f  = Coefficient(scalar)
+g = Coefficient(scalar)
+
+c = 0.005
+k = 0.05
+
+a = u*v*dx + 0.5*k*(dot(b, grad(u)*v)*dx + c*dot(grad(u), grad(v))*dx)
+L = u0*v*dx - 0.5*k*(dot(b, grad(u0)*v)*dx + c*dot( grad(u0), grad(v))*dx) \
+    + k*f*v*dx + g*v*ds
+
