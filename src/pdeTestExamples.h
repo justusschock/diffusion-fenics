@@ -2,8 +2,8 @@
 // Created by js on 03.07.16.
 //
 
-#ifndef DIFFUSION_FENICS_PDEHELPER_H
-#define DIFFUSION_FENICS_PDEHELPER_H
+#ifndef DIFFUSION_FENICS_PDETESTEXAMPLES_H
+#define DIFFUSION_FENICS_PDETESTEXAMPLES_H
 
 #include <dolfin.h>
 
@@ -36,4 +36,14 @@ class dUdN : public dolfin::Expression {
             return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or x[1] < DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
         }
     };
-#endif //DIFFUSION_FENICS_PDEHELPER_H
+
+class Velocity : public dolfin::Expression {
+
+    void eval(dolfin::Array<double> &values, const dolfin::Array<double> &x) const {
+        for(int i = 0; i< values.size(); i++){
+            values[i] = 0;
+        }
+    }
+};
+
+#endif //DIFFUSION_FENICS_PDETESTEXAMPLES_H

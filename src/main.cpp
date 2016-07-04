@@ -2,8 +2,8 @@
 
 //includes for PDEs:
 #include "PoissonPDE/poissonSolver.h"
-//#include "ConvectionDiffusionPDE/convectionDiffusionSolver.h"
-#include "pdeHelper.h"
+#include "ConvectionDiffusionPDE/convectionDiffusionSolver.h"
+#include "pdeTestExamples.h"
 
 
 int main(int argc, char* argv[]) {
@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
             diffusion
         };
 
-        int equation = poisson;
+        int equation = diffusion;
 
         dolfin::init(argc, argv);
 
@@ -38,12 +38,12 @@ int main(int argc, char* argv[]) {
         }
         else
             throw std::string("Wrong dimension Parameter");
-        dolfin::FunctionSpace functionSpace();
         Initial initial;
         dolfin::Constant dirichlet(0.0);
         dUdN neumann;
         Source source;
-        dolfin::Constant velocity(2.3E-5);
+        Velocity velocity;
+
 
         if(equation == poisson) {
             dolfin::Function u = Poisson::solvePDE<dim>(mesh, dirichlet, initial, source, neumann);
@@ -51,7 +51,9 @@ int main(int argc, char* argv[]) {
             dolfin::interactive();
         }
         else if(equation == diffusion){
-            //u = convectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source, neumann);
+            dolfin::Function u = convectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source, neumann);
+            dolfin::plot(u);
+            dolfin::interactive();
         }
         else
             throw std::string("Wrong equation selected");
