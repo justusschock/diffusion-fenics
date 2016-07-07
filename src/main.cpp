@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
             diffusion
         };
 
-        int equation = poisson;
+        int equation = diffusion;
 
         dolfin::init(argc, argv);
 
