@@ -13,6 +13,10 @@ cmake_policy(SET CMP0004 OLD)
 # Get DOLFIN configuration data (DOLFINConfig.cmake must be in DOLFIN_CMAKE_CONFIG_PATH)
 find_package(DOLFIN)
 
+#Get VTK configuration data
+find_package(VTK REQUIRED NO_MODULE)
+include(${VTK_USE_FILE})
+
 # Default build type (can be overridden by user)
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING

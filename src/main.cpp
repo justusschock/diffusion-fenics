@@ -1,4 +1,5 @@
 #include <iostream>
+#include <dolfin.h>
 
 //includes for PDEs:
 #include "PoissonPDE/poissonSolver.h"
@@ -14,7 +15,7 @@ int main(int argc, char* argv[]) {
             diffusion
         };
 
-        int equation = diffusion;
+        int equation = poisson;
 
         dolfin::init(argc, argv);
 

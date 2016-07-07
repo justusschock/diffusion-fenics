@@ -73,8 +73,8 @@ namespace Poisson {
 
         //Setup FunctionSpace, Linear and BilinearForm (based on dim)
         auto V = std::make_shared<decltype(dimensionWrapper.FunctionSpace(mesh))>(dimensionWrapper.FunctionSpace(mesh));
-        auto a = dimensionWrapper.BilinearForm(V,V);
-        auto L = dimensionWrapper.LinearForm(V);
+        auto a = std::make_shared<decltype(dimensionWrapper.BilinearForm(V,V))>(dimensionWrapper.BilinearForm(V,V));
+        auto L = std::make_shared<decltype(dimensionWrapper.LinearForm(V))>(dimensionWrapper.LinearForm(V));
 
         //setup solution
         dolfin::Function u(V);
@@ -87,13 +87,16 @@ namespace Poisson {
         auto boundary = std::make_shared<DirichletBoundary>();
         dolfin::DirichletBC bc(V, u0, boundary);
 
-
+        auto g = std::make_shared<dolfin::Expression>(neumann);
+        auto f = std::make_shared<dolfin::Expression>(source);
         //Set Boundary Condition for Problem
-        L.g = neumann;
-        L.f = source;
+        L->g = g;
+        L->f = f;
+
+        dolfin::Equation equation(a, L);
 
         //Compute solution
-        dolfin::solve(a == L, u, bc);
+        dolfin::solve(equation, u, bc);
 
 
         return u;
