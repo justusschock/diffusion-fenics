@@ -90,17 +90,14 @@ namespace convectionDiffusion{
 
         // Set up forms
         auto a = dimensionwrapper.BilinearForm(V, V);
-        a.b = velocity;
+        a.b = *velocity;
         auto L = dimensionwrapper.LinearForm(V);
 
         //Set velocityfunction, initial values and source term
-        auto u0 = std::make_shared<dolfin::Expression>(initial);
-        auto f = std::make_shared<dolfin::Expression>(source);
-        auto g = std::make_shared<dolfin::Expression>(neumann);
-        L.u0 = u0;
-        L.b = velocity;
-        L.f = f;
-        L.g = g;
+        L.u0 = initial;
+        L.b = *velocity;
+        L.f = source;
+        L.g = neumann;
 
         // Set up boundary condition
         auto dirichlet = std::make_shared<dolfin::Constant>(dirichletBoundary);
