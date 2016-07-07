@@ -1,5 +1,5 @@
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 
 set(PROJECT_NAME diffusion-fenics)
 project(${PROJECT_NAME})
@@ -29,14 +29,18 @@ add_definitions(${DOLFIN_CXX_DEFINITIONS})
 # Compiler flags
 set(CMAKE_CXX_FLAGS "${DOLFIN_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
 
+
 # Include directories
 include_directories(${DOLFIN_INCLUDE_DIRS})
 include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.cpp PoissonPDE/poissonSolver.h PoissonPDE/poissonProblem1D.h PoissonPDE/poissonProblem2D.h PoissonPDE/poissonProblem3D.h ConvectionDiffusionPDE/convectionDiffusionSolver.h pdeTestExamples.h)
+set(SOURCE_FILES main.cpp pdeTestExamples.h)
 
 # Executable
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PRE_BUILD_FFC_COMPILE})
+add_subdirectory(PoissonPDE)
+add_subdirectory(ConvectionDiffusionPDE)
+
 
 # Target libraries
 target_link_libraries(${PROJECT_NAME} ${DOLFIN_LIBRARIES} ${DOLFIN_3RD_PARTY_LIBRARIES})

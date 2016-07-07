@@ -8,9 +8,9 @@
 #include "../pdeTestExamples.h"
 
 //Include generated headers for solving the Poisson-PDE
-#include "poissonProblem1D.h"
-#include "poissonProblem2D.h"
-#include "poissonProblem3D.h"
+#include "poisson1D.h"
+#include "poisson2D.h"
+#include "poisson3D.h"
 
 
 namespace Poisson {
@@ -21,30 +21,30 @@ namespace Poisson {
     //Provide FunctionSpace, Linear and Bilinear Form in 1D
     template <> class DimensionWrapper<1> {
     public:
-        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poissonProblem1D::FunctionSpace
-        {return poissonProblem1D::FunctionSpace(mesh);}
+        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poisson1D::FunctionSpace
+        {return poisson1D::FunctionSpace(mesh);}
 
-        auto LinearForm(std::shared_ptr<poissonProblem1D::FunctionSpace> FunctionSpace) -> poissonProblem1D::LinearForm
-        { return poissonProblem1D::LinearForm(FunctionSpace);}
+        auto LinearForm(std::shared_ptr<poisson1D::FunctionSpace> FunctionSpace) -> poisson1D::LinearForm
+        { return poisson1D::LinearForm(FunctionSpace);}
 
-        auto BilinearForm(std::shared_ptr<poissonProblem1D::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<poissonProblem1D::FunctionSpace> FunctionSpace2) -> poissonProblem1D::BilinearForm
-        {return poissonProblem1D::BilinearForm(FunctionSpace1, FunctionSpace2);}
+        auto BilinearForm(std::shared_ptr<poisson1D::FunctionSpace> FunctionSpace1,
+                          std::shared_ptr<poisson1D::FunctionSpace> FunctionSpace2) -> poisson1D::BilinearForm
+        {return poisson1D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
     };
 
     //Provide FunctionSpace, Linear and Bilinear Form in 2D
     template <> class DimensionWrapper<2> {
     public:
-        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poissonProblem2D::FunctionSpace
-        {return poissonProblem2D::FunctionSpace(mesh);}
+        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poisson2D::FunctionSpace
+        {return poisson2D::FunctionSpace(mesh);}
 
-        auto LinearForm(std::shared_ptr<poissonProblem2D::FunctionSpace> FunctionSpace) -> poissonProblem2D::LinearForm
-        { return poissonProblem2D::LinearForm(FunctionSpace);}
+        auto LinearForm(std::shared_ptr<poisson2D::FunctionSpace> FunctionSpace) -> poisson2D::LinearForm
+        { return poisson2D::LinearForm(FunctionSpace);}
 
-        auto BilinearForm(std::shared_ptr<poissonProblem2D::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<poissonProblem2D::FunctionSpace> FunctionSpace2) -> poissonProblem2D::BilinearForm
-        {return poissonProblem2D::BilinearForm(FunctionSpace1, FunctionSpace2);}
+        auto BilinearForm(std::shared_ptr<poisson2D::FunctionSpace> FunctionSpace1,
+                          std::shared_ptr<poisson2D::FunctionSpace> FunctionSpace2) -> poisson2D::BilinearForm
+        {return poisson2D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
     };
 
@@ -52,15 +52,15 @@ namespace Poisson {
     //Provide FunctionSpace, Linear and Bilinear Form in 3D
     template <> class DimensionWrapper<3> {
     public:
-        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poissonProblem3D::FunctionSpace
-        {return poissonProblem3D::FunctionSpace(mesh);}
+        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> poisson3D::FunctionSpace
+        {return poisson3D::FunctionSpace(mesh);}
 
-        auto LinearForm(std::shared_ptr<poissonProblem3D::FunctionSpace> FunctionSpace) -> poissonProblem3D::LinearForm
-        { return poissonProblem3D::LinearForm(FunctionSpace);}
+        auto LinearForm(std::shared_ptr<poisson3D::FunctionSpace> FunctionSpace) -> poisson3D::LinearForm
+        { return poisson3D::LinearForm(FunctionSpace);}
 
-        auto BilinearForm(std::shared_ptr<poissonProblem3D::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<poissonProblem3D::FunctionSpace> FunctionSpace2) -> poissonProblem3D::BilinearForm
-        {return poissonProblem3D::BilinearForm(FunctionSpace1, FunctionSpace2);}
+        auto BilinearForm(std::shared_ptr<poisson3D::FunctionSpace> FunctionSpace1,
+                          std::shared_ptr<poisson3D::FunctionSpace> FunctionSpace2) -> poisson3D::BilinearForm
+        {return poisson3D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
     };
 
