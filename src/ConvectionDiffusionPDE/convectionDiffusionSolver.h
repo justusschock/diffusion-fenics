@@ -74,15 +74,15 @@ namespace convectionDiffusion{
 
     template <const int dim>
     auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant& dirichletBoundary, dolfin::Expression& initial,
-                  dolfin::Expression& velocityFunction, dolfin::Expression& source, dolfin::Expression& neumann,  // Parameters for time-stepping
+                  std::shared_ptr<Velocity> velocity, dolfin::Expression& source, dolfin::Expression& neumann,  // Parameters for time-stepping
                   const double T = 2.0, const double dt = 0.05, double t = 0.00) ->dolfin::Function
     {
         DimensionWrapper<dim> dimensionwrapper;
 
         // Create velocity FunctionSpace and velocity function
         auto V_u = std::make_shared<decltype(dimensionwrapper.VelocityFunctionSpace(mesh))>(dimensionwrapper.VelocityFunctionSpace(mesh));
-        auto velocity = std::make_shared<dolfin::Function>(V_u);
-        *velocity = velocityFunction;
+    //    auto velocity = std::make_shared<dolfin::Function>(V_u);
+     //   *velocity = velocityFunction;
 
         // Create function space and function (to store solution)
         auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(mesh))>(dimensionwrapper.FunctionSpace(mesh));

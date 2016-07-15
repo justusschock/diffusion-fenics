@@ -43,7 +43,10 @@ class Velocity : public dolfin::Expression {
         for(int i = 0; i< values.size(); i++){
             values[i] = 0;
         }
+        
     }
+    public:
+    Velocity(std::size_t dim):dolfin::Expression(dim){};
 };
 
 #endif //DIFFUSION_FENICS_PDETESTEXAMPLES_H

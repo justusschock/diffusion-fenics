@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
             diffusion
         };
 
-        int equation = poisson;
+        int equation = diffusion;
 
         dolfin::init(argc, argv);
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         dolfin::Constant dirichlet(0.0);
         dUdN neumann;
         Source source;
-        Velocity velocity;
+        auto velocity=std::make_shared<Velocity>(dim);
 
 
         if(equation == poisson) {
