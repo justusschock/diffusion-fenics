@@ -52,9 +52,12 @@ int main(int argc, char* argv[]) {
             dolfin::interactive();
         }
         else if(equation == diffusion){
-            dolfin::Function u = convectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source, neumann);
-            dolfin::plot(u);
-            dolfin::interactive();
+            	dolfin::Constant dt(0.5);
+		double T = 2.0;
+		DiffusionCoefficient diffusivity;
+		dolfin::Function u = convectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source,neumann,diffusivity,dt,T);
+            	dolfin::plot(u);
+            	dolfin::interactive();
         }
         else
             throw std::string("Wrong equation selected");

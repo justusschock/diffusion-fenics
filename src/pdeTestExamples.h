@@ -49,4 +49,10 @@ class Velocity : public dolfin::Expression {
     Velocity(std::size_t dim):dolfin::Expression(dim){};
 };
 
+class DiffusionCoefficient : public dolfin::Expression {
+	
+	void eval(dolfin::Array<double> &values, const dolfin::Array<double> &x) const {
+		values [0] = 0.05;
+	} 
+}; 
 #endif //DIFFUSION_FENICS_PDETESTEXAMPLES_H

@@ -74,8 +74,8 @@ namespace convectionDiffusion{
 
     template <const int dim>
     auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant& dirichletBoundary, dolfin::Expression& initial,
-                  std::shared_ptr<Velocity> velocity, dolfin::Expression& source, dolfin::Expression& neumann,  // Parameters for time-stepping
-                  const double T = 2.0, const double dt = 0.05, double t = 0.00) ->dolfin::Function
+                  std::shared_ptr<Velocity> velocity, dolfin::Expression& source, dolfin::Expression& neumann, dolfin::Expression& diffusivity,
+              dolfin::Constant k = dolfin::Constant(0.0), const double T = 2.0, double t = 0.00) ->dolfin::Function
     {
         DimensionWrapper<dim> dimensionwrapper;
 
@@ -91,13 +91,17 @@ namespace convectionDiffusion{
         // Set up forms
         auto a = dimensionwrapper.BilinearForm(V, V);
         a.b = *velocity;
-        auto L = dimensionwrapper.LinearForm(V);
+	a.c = diffusivity;
+	a.k = k;
 
         //Set velocityfunction, initial values and source term
+	auto L = dimensionwrapper.LinearForm(V);
         L.u0 = initial;
         L.b = *velocity;
         L.f = source;
         L.g = neumann;
+	L.k = k;
+	L.c = diffusivity;
 
         // Set up boundary condition
         auto dirichlet = std::make_shared<dolfin::Constant>(dirichletBoundary);
@@ -115,6 +119,9 @@ namespace convectionDiffusion{
         // LU solver
         dolfin::LUSolver lu(A);
         lu.parameters["reuse_factorization"] = true;
+	
+	double dt = k;
+	dolfin::File file ("../convection_diffusion.pvd","compressed");	
 
         // Time-stepping
         dolfin::Progress p("Time-stepping");
@@ -126,7 +133,9 @@ namespace convectionDiffusion{
 
             // Solve the linear system (re-use the already factorized matrix A)
             lu.solve(*(u.vector()), b);
-
+	
+		file << std::pair<dolfin::Function*,double>(&u,t);
+		
             // Move to next interval
             p = t/T;
             t += dt;
