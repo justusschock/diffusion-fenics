@@ -17,10 +17,12 @@ int main(int argc, char* argv[]) {
 
 	enum{	
 		general,
-		inOut
+		inOut,
+		constSides,
+		randomSource
 	};
         int equation = diffusion;
-	int testCase = general;
+	int testCase = randomSource;
 
         dolfin::init(argc, argv);
 
@@ -38,7 +40,7 @@ int main(int argc, char* argv[]) {
 	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
 	std::shared_ptr<dolfin::Expression> velocity;
 	std::shared_ptr<dolfin::Expression> diffusivity;
-
+/*
 	if(testCase == inOut && equation == diffusion){ 
 		ConvectionDiffusion::CaseInOut caseInOut(dim);
 		initial = caseInOut.getInitial();
@@ -51,6 +53,37 @@ int main(int argc, char* argv[]) {
 		mesh.reset(new dolfin::UnitSquareMesh(50,50));// = caseInOut.getMesh();
 		
 	}
+*/
+	if(testCase == inOut && equation == diffusion) {
+		initial.reset(new ConvectionDiffusion::InOut::Initial);
+		dirichlet.reset(new dolfin::Constant(0.0));
+		neumann.reset(new ConvectionDiffusion::InOut::Neumann);
+		source.reset(new ConvectionDiffusion::InOut::Source);
+		dirichletBoundary.reset(new ConvectionDiffusion::InOut::DirichletBoundary);
+		velocity.reset(new ConvectionDiffusion::InOut::Velocity(dim));
+		diffusivity.reset (new ConvectionDiffusion::InOut::Diffusivity);
+		mesh.reset(new dolfin::UnitSquareMesh(50,50));
+	}
+	else if(testCase == constSides && equation == diffusion) {
+		initial.reset(new ConvectionDiffusion::ConstSides::Initial);
+		dirichlet.reset(new dolfin::Constant(0.9));
+		neumann.reset(new ConvectionDiffusion::ConstSides::Neumann);
+		source.reset(new ConvectionDiffusion::ConstSides::Source);
+		dirichletBoundary.reset(new ConvectionDiffusion::ConstSides::DirichletBoundary);
+		velocity.reset(new ConvectionDiffusion::ConstSides::Velocity(dim));
+		diffusivity.reset(new ConvectionDiffusion::ConstSides::Diffusivity);
+		mesh.reset(new dolfin::UnitSquareMesh(50,50));
+	}
+	else if(testCase == randomSource && equation == diffusion) {
+		initial.reset(new ConvectionDiffusion::RandomSource::Initial);
+		dirichlet.reset(new dolfin::Constant(0.0));
+		neumann.reset(new ConvectionDiffusion::RandomSource::Neumann);
+		source.reset(new ConvectionDiffusion::RandomSource::Source);
+		dirichletBoundary.reset(new ConvectionDiffusion::RandomSource::DirichletBoundary);
+		velocity.reset(new ConvectionDiffusion::RandomSource::Velocity(dim));
+		diffusivity.reset(new ConvectionDiffusion::RandomSource::Diffusivity);
+		mesh.reset(new dolfin::UnitSquareMesh(50,50));
+	}
 	else if(testCase == general){
 
 	//set meshes and solutions for different dimensions (1D-3D)
@@ -62,14 +95,14 @@ int main(int argc, char* argv[]) {
             		mesh.reset(new dolfin::UnitCubeMesh(32,32,32));
         	else
             		throw std::string("Wrong dimension Parameter");
-		ConvectionDiffusion::CaseInOut caseinout(dim);
+
 		initial.reset(new TestInitial);
 		dirichlet.reset(new dolfin::Constant(0.0));
 		neumann.reset(new TestdUdN);
 		source.reset(new TestSource);
 		dirichletBoundary.reset(new TestDirichletBoundary);
 		velocity.reset(new TestVelocity(dim));
-		diffusivity.reset(new TestDiffusionCoefficient);
+		diffusivity.reset(new TestDiffusivity);
 	}
 
 
@@ -80,7 +113,7 @@ int main(int argc, char* argv[]) {
         }
         else if(equation == diffusion){
             	dolfin::Constant dt(0.5);
-		double T = 2.0;
+		double T = 50.0;
 		dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(mesh,dirichlet,initial,velocity,source,neumann,dirichletBoundary,diffusivity,dt,T);
             	//dolfin::plot(u);
             	//dolfin::interactive();
