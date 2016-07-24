@@ -16,7 +16,7 @@
 #include "velocity3D.h"
 #include "../pdeTestExamples.h"
 
-namespace convectionDiffusion{
+namespace ConvectionDiffusion{
 
     //Wrapper class for changing Dimensions of Convection-Diffusion-Problem
     template <int> class DimensionWrapper;
@@ -73,9 +73,10 @@ namespace convectionDiffusion{
     };
 
     template <const int dim>
-    auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant& dirichletBoundary, dolfin::Expression& initial,
-                  std::shared_ptr<Velocity> velocity, dolfin::Expression& source, dolfin::Expression& neumann, dolfin::Expression& diffusivity,
-              dolfin::Constant k = dolfin::Constant(0.0), const double T = 2.0, double t = 0.00) ->dolfin::Function
+    auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, std::shared_ptr<dolfin::Constant> dirichletValue, std::shared_ptr<dolfin::Expression> initial,
+                  std::shared_ptr<dolfin::Expression> velocity, std::shared_ptr<dolfin::Expression> source, std::shared_ptr<dolfin::Expression> neumann, 
+		  std::shared_ptr<dolfin::SubDomain> dirichletBoundary, std::shared_ptr<dolfin::Expression> diffusivity,
+                  dolfin::Constant k = dolfin::Constant(0.0), const double T = 2.0, double t = 0.00) ->dolfin::Function
     {
         DimensionWrapper<dim> dimensionwrapper;
 
@@ -91,22 +92,20 @@ namespace convectionDiffusion{
         // Set up forms
         auto a = dimensionwrapper.BilinearForm(V, V);
         a.b = *velocity;
-	a.c = diffusivity;
+	a.c = *diffusivity;
 	a.k = k;
 
         //Set velocityfunction, initial values and source term
 	auto L = dimensionwrapper.LinearForm(V);
-        L.u0 = initial;
+        L.u0 = *initial;
         L.b = *velocity;
-        L.f = source;
-        L.g = neumann;
+        L.f = *source;
+        L.g = *neumann;
 	L.k = k;
-	L.c = diffusivity;
+	L.c = *diffusivity;
 
         // Set up boundary condition
-        auto dirichlet = std::make_shared<dolfin::Constant>(dirichletBoundary);
-        auto boundary = std::make_shared<DirichletBoundary>();
-        dolfin::DirichletBC bc(V, dirichlet, boundary);
+        dolfin::DirichletBC bc(V, dirichletValue, dirichletBoundary);
 
         // Linear system
         std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);

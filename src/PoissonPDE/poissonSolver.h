@@ -64,10 +64,11 @@ namespace Poisson {
 
     };
 
-    //TODO: implement solver for multiple dimensions in this function (search solution for usage of different namespaces)
+    
     template <const int dim>
-    auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, dolfin::Constant& dirichletBoundary, dolfin::Expression& initial,
-                  dolfin::Expression& source, dolfin::Expression& neumann) -> dolfin::Function {
+    auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, std::shared_ptr<dolfin::Constant> dirichletValue, std::shared_ptr<dolfin::Expression> initial,
+                  std::shared_ptr<dolfin::Expression> source, std::shared_ptr<dolfin::Expression> neumann, 
+		  std::shared_ptr<dolfin::SubDomain> dirichletBoundary) -> dolfin::Function {
 
         DimensionWrapper<dim> dimensionWrapper;
 
@@ -79,21 +80,18 @@ namespace Poisson {
         //setup solution
         dolfin::Function u(V);
 
-        //TODO: implement initial values (not working yet)
-        u.interpolate(initial);
-
         //Define boundary condition
-        auto u0 = std::make_shared<dolfin::Constant>(dirichletBoundary);
-        auto boundary = std::make_shared<DirichletBoundary>();
-        dolfin::DirichletBC bc(V, u0, boundary);
+        dolfin::DirichletBC bc(V, dirichletValue, dirichletBoundary);
 
         //Set Boundary Condition for Problem
-        L.g = neumann;
-        L.f = source;
+        L.g = *neumann;
+        L.f = *source;
 
         //Compute solution
         dolfin::solve(a==L, u, bc);
-
+	
+	dolfin::File file ("../poisson.pvd","compressed");
+	file << u;
 
         return u;
 
