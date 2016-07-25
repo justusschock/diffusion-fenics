@@ -19,10 +19,12 @@ int main(int argc, char* argv[]) {
 		general,
 		inOut,
 		constSides,
-		randomSource
+		randomSource,
+		differentDiffusivities,
+		transferFunction
 	};
         int equation = diffusion;
-	int testCase = randomSource;
+	int testCase = transferFunction;
 
         dolfin::init(argc, argv);
 
@@ -82,6 +84,26 @@ int main(int argc, char* argv[]) {
 		dirichletBoundary.reset(new ConvectionDiffusion::RandomSource::DirichletBoundary);
 		velocity.reset(new ConvectionDiffusion::RandomSource::Velocity(dim));
 		diffusivity.reset(new ConvectionDiffusion::RandomSource::Diffusivity);
+		mesh.reset(new dolfin::UnitSquareMesh(50,50));
+	}
+	else if(testCase == differentDiffusivities && equation == diffusion) {
+		initial.reset(new ConvectionDiffusion::DifferentDiffusivities::Initial);
+		dirichlet.reset(new dolfin::Constant(0.0));
+		neumann.reset(new ConvectionDiffusion::DifferentDiffusivities::Neumann);
+		source.reset(new ConvectionDiffusion::DifferentDiffusivities::Source);
+		dirichletBoundary.reset(new ConvectionDiffusion::DifferentDiffusivities::DirichletBoundary);
+		velocity.reset(new ConvectionDiffusion::DifferentDiffusivities::Velocity(dim));
+		diffusivity.reset(new ConvectionDiffusion::DifferentDiffusivities::Diffusivity);
+		mesh.reset(new dolfin::UnitSquareMesh(50,50));
+	}
+	else if(testCase == transferFunction && equation == diffusion) {
+		initial.reset(new ConvectionDiffusion::TransferFunction::Initial);
+		dirichlet.reset(new dolfin::Constant(0.0));
+		neumann.reset(new ConvectionDiffusion::TransferFunction::Neumann);
+		source.reset(new ConvectionDiffusion::TransferFunction::Source);
+		dirichletBoundary.reset(new ConvectionDiffusion::TransferFunction::DirichletBoundary);
+		velocity.reset(new ConvectionDiffusion::TransferFunction::Velocity(dim));
+		diffusivity.reset(new ConvectionDiffusion::TransferFunction::Diffusivity);
 		mesh.reset(new dolfin::UnitSquareMesh(50,50));
 	}
 	else if(testCase == general){

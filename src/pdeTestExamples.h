@@ -8,6 +8,7 @@
 #include <dolfin.h>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 
 class TestInitial : public dolfin::Expression {
     void eval(dolfin::Array<double> &values, const dolfin::Array<double> &x) const{
@@ -288,10 +289,9 @@ namespace ConvectionDiffusion {
 
 		class Source : public dolfin::Expression {
 			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
-				std::srand(std::time(0));
-				double random = (double)std::rand()/RAND_MAX;
-				values[0] = -0.5 + random *(0-5 -(-0.5));
-				 		
+				values[0] = 0;
+				if(x[0]>1.0-(0.5+DOLFIN_EPS) && x[0]<1.0-(0.5-DOLFIN_EPS) && x[1]>1.0-(0.5+DOLFIN_EPS) && x[1]<1.0-(0.5-DOLFIN_EPS))
+					values[0] = 10;	
 			}
 		};
 
@@ -318,6 +318,116 @@ namespace ConvectionDiffusion {
 			}
 		};
 
-	}	
+	}
+
+	namespace DifferentDiffusivities{
+		class Initial : public dolfin::Expression {
+			void eval (dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 1;
+				if(x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
+					values[0] = 10;
+				else if(x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
+					values[0] = 10;
+			}
+		};
+	
+		class DirichletBoundary : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const {
+				return false;
+			}
+		};
+
+		class Source : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 0;
+				//if(x[0]>1.0-(0.5+DOLFIN_EPS) && x[0]<1.0-(0.5-DOLFIN_EPS) && x[1]>1.0-(0.5+DOLFIN_EPS) && x[1]<1.0-(0.5-DOLFIN_EPS))
+					//values[0] = 10;	
+			}
+		};
+
+		class Neumann : public  dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 0;	
+			}
+		};
+		
+		class Velocity : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				for( int i = 0; i<values.size(); i++) {
+					values[0] = 0;
+				}
+			}
+			
+			public:
+			Velocity(std::size_t dim):dolfin::Expression(dim){}
+		};
+
+		class Diffusivity : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 1;
+				if(x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
+					values[0] = 0.5;
+				else if(x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
+					values[0] = 0.75;
+			}
+		};
+	}
+
+	namespace TransferFunction{
+
+		class Initial : public dolfin::Expression {
+			void eval (dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 1;
+				if(x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
+					values[0] = 10;
+			}
+		};
+	
+		class DirichletBoundary : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const {
+				return false;
+			}
+		};
+
+		class Source : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 0;
+				if(((x[0] > 0.4 && x[0] < 0.4 + DOLFIN_EPS) or (x[0] > 0.6 - DOLFIN_EPS && x[0] < 0.6)) and 
+					((x[1] > 0.4 && x[1] < 0.4 + DOLFIN_EPS) or (x[1] > 0.6 - DOLFIN_EPS && x[1] < 0.6))){
+					values[0] = -5;
+				}
+				else if(((x[0] > 0.4 - DOLFIN_EPS && x[0] < 0.4) or (x[0] > 0.6 && x[0] < 0.6 + DOLFIN_EPS)) and 
+					((x[1] > 0.4 - DOLFIN_EPS && x[1] < 0.4) or (x[1] > 0.6 && x[1] < 0.6 + DOLFIN_EPS))){
+					values[0] = 5;
+				}
+			}
+		};
+
+		class Neumann : public  dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 0;	
+			}
+		};
+		
+		class Velocity : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				for( int i = 0; i<values.size(); i++) {
+					values[0] = 0;
+				}
+			}
+			
+			public:
+			Velocity(std::size_t dim):dolfin::Expression(dim){}
+		};
+
+		class Diffusivity : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const {
+				values[0] = 1;
+				if(x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
+					values[0] = 0.5;
+			}
+		};
+	}
+
 } 
 #endif //DIFFUSION_FENICS_PDETESTEXAMPLES_H
