@@ -124,8 +124,7 @@ namespace ConvectionDiffusion {
         std::shared_ptr<dolfin::Expression> source;
         std::shared_ptr<dolfin::Expression> neumann;
         std::shared_ptr<dolfin::Expression> velocity;
-        std::shared_ptr<dolfin::Expression> diffusivity;
-    };
+        std::shared_ptr<dolfin::Expression> diffusiCube;
 
     class CaseInOut {
        public:
