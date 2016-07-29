@@ -50,6 +50,315 @@ public:
   /// Return a string identifying the finite element
   virtual const char* signature() const
   {
+<<<<<<< HEAD
+    return "FiniteElement('Lagrange', Domain(Cell('triangle', 2)), 2, None)";
+=======
+    return "FiniteElement('Real', Domain(Cell('triangle', 2)), 0, None)";
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Return the cell shape
+  virtual ufc::shape cell_shape() const
+  {
+    return ufc::triangle;
+  }
+
+  /// Return the topological dimension of the cell shape
+  virtual std::size_t topological_dimension() const
+  {
+    return 2;
+  }
+
+  /// Return the geometric dimension of the cell shape
+  virtual std::size_t geometric_dimension() const
+  {
+    return 2;
+  }
+
+  /// Return the dimension of the finite element function space
+  virtual std::size_t space_dimension() const
+  {
+    return 1;
+  }
+
+  /// Return the rank of the value space
+  virtual std::size_t value_rank() const
+<<<<<<< HEAD
+=======
+  {
+    return 0;
+  }
+
+  /// Return the dimension of the value space for axis i
+  virtual std::size_t value_dimension(std::size_t i) const
+  {
+    return 1;
+  }
+
+  /// Evaluate basis function i at given point x in cell (actual implementation)
+  static void _evaluate_basis(std::size_t i,
+                              double* values,
+                              const double* x,
+                              const double* vertex_coordinates,
+                              int cell_orientation)
+  {
+    // Compute Jacobian
+    double J[4];
+    compute_jacobian_triangle_2d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[4];
+    double detJ;
+    compute_jacobian_inverse_triangle_2d(K, detJ, J);
+    
+    
+    // Compute constants
+    
+    // Get coordinates and map to the reference (FIAT) element
+    
+    // Reset values
+    *values = 0.0;
+    
+    // Array of basisvalues
+    double basisvalues[1] = {0.0};
+    
+    // Declare helper variables
+    
+    // Compute basisvalues
+    basisvalues[0] = 1.0;
+    
+    // Table(s) of coefficients
+    static const double coefficients0[1] = \
+    {1.0};
+    
+    // Compute value(s)
+    for (unsigned int r = 0; r < 1; r++)
+    {
+      *values += coefficients0[r]*basisvalues[r];
+    } // end loop over 'r'
+  }
+
+  /// Evaluate basis function i at given point x in cell (non-static member function)
+  virtual void evaluate_basis(std::size_t i,
+                              double* values,
+                              const double* x,
+                              const double* vertex_coordinates,
+                              int cell_orientation) const
+  {
+    _evaluate_basis(i, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate all basis functions at given point x in cell (actual implementation)
+  static void _evaluate_basis_all(double* values,
+                                  const double* x,
+                                  const double* vertex_coordinates,
+                                  int cell_orientation)
+  {
+    // Element is constant, calling evaluate_basis.
+    _evaluate_basis(0, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate all basis functions at given point x in cell (non-static member function)
+  virtual void evaluate_basis_all(double* values,
+                                  const double* x,
+                                  const double* vertex_coordinates,
+                                  int cell_orientation) const
+  {
+    _evaluate_basis_all(values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of basis function i at given point x in cell (actual implementation)
+  static void _evaluate_basis_derivatives(std::size_t i,
+                                          std::size_t n,
+                                          double* values,
+                                          const double* x,
+                                          const double* vertex_coordinates,
+                                          int cell_orientation)
+  {
+    
+    // Compute number of derivatives.
+    unsigned int num_derivatives = 1;
+    for (unsigned int r = 0; r < n; r++)
+    {
+      num_derivatives *= 2;
+    } // end loop over 'r'
+    
+    // Reset values. Assuming that values is always an array.
+    for (unsigned int r = 0; r < num_derivatives; r++)
+    {
+      values[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Call evaluate_basis if order of derivatives is equal to zero.
+    if (n == 0)
+    {
+      _evaluate_basis(i, values, x, vertex_coordinates, cell_orientation);
+      return ;
+    }
+    
+    // If order of derivatives is greater than the maximum polynomial degree, return zeros.
+    if (n > 0)
+    {
+    return ;
+    }
+    
+  }
+
+  /// Evaluate order n derivatives of basis function i at given point x in cell (non-static member function)
+  virtual void evaluate_basis_derivatives(std::size_t i,
+                                          std::size_t n,
+                                          double* values,
+                                          const double* x,
+                                          const double* vertex_coordinates,
+                                          int cell_orientation) const
+  {
+    _evaluate_basis_derivatives(i, n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of all basis functions at given point x in cell (actual implementation)
+  static void _evaluate_basis_derivatives_all(std::size_t n,
+                                              double* values,
+                                              const double* x,
+                                              const double* vertex_coordinates,
+                                              int cell_orientation)
+  {
+    // Element is constant, calling evaluate_basis_derivatives.
+    _evaluate_basis_derivatives(0, n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of all basis functions at given point x in cell (non-static member function)
+  virtual void evaluate_basis_derivatives_all(std::size_t n,
+                                              double* values,
+                                              const double* x,
+                                              const double* vertex_coordinates,
+                                              int cell_orientation) const
+  {
+    _evaluate_basis_derivatives_all(n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate linear functional for dof i on the function f
+  virtual double evaluate_dof(std::size_t i,
+                              const ufc::function& f,
+                              const double* vertex_coordinates,
+                              int cell_orientation,
+                              const ufc::cell& c) const
+  {
+    // Declare variables for result of evaluation
+    double vals[1];
+    
+    // Declare variable for physical coordinates
+    double y[2];
+    switch (i)
+    {
+    case 0:
+      {
+        y[0] = 0.333333333333333*vertex_coordinates[0] + 0.333333333333333*vertex_coordinates[2] + 0.333333333333333*vertex_coordinates[4];
+      y[1] = 0.333333333333333*vertex_coordinates[1] + 0.333333333333333*vertex_coordinates[3] + 0.333333333333333*vertex_coordinates[5];
+      f.evaluate(vals, y, c);
+      return vals[0];
+        break;
+      }
+    }
+    
+    return 0.0;
+  }
+
+  /// Evaluate linear functionals for all dofs on the function f
+  virtual void evaluate_dofs(double* values,
+                             const ufc::function& f,
+                             const double* vertex_coordinates,
+                             int cell_orientation,
+                             const ufc::cell& c) const
+  {
+    // Declare variables for result of evaluation
+    double vals[1];
+    
+    // Declare variable for physical coordinates
+    double y[2];
+    y[0] = 0.333333333333333*vertex_coordinates[0] + 0.333333333333333*vertex_coordinates[2] + 0.333333333333333*vertex_coordinates[4];
+    y[1] = 0.333333333333333*vertex_coordinates[1] + 0.333333333333333*vertex_coordinates[3] + 0.333333333333333*vertex_coordinates[5];
+    f.evaluate(vals, y, c);
+    values[0] = vals[0];
+  }
+
+  /// Interpolate vertex values from dof values
+  virtual void interpolate_vertex_values(double* vertex_values,
+                                         const double* dof_values,
+                                         const double* vertex_coordinates,
+                                         int cell_orientation,
+                                         const ufc::cell& c) const
+  {
+    // Evaluate function and change variables
+    vertex_values[0] = dof_values[0];
+    vertex_values[1] = dof_values[0];
+    vertex_values[2] = dof_values[0];
+  }
+
+  /// Map coordinate xhat from reference cell to coordinate x in cell
+  virtual void map_from_reference_cell(double* x,
+                                       const double* xhat,
+                                       const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_from_reference_cell not yet implemented.");
+  }
+
+  /// Map from coordinate x in cell to coordinate xhat in reference cell
+  virtual void map_to_reference_cell(double* xhat,
+                                     const double* x,
+                                     const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_to_reference_cell not yet implemented.");
+  }
+
+  /// Return the number of sub elements (for a mixed element)
+  virtual std::size_t num_sub_elements() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Return the dimension of the value space for axis i
+  virtual std::size_t value_dimension(std::size_t i) const
+=======
+  /// Create a new finite element for sub element i (for a mixed element)
+  virtual ufc::finite_element* create_sub_element(std::size_t i) const
+  {
+    return 0;
+  }
+
+  /// Create a new class instance
+  virtual ufc::finite_element* create() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return new convectiondiffusion2d_finite_element_0();
+  }
+
+<<<<<<< HEAD
+=======
+};
+
+/// This class defines the interface for a finite element.
+
+class convectiondiffusion2d_finite_element_1: public ufc::finite_element
+{
+public:
+
+  /// Constructor
+  convectiondiffusion2d_finite_element_1() : ufc::finite_element()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion2d_finite_element_1()
+  {
+    // Do nothing
+  }
+
+  /// Return a string identifying the finite element
+  virtual const char* signature() const
+  {
     return "FiniteElement('Lagrange', Domain(Cell('triangle', 2)), 2, None)";
   }
 
@@ -89,6 +398,7 @@ public:
     return 1;
   }
 
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Evaluate basis function i at given point x in cell (actual implementation)
   static void _evaluate_basis(std::size_t i,
                               double* values,
@@ -1583,6 +1893,7 @@ public:
   virtual void map_from_reference_cell(double* x,
                                        const double* xhat,
                                        const ufc::cell& c) const
+<<<<<<< HEAD
   {
     throw std::runtime_error("map_from_reference_cell not yet implemented.");
   }
@@ -1595,6 +1906,20 @@ public:
     throw std::runtime_error("map_to_reference_cell not yet implemented.");
   }
 
+=======
+  {
+    throw std::runtime_error("map_from_reference_cell not yet implemented.");
+  }
+
+  /// Map from coordinate x in cell to coordinate xhat in reference cell
+  virtual void map_to_reference_cell(double* xhat,
+                                     const double* x,
+                                     const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_to_reference_cell not yet implemented.");
+  }
+
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Return the number of sub elements (for a mixed element)
   virtual std::size_t num_sub_elements() const
   {
@@ -1610,25 +1935,33 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-    return new convectiondiffusion2d_finite_element_0();
+    return new convectiondiffusion2d_finite_element_1();
   }
 
 };
 
 /// This class defines the interface for a finite element.
 
-class convectiondiffusion2d_finite_element_1: public ufc::finite_element
+class convectiondiffusion2d_finite_element_2: public ufc::finite_element
 {
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion2d_finite_element_1() : ufc::finite_element()
+=======
+  convectiondiffusion2d_finite_element_2() : ufc::finite_element()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion2d_finite_element_1()
+=======
+  virtual ~convectiondiffusion2d_finite_element_2()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -4405,12 +4738,12 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion2d_finite_element_0();
+        return new convectiondiffusion2d_finite_element_1();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion2d_finite_element_0();
+        return new convectiondiffusion2d_finite_element_1();
         break;
       }
     }
@@ -4421,25 +4754,33 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-    return new convectiondiffusion2d_finite_element_1();
+    return new convectiondiffusion2d_finite_element_2();
   }
 
 };
 
 /// This class defines the interface for a finite element.
 
-class convectiondiffusion2d_finite_element_2: public ufc::finite_element
+class convectiondiffusion2d_finite_element_3: public ufc::finite_element
 {
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion2d_finite_element_2() : ufc::finite_element()
+=======
+  convectiondiffusion2d_finite_element_3() : ufc::finite_element()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion2d_finite_element_2()
+=======
+  virtual ~convectiondiffusion2d_finite_element_3()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -5299,6 +5640,7 @@ public:
   virtual void map_from_reference_cell(double* x,
                                        const double* xhat,
                                        const ufc::cell& c) const
+<<<<<<< HEAD
   {
     throw std::runtime_error("map_from_reference_cell not yet implemented.");
   }
@@ -5311,6 +5653,20 @@ public:
     throw std::runtime_error("map_to_reference_cell not yet implemented.");
   }
 
+=======
+  {
+    throw std::runtime_error("map_from_reference_cell not yet implemented.");
+  }
+
+  /// Map from coordinate x in cell to coordinate xhat in reference cell
+  virtual void map_to_reference_cell(double* xhat,
+                                     const double* x,
+                                     const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_to_reference_cell not yet implemented.");
+  }
+
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Return the number of sub elements (for a mixed element)
   virtual std::size_t num_sub_elements() const
   {
@@ -5326,7 +5682,7 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-    return new convectiondiffusion2d_finite_element_2();
+    return new convectiondiffusion2d_finite_element_3();
   }
 
 };
@@ -5353,6 +5709,214 @@ public:
   /// Return a string identifying the dofmap
   virtual const char* signature() const
   {
+<<<<<<< HEAD
+    return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('triangle', 2)), 2, None)";
+=======
+    return "FFC dofmap for FiniteElement('Real', Domain(Cell('triangle', 2)), 0, None)";
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Return true iff mesh entities of topological dimension d are needed
+  virtual bool needs_mesh_entities(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+<<<<<<< HEAD
+=======
+        return false;
+        break;
+      }
+    case 1:
+      {
+        return false;
+        break;
+      }
+    case 2:
+      {
+        return false;
+        break;
+      }
+    }
+    
+    return false;
+  }
+
+  /// Return the topological dimension of the associated cell shape
+  virtual std::size_t topological_dimension() const
+  {
+    return 2;
+  }
+
+  /// Return the geometric dimension of the associated cell shape
+  virtual std::size_t geometric_dimension() const
+  {
+    return 2;
+  }
+
+  /// Return the dimension of the global finite element function space
+  virtual std::size_t global_dimension(const std::vector<std::size_t>&
+                                       num_global_entities) const
+  {
+    return 1;
+  }
+
+  /// Return the dimension of the local finite element function space for a cell
+  virtual std::size_t num_element_dofs() const
+  {
+    return 1;
+  }
+
+  /// Return the number of dofs on each cell facet
+  virtual std::size_t num_facet_dofs() const
+  {
+    return 0;
+  }
+
+  /// Return the number of dofs associated with each cell entity of dimension d
+  virtual std::size_t num_entity_dofs(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+        return 0;
+        break;
+      }
+    case 1:
+      {
+        return 0;
+        break;
+      }
+    case 2:
+      {
+        return 1;
+        break;
+      }
+    }
+    
+    return 0;
+  }
+
+  /// Tabulate the local-to-global mapping of dofs on a cell
+  virtual void tabulate_dofs(std::size_t* dofs,
+                             const std::vector<std::size_t>& num_global_entities,
+                             const ufc::cell& c) const
+  {
+    dofs[0] = 0;
+  }
+
+  /// Tabulate the local-to-local mapping from facet dofs to cell dofs
+  virtual void tabulate_facet_dofs(std::size_t* dofs,
+                                   std::size_t facet) const
+  {
+    switch (facet)
+    {
+    case 0:
+      {
+        
+        break;
+      }
+    case 1:
+      {
+        
+        break;
+      }
+    case 2:
+      {
+        
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the local-to-local mapping of dofs on entity (d, i)
+  virtual void tabulate_entity_dofs(std::size_t* dofs,
+                                    std::size_t d, std::size_t i) const
+  {
+    if (d > 2)
+    {
+    throw std::runtime_error("d is larger than dimension (2)");
+    }
+    
+    switch (d)
+    {
+    case 0:
+      {
+        
+        break;
+      }
+    case 1:
+      {
+        
+        break;
+      }
+    case 2:
+      {
+        if (i > 0)
+      {
+      throw std::runtime_error("i is larger than number of entities (0)");
+      }
+      
+      dofs[0] = 0;
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the coordinates of all dofs on a cell
+  virtual void tabulate_coordinates(double* dof_coordinates,
+                                    const double* vertex_coordinates) const
+  {
+    dof_coordinates[0] = 0.333333333333333*vertex_coordinates[0] + 0.333333333333333*vertex_coordinates[2] + 0.333333333333333*vertex_coordinates[4];
+    dof_coordinates[1] = 0.333333333333333*vertex_coordinates[1] + 0.333333333333333*vertex_coordinates[3] + 0.333333333333333*vertex_coordinates[5];
+  }
+
+  /// Return the number of sub dofmaps (for a mixed element)
+  virtual std::size_t num_sub_dofmaps() const
+  {
+    return 0;
+  }
+
+  /// Create a new dofmap for sub dofmap i (for a mixed element)
+  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
+  {
+    return 0;
+  }
+
+  /// Create a new class instance
+  virtual ufc::dofmap* create() const
+  {
+    return new convectiondiffusion2d_dofmap_0();
+  }
+
+};
+
+/// This class defines the interface for a local-to-global mapping of
+/// degrees of freedom (dofs).
+
+class convectiondiffusion2d_dofmap_1: public ufc::dofmap
+{
+public:
+
+  /// Constructor
+  convectiondiffusion2d_dofmap_1() : ufc::dofmap()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion2d_dofmap_1()
+  {
+    // Do nothing
+  }
+
+  /// Return a string identifying the dofmap
+  virtual const char* signature() const
+  {
     return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('triangle', 2)), 2, None)";
   }
 
@@ -5363,6 +5927,7 @@ public:
     {
     case 0:
       {
+>>>>>>> remotes/origin/fenics_1.6.x
         return true;
         break;
       }
@@ -5593,7 +6158,11 @@ public:
   /// Create a new class instance
   virtual ufc::dofmap* create() const
   {
+<<<<<<< HEAD
     return new convectiondiffusion2d_dofmap_0();
+=======
+    return new convectiondiffusion2d_dofmap_1();
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
@@ -5601,18 +6170,30 @@ public:
 /// This class defines the interface for a local-to-global mapping of
 /// degrees of freedom (dofs).
 
+<<<<<<< HEAD
 class convectiondiffusion2d_dofmap_1: public ufc::dofmap
+=======
+class convectiondiffusion2d_dofmap_2: public ufc::dofmap
+>>>>>>> remotes/origin/fenics_1.6.x
 {
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion2d_dofmap_1() : ufc::dofmap()
+=======
+  convectiondiffusion2d_dofmap_2() : ufc::dofmap()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion2d_dofmap_1()
+=======
+  virtual ~convectiondiffusion2d_dofmap_2()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -5893,12 +6474,20 @@ public:
     {
     case 0:
       {
+<<<<<<< HEAD
         return new convectiondiffusion2d_dofmap_0();
+=======
+        return new convectiondiffusion2d_dofmap_1();
+>>>>>>> remotes/origin/fenics_1.6.x
         break;
       }
     case 1:
       {
+<<<<<<< HEAD
         return new convectiondiffusion2d_dofmap_0();
+=======
+        return new convectiondiffusion2d_dofmap_1();
+>>>>>>> remotes/origin/fenics_1.6.x
         break;
       }
     }
@@ -5922,13 +6511,21 @@ class convectiondiffusion2d_dofmap_2: public ufc::dofmap
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion2d_dofmap_2() : ufc::dofmap()
+=======
+  convectiondiffusion2d_dofmap_3() : ufc::dofmap()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion2d_dofmap_2()
+=======
+  virtual ~convectiondiffusion2d_dofmap_3()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -6166,7 +6763,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({true});
+    static const std::vector<bool> enabled({true, true, true});
     return enabled;
   }
 
@@ -6176,11 +6773,6 @@ public:
                                const double*  vertex_coordinates,
                                int cell_orientation) const
   {
-    // Number of operations (multiply-add pairs) for Jacobian data:      3
-    // Number of operations (multiply-add pairs) for geometry tensor:    44
-    // Number of operations (multiply-add pairs) for tensor contraction: 164
-    // Total number of operations (multiply-add pairs):                  211
-    
     // Compute Jacobian
     double J[4];
     compute_jacobian_triangle_2d(J, vertex_coordinates);
@@ -6193,47 +6785,114 @@ public:
     // Set scale factor
     const double det = std::abs(detJ);
     
-    // Compute geometry tensor
-    const double G0_ = det;
-    const double G1_0_0 = det*(K[0]*K[0] + K[1]*K[1]);
-    const double G1_0_1 = det*(K[0]*K[2] + K[1]*K[3]);
-    const double G1_1_0 = det*(K[2]*K[0] + K[3]*K[1]);
-    const double G1_1_1 = det*(K[2]*K[2] + K[3]*K[3]);
-    const double G2_0_0_0 = det*w[0][0]*K[0]*(1.0);
-    const double G2_0_1_0 = det*w[0][1]*K[0]*(1.0);
-    const double G2_0_2_0 = det*w[0][2]*K[0]*(1.0);
-    const double G2_0_3_0 = det*w[0][3]*K[0]*(1.0);
-    const double G2_0_4_0 = det*w[0][4]*K[0]*(1.0);
-    const double G2_0_5_0 = det*w[0][5]*K[0]*(1.0);
-    const double G2_0_6_1 = det*w[0][6]*K[1]*(1.0);
-    const double G2_0_7_1 = det*w[0][7]*K[1]*(1.0);
-    const double G2_0_8_1 = det*w[0][8]*K[1]*(1.0);
-    const double G2_0_9_1 = det*w[0][9]*K[1]*(1.0);
-    const double G2_0_10_1 = det*w[0][10]*K[1]*(1.0);
-    const double G2_0_11_1 = det*w[0][11]*K[1]*(1.0);
-    const double G2_1_0_0 = det*w[0][0]*K[2]*(1.0);
-    const double G2_1_1_0 = det*w[0][1]*K[2]*(1.0);
-    const double G2_1_2_0 = det*w[0][2]*K[2]*(1.0);
-    const double G2_1_3_0 = det*w[0][3]*K[2]*(1.0);
-    const double G2_1_4_0 = det*w[0][4]*K[2]*(1.0);
-    const double G2_1_5_0 = det*w[0][5]*K[2]*(1.0);
-    const double G2_1_6_1 = det*w[0][6]*K[3]*(1.0);
-    const double G2_1_7_1 = det*w[0][7]*K[3]*(1.0);
-    const double G2_1_8_1 = det*w[0][8]*K[3]*(1.0);
-    const double G2_1_9_1 = det*w[0][9]*K[3]*(1.0);
-    const double G2_1_10_1 = det*w[0][10]*K[3]*(1.0);
-    const double G2_1_11_1 = det*w[0][11]*K[3]*(1.0);
+    // Compute cell volume
     
-    // Compute element tensor
-    A[0] = 0.0833333333333333*G0_ + 6.24999999999998e-05*G1_0_0 + 6.25e-05*G1_0_1 + 6.25e-05*G1_1_0 + 6.25000000000001e-05*G1_1_1 - 0.000416666666666665*G2_0_0_0 + 0.000208333333333333*G2_0_1_0 + 0.000208333333333333*G2_0_2_0 - 0.000833333333333332*G2_0_3_0 - 0.00166666666666666*G2_0_4_0 - 0.00166666666666666*G2_0_5_0 - 0.000416666666666665*G2_0_6_1 + 0.000208333333333333*G2_0_7_1 + 0.000208333333333333*G2_0_8_1 - 0.000833333333333332*G2_0_9_1 - 0.00166666666666666*G2_0_10_1 - 0.00166666666666666*G2_0_11_1 - 0.000416666666666666*G2_1_0_0 + 0.000208333333333333*G2_1_1_0 + 0.000208333333333333*G2_1_2_0 - 0.000833333333333333*G2_1_3_0 - 0.00166666666666667*G2_1_4_0 - 0.00166666666666667*G2_1_5_0 - 0.000416666666666666*G2_1_6_1 + 0.000208333333333333*G2_1_7_1 + 0.000208333333333333*G2_1_8_1 - 0.000833333333333333*G2_1_9_1 - 0.00166666666666667*G2_1_10_1 - 0.00166666666666667*G2_1_11_1;
-    A[1] = 0.0416666666666667*G0_ - 6.24999999999998e-05*G1_0_0 - 6.25e-05*G1_1_0 + 0.000416666666666665*G2_0_0_0 - 0.000208333333333333*G2_0_1_0 - 0.000208333333333333*G2_0_2_0 + 0.000833333333333332*G2_0_3_0 + 0.00166666666666666*G2_0_4_0 + 0.00166666666666666*G2_0_5_0 + 0.000416666666666665*G2_0_6_1 - 0.000208333333333333*G2_0_7_1 - 0.000208333333333333*G2_0_8_1 + 0.000833333333333332*G2_0_9_1 + 0.00166666666666666*G2_0_10_1 + 0.00166666666666666*G2_0_11_1;
-    A[2] = 0.0416666666666667*G0_ - 6.24999999999999e-05*G1_0_1 - 6.25e-05*G1_1_1 + 0.000416666666666665*G2_1_0_0 - 0.000208333333333333*G2_1_1_0 - 0.000208333333333333*G2_1_2_0 + 0.000833333333333332*G2_1_3_0 + 0.00166666666666667*G2_1_4_0 + 0.00166666666666667*G2_1_5_0 + 0.000416666666666665*G2_1_6_1 - 0.000208333333333333*G2_1_7_1 - 0.000208333333333333*G2_1_8_1 + 0.000833333333333332*G2_1_9_1 + 0.00166666666666667*G2_1_10_1 + 0.00166666666666667*G2_1_11_1;
-    A[3] = 0.0416666666666667*G0_ - 6.24999999999998e-05*G1_0_0 - 6.25e-05*G1_0_1 + 0.000208333333333333*G2_0_0_0 - 0.000416666666666665*G2_0_1_0 + 0.000208333333333333*G2_0_2_0 - 0.00166666666666666*G2_0_3_0 - 0.000833333333333332*G2_0_4_0 - 0.00166666666666666*G2_0_5_0 + 0.000208333333333333*G2_0_6_1 - 0.000416666666666665*G2_0_7_1 + 0.000208333333333333*G2_0_8_1 - 0.00166666666666666*G2_0_9_1 - 0.000833333333333332*G2_0_10_1 - 0.00166666666666666*G2_0_11_1 + 0.000208333333333333*G2_1_0_0 - 0.000416666666666665*G2_1_1_0 + 0.000208333333333333*G2_1_2_0 - 0.00166666666666667*G2_1_3_0 - 0.000833333333333333*G2_1_4_0 - 0.00166666666666667*G2_1_5_0 + 0.000208333333333333*G2_1_6_1 - 0.000416666666666665*G2_1_7_1 + 0.000208333333333333*G2_1_8_1 - 0.00166666666666667*G2_1_9_1 - 0.000833333333333333*G2_1_10_1 - 0.00166666666666667*G2_1_11_1;
-    A[4] = 0.0833333333333333*G0_ + 6.24999999999998e-05*G1_0_0 - 0.000208333333333333*G2_0_0_0 + 0.000416666666666665*G2_0_1_0 - 0.000208333333333333*G2_0_2_0 + 0.00166666666666666*G2_0_3_0 + 0.000833333333333332*G2_0_4_0 + 0.00166666666666666*G2_0_5_0 - 0.000208333333333333*G2_0_6_1 + 0.000416666666666665*G2_0_7_1 - 0.000208333333333333*G2_0_8_1 + 0.00166666666666666*G2_0_9_1 + 0.000833333333333332*G2_0_10_1 + 0.00166666666666666*G2_0_11_1;
-    A[5] = 0.0416666666666667*G0_ + 6.24999999999999e-05*G1_0_1 - 0.000208333333333333*G2_1_0_0 + 0.000416666666666665*G2_1_1_0 - 0.000208333333333333*G2_1_2_0 + 0.00166666666666667*G2_1_3_0 + 0.000833333333333332*G2_1_4_0 + 0.00166666666666667*G2_1_5_0 - 0.000208333333333333*G2_1_6_1 + 0.000416666666666665*G2_1_7_1 - 0.000208333333333333*G2_1_8_1 + 0.00166666666666667*G2_1_9_1 + 0.000833333333333332*G2_1_10_1 + 0.00166666666666667*G2_1_11_1;
-    A[6] = 0.0416666666666667*G0_ - 6.24999999999999e-05*G1_1_0 - 6.25e-05*G1_1_1 + 0.000208333333333333*G2_0_0_0 + 0.000208333333333333*G2_0_1_0 - 0.000416666666666665*G2_0_2_0 - 0.00166666666666666*G2_0_3_0 - 0.00166666666666666*G2_0_4_0 - 0.000833333333333332*G2_0_5_0 + 0.000208333333333333*G2_0_6_1 + 0.000208333333333333*G2_0_7_1 - 0.000416666666666665*G2_0_8_1 - 0.00166666666666666*G2_0_9_1 - 0.00166666666666666*G2_0_10_1 - 0.000833333333333332*G2_0_11_1 + 0.000208333333333333*G2_1_0_0 + 0.000208333333333333*G2_1_1_0 - 0.000416666666666666*G2_1_2_0 - 0.00166666666666667*G2_1_3_0 - 0.00166666666666667*G2_1_4_0 - 0.000833333333333333*G2_1_5_0 + 0.000208333333333333*G2_1_6_1 + 0.000208333333333333*G2_1_7_1 - 0.000416666666666666*G2_1_8_1 - 0.00166666666666667*G2_1_9_1 - 0.00166666666666667*G2_1_10_1 - 0.000833333333333333*G2_1_11_1;
-    A[7] = 0.0416666666666667*G0_ + 6.24999999999999e-05*G1_1_0 - 0.000208333333333333*G2_0_0_0 - 0.000208333333333333*G2_0_1_0 + 0.000416666666666665*G2_0_2_0 + 0.00166666666666666*G2_0_3_0 + 0.00166666666666666*G2_0_4_0 + 0.000833333333333332*G2_0_5_0 - 0.000208333333333333*G2_0_6_1 - 0.000208333333333333*G2_0_7_1 + 0.000416666666666665*G2_0_8_1 + 0.00166666666666666*G2_0_9_1 + 0.00166666666666666*G2_0_10_1 + 0.000833333333333332*G2_0_11_1;
-    A[8] = 0.0833333333333333*G0_ + 6.25e-05*G1_1_1 - 0.000208333333333333*G2_1_0_0 - 0.000208333333333333*G2_1_1_0 + 0.000416666666666665*G2_1_2_0 + 0.00166666666666667*G2_1_3_0 + 0.00166666666666667*G2_1_4_0 + 0.000833333333333332*G2_1_5_0 - 0.000208333333333333*G2_1_6_1 - 0.000208333333333333*G2_1_7_1 + 0.000416666666666665*G2_1_8_1 + 0.00166666666666667*G2_1_9_1 + 0.00166666666666667*G2_1_10_1 + 0.000833333333333332*G2_1_11_1;
+    
+    // Compute circumradius of triangle in 2D
+    
+    
+    // Array of quadrature weights.
+    static const double W6[6] = {0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333};
+    // Quadrature points on the UFC reference element: (0.659027622374092, 0.231933368553031), (0.659027622374092, 0.109039009072877), (0.231933368553031, 0.659027622374092), (0.231933368553031, 0.109039009072877), (0.109039009072877, 0.659027622374092), (0.109039009072877, 0.231933368553031)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[6][3] = \
+    {{0.109039009072877, 0.659027622374092, 0.231933368553031},
+    {0.231933368553031, 0.659027622374092, 0.109039009072877},
+    {0.109039009072877, 0.231933368553031, 0.659027622374092},
+    {0.659027622374092, 0.231933368553031, 0.109039009072877},
+    {0.231933368553031, 0.109039009072877, 0.659027622374092},
+    {0.659027622374092, 0.109039009072877, 0.231933368553031}};
+    
+    static const double FE0_D01[6][3] = \
+    {{-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0}};
+    
+    static const double FE0_D10[6][3] = \
+    {{-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0}};
+    
+    static const double FE2_C0[6][12] = \
+    {{-0.0852599980736871, 0.209607191730006, -0.124347193656319, 0.611401985706872, 0.101159138711827, 0.287438875581301, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.124347193656319, 0.209607191730006, -0.0852599980736871, 0.287438875581301, 0.101159138711827, 0.611401985706872, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.085259998073687, -0.124347193656319, 0.209607191730006, 0.611401985706872, 0.287438875581301, 0.101159138711827, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.209607191730006, -0.124347193656319, -0.0852599980736871, 0.101159138711827, 0.287438875581301, 0.611401985706872, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.124347193656319, -0.0852599980736871, 0.209607191730006, 0.287438875581301, 0.611401985706872, 0.101159138711827, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.209607191730006, -0.0852599980736871, -0.124347193656319, 0.101159138711827, 0.611401985706872, 0.287438875581301, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[6][12] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.0852599980736871, 0.209607191730006, -0.124347193656319, 0.611401985706872, 0.101159138711827, 0.287438875581301},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.124347193656319, 0.209607191730006, -0.0852599980736871, 0.287438875581301, 0.101159138711827, 0.611401985706872},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.085259998073687, -0.124347193656319, 0.209607191730006, 0.611401985706872, 0.287438875581301, 0.101159138711827},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.209607191730006, -0.124347193656319, -0.0852599980736871, 0.101159138711827, 0.287438875581301, 0.611401985706872},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.124347193656319, -0.0852599980736871, 0.209607191730006, 0.287438875581301, 0.611401985706872, 0.101159138711827},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.209607191730006, -0.0852599980736871, -0.124347193656319, 0.101159138711827, 0.611401985706872, 0.287438875581301}};
+    
+    static const double FE3[6][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 9; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 2334
+    for (unsigned int ip = 0; ip < 6; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F0 += FE3[ip][0]*w[2][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 6
+      for (unsigned int r = 0; r < 3; r++)
+      {
+        F1 += FE0[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 48
+      for (unsigned int r = 0; r < 12; r++)
+      {
+        F2 += FE2_C0[ip][r]*w[0][r];
+        F3 += FE2_C1[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 333
+      for (unsigned int j = 0; j < 3; j++)
+      {
+        for (unsigned int k = 0; k < 3; k++)
+        {
+          // Number of operations to compute entry: 37
+          A[j*3 + k] += (((((((K[0]*FE0_D10[ip][j] + K[2]*FE0_D01[ip][j]))*((K[0]*FE0_D10[ip][k] + K[2]*FE0_D01[ip][k])) + ((K[1]*FE0_D10[ip][j] + K[3]*FE0_D01[ip][j]))*((K[1]*FE0_D10[ip][k] + K[3]*FE0_D01[ip][k]))))*F1)*0.5*F0 + FE0[ip][j]*FE0[ip][k]) + (((((K[0]*FE0_D10[ip][k] + K[2]*FE0_D01[ip][k]))*FE0[ip][j])*F2 + (((K[1]*FE0_D10[ip][k] + K[3]*FE0_D01[ip][k]))*FE0[ip][j])*F3))*0.5*F0)*W6[ip]*det;
+        } // end loop over 'k'
+      } // end loop over 'j'
+    } // end loop over 'ip'
   }
 
 };
@@ -6261,7 +6920,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({true, true, true, false});
+    static const std::vector<bool> enabled({true, true, true, false, true, true});
     return enabled;
   }
 
@@ -6271,11 +6930,6 @@ public:
                                const double*  vertex_coordinates,
                                int cell_orientation) const
   {
-    // Number of operations (multiply-add pairs) for Jacobian data:      3
-    // Number of operations (multiply-add pairs) for geometry tensor:    122
-    // Number of operations (multiply-add pairs) for tensor contraction: 176
-    // Total number of operations (multiply-add pairs):                  301
-    
     // Compute Jacobian
     double J[4];
     compute_jacobian_triangle_2d(J, vertex_coordinates);
@@ -6288,74 +6942,119 @@ public:
     // Set scale factor
     const double det = std::abs(detJ);
     
-    // Compute geometry tensor
-    const double G0_0 = det*w[0][0]*(1.0);
-    const double G0_1 = det*w[0][1]*(1.0);
-    const double G0_2 = det*w[0][2]*(1.0);
-    const double G1_0 = det*w[2][0]*(1.0);
-    const double G1_1 = det*w[2][1]*(1.0);
-    const double G1_2 = det*w[2][2]*(1.0);
-    const double G2_0_0_0 = det*(w[0][0]*((K[0]*K[0] + K[1]*K[1])));
-    const double G2_0_0_1 = det*(w[0][0]*((K[0]*K[2] + K[1]*K[3])));
-    const double G2_0_1_0 = det*(w[0][1]*((K[0]*K[0] + K[1]*K[1])));
-    const double G2_0_2_1 = det*(w[0][2]*((K[0]*K[2] + K[1]*K[3])));
-    const double G2_1_0_0 = det*(w[0][0]*((K[2]*K[0] + K[3]*K[1])));
-    const double G2_1_0_1 = det*(w[0][0]*((K[2]*K[2] + K[3]*K[3])));
-    const double G2_1_1_0 = det*(w[0][1]*((K[2]*K[0] + K[3]*K[1])));
-    const double G2_1_2_1 = det*(w[0][2]*((K[2]*K[2] + K[3]*K[3])));
-    const double G3_0_0_0_0 = det*w[0][0]*w[1][0]*K[0]*(1.0);
-    const double G3_0_0_1_0 = det*w[0][0]*w[1][1]*K[0]*(1.0);
-    const double G3_0_0_2_0 = det*w[0][0]*w[1][2]*K[0]*(1.0);
-    const double G3_0_0_3_0 = det*w[0][0]*w[1][3]*K[0]*(1.0);
-    const double G3_0_0_4_0 = det*w[0][0]*w[1][4]*K[0]*(1.0);
-    const double G3_0_0_5_0 = det*w[0][0]*w[1][5]*K[0]*(1.0);
-    const double G3_0_0_6_1 = det*w[0][0]*w[1][6]*K[1]*(1.0);
-    const double G3_0_0_7_1 = det*w[0][0]*w[1][7]*K[1]*(1.0);
-    const double G3_0_0_8_1 = det*w[0][0]*w[1][8]*K[1]*(1.0);
-    const double G3_0_0_9_1 = det*w[0][0]*w[1][9]*K[1]*(1.0);
-    const double G3_0_0_10_1 = det*w[0][0]*w[1][10]*K[1]*(1.0);
-    const double G3_0_0_11_1 = det*w[0][0]*w[1][11]*K[1]*(1.0);
-    const double G3_0_1_0_0 = det*w[0][0]*w[1][0]*K[2]*(1.0);
-    const double G3_0_1_1_0 = det*w[0][0]*w[1][1]*K[2]*(1.0);
-    const double G3_0_1_2_0 = det*w[0][0]*w[1][2]*K[2]*(1.0);
-    const double G3_0_1_3_0 = det*w[0][0]*w[1][3]*K[2]*(1.0);
-    const double G3_0_1_4_0 = det*w[0][0]*w[1][4]*K[2]*(1.0);
-    const double G3_0_1_5_0 = det*w[0][0]*w[1][5]*K[2]*(1.0);
-    const double G3_0_1_6_1 = det*w[0][0]*w[1][6]*K[3]*(1.0);
-    const double G3_0_1_7_1 = det*w[0][0]*w[1][7]*K[3]*(1.0);
-    const double G3_0_1_8_1 = det*w[0][0]*w[1][8]*K[3]*(1.0);
-    const double G3_0_1_9_1 = det*w[0][0]*w[1][9]*K[3]*(1.0);
-    const double G3_0_1_10_1 = det*w[0][0]*w[1][10]*K[3]*(1.0);
-    const double G3_0_1_11_1 = det*w[0][0]*w[1][11]*K[3]*(1.0);
-    const double G3_1_0_0_0 = det*w[0][1]*w[1][0]*K[0]*(1.0);
-    const double G3_1_0_1_0 = det*w[0][1]*w[1][1]*K[0]*(1.0);
-    const double G3_1_0_2_0 = det*w[0][1]*w[1][2]*K[0]*(1.0);
-    const double G3_1_0_3_0 = det*w[0][1]*w[1][3]*K[0]*(1.0);
-    const double G3_1_0_4_0 = det*w[0][1]*w[1][4]*K[0]*(1.0);
-    const double G3_1_0_5_0 = det*w[0][1]*w[1][5]*K[0]*(1.0);
-    const double G3_1_0_6_1 = det*w[0][1]*w[1][6]*K[1]*(1.0);
-    const double G3_1_0_7_1 = det*w[0][1]*w[1][7]*K[1]*(1.0);
-    const double G3_1_0_8_1 = det*w[0][1]*w[1][8]*K[1]*(1.0);
-    const double G3_1_0_9_1 = det*w[0][1]*w[1][9]*K[1]*(1.0);
-    const double G3_1_0_10_1 = det*w[0][1]*w[1][10]*K[1]*(1.0);
-    const double G3_1_0_11_1 = det*w[0][1]*w[1][11]*K[1]*(1.0);
-    const double G3_2_1_0_0 = det*w[0][2]*w[1][0]*K[2]*(1.0);
-    const double G3_2_1_1_0 = det*w[0][2]*w[1][1]*K[2]*(1.0);
-    const double G3_2_1_2_0 = det*w[0][2]*w[1][2]*K[2]*(1.0);
-    const double G3_2_1_3_0 = det*w[0][2]*w[1][3]*K[2]*(1.0);
-    const double G3_2_1_4_0 = det*w[0][2]*w[1][4]*K[2]*(1.0);
-    const double G3_2_1_5_0 = det*w[0][2]*w[1][5]*K[2]*(1.0);
-    const double G3_2_1_6_1 = det*w[0][2]*w[1][6]*K[3]*(1.0);
-    const double G3_2_1_7_1 = det*w[0][2]*w[1][7]*K[3]*(1.0);
-    const double G3_2_1_8_1 = det*w[0][2]*w[1][8]*K[3]*(1.0);
-    const double G3_2_1_9_1 = det*w[0][2]*w[1][9]*K[3]*(1.0);
-    const double G3_2_1_10_1 = det*w[0][2]*w[1][10]*K[3]*(1.0);
-    const double G3_2_1_11_1 = det*w[0][2]*w[1][11]*K[3]*(1.0);
+    // Compute cell volume
     
-    // Compute element tensor
-    A[0] = 0.0833333333333333*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2 + 0.00416666666666666*G1_0 + 0.00208333333333333*G1_1 + 0.00208333333333333*G1_2 - 6.24999999999998e-05*G2_0_0_0 - 6.25e-05*G2_0_0_1 + 6.24999999999998e-05*G2_0_1_0 + 6.24999999999999e-05*G2_0_2_1 - 6.25e-05*G2_1_0_0 - 6.25000000000001e-05*G2_1_0_1 + 6.25e-05*G2_1_1_0 + 6.25e-05*G2_1_2_1 + 0.000416666666666665*G3_0_0_0_0 - 0.000208333333333333*G3_0_0_1_0 - 0.000208333333333333*G3_0_0_2_0 + 0.000833333333333332*G3_0_0_3_0 + 0.00166666666666666*G3_0_0_4_0 + 0.00166666666666666*G3_0_0_5_0 + 0.000416666666666665*G3_0_0_6_1 - 0.000208333333333333*G3_0_0_7_1 - 0.000208333333333333*G3_0_0_8_1 + 0.000833333333333332*G3_0_0_9_1 + 0.00166666666666666*G3_0_0_10_1 + 0.00166666666666666*G3_0_0_11_1 + 0.000416666666666666*G3_0_1_0_0 - 0.000208333333333333*G3_0_1_1_0 - 0.000208333333333333*G3_0_1_2_0 + 0.000833333333333333*G3_0_1_3_0 + 0.00166666666666667*G3_0_1_4_0 + 0.00166666666666667*G3_0_1_5_0 + 0.000416666666666666*G3_0_1_6_1 - 0.000208333333333333*G3_0_1_7_1 - 0.000208333333333333*G3_0_1_8_1 + 0.000833333333333333*G3_0_1_9_1 + 0.00166666666666667*G3_0_1_10_1 + 0.00166666666666667*G3_0_1_11_1 - 0.000416666666666665*G3_1_0_0_0 + 0.000208333333333333*G3_1_0_1_0 + 0.000208333333333333*G3_1_0_2_0 - 0.000833333333333332*G3_1_0_3_0 - 0.00166666666666666*G3_1_0_4_0 - 0.00166666666666666*G3_1_0_5_0 - 0.000416666666666665*G3_1_0_6_1 + 0.000208333333333333*G3_1_0_7_1 + 0.000208333333333333*G3_1_0_8_1 - 0.000833333333333332*G3_1_0_9_1 - 0.00166666666666666*G3_1_0_10_1 - 0.00166666666666666*G3_1_0_11_1 - 0.000416666666666665*G3_2_1_0_0 + 0.000208333333333333*G3_2_1_1_0 + 0.000208333333333333*G3_2_1_2_0 - 0.000833333333333332*G3_2_1_3_0 - 0.00166666666666667*G3_2_1_4_0 - 0.00166666666666667*G3_2_1_5_0 - 0.000416666666666665*G3_2_1_6_1 + 0.000208333333333333*G3_2_1_7_1 + 0.000208333333333333*G3_2_1_8_1 - 0.000833333333333332*G3_2_1_9_1 - 0.00166666666666667*G3_2_1_10_1 - 0.00166666666666667*G3_2_1_11_1;
-    A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666667*G0_2 + 0.00208333333333333*G1_0 + 0.00416666666666666*G1_1 + 0.00208333333333333*G1_2 + 6.24999999999998e-05*G2_0_0_0 + 6.25e-05*G2_0_0_1 - 6.24999999999998e-05*G2_0_1_0 - 6.24999999999999e-05*G2_0_2_1 - 0.000208333333333333*G3_0_0_0_0 + 0.000416666666666665*G3_0_0_1_0 - 0.000208333333333333*G3_0_0_2_0 + 0.00166666666666666*G3_0_0_3_0 + 0.000833333333333332*G3_0_0_4_0 + 0.00166666666666666*G3_0_0_5_0 - 0.000208333333333333*G3_0_0_6_1 + 0.000416666666666665*G3_0_0_7_1 - 0.000208333333333333*G3_0_0_8_1 + 0.00166666666666666*G3_0_0_9_1 + 0.000833333333333332*G3_0_0_10_1 + 0.00166666666666666*G3_0_0_11_1 - 0.000208333333333333*G3_0_1_0_0 + 0.000416666666666665*G3_0_1_1_0 - 0.000208333333333333*G3_0_1_2_0 + 0.00166666666666667*G3_0_1_3_0 + 0.000833333333333333*G3_0_1_4_0 + 0.00166666666666667*G3_0_1_5_0 - 0.000208333333333333*G3_0_1_6_1 + 0.000416666666666665*G3_0_1_7_1 - 0.000208333333333333*G3_0_1_8_1 + 0.00166666666666667*G3_0_1_9_1 + 0.000833333333333333*G3_0_1_10_1 + 0.00166666666666667*G3_0_1_11_1 + 0.000208333333333333*G3_1_0_0_0 - 0.000416666666666665*G3_1_0_1_0 + 0.000208333333333333*G3_1_0_2_0 - 0.00166666666666666*G3_1_0_3_0 - 0.000833333333333332*G3_1_0_4_0 - 0.00166666666666666*G3_1_0_5_0 + 0.000208333333333333*G3_1_0_6_1 - 0.000416666666666665*G3_1_0_7_1 + 0.000208333333333333*G3_1_0_8_1 - 0.00166666666666666*G3_1_0_9_1 - 0.000833333333333332*G3_1_0_10_1 - 0.00166666666666666*G3_1_0_11_1 + 0.000208333333333333*G3_2_1_0_0 - 0.000416666666666665*G3_2_1_1_0 + 0.000208333333333333*G3_2_1_2_0 - 0.00166666666666667*G3_2_1_3_0 - 0.000833333333333332*G3_2_1_4_0 - 0.00166666666666667*G3_2_1_5_0 + 0.000208333333333333*G3_2_1_6_1 - 0.000416666666666665*G3_2_1_7_1 + 0.000208333333333333*G3_2_1_8_1 - 0.00166666666666667*G3_2_1_9_1 - 0.000833333333333332*G3_2_1_10_1 - 0.00166666666666667*G3_2_1_11_1;
-    A[2] = 0.0416666666666667*G0_0 + 0.0416666666666667*G0_1 + 0.0833333333333333*G0_2 + 0.00208333333333333*G1_0 + 0.00208333333333333*G1_1 + 0.00416666666666666*G1_2 + 6.24999999999999e-05*G2_1_0_0 + 6.25e-05*G2_1_0_1 - 6.24999999999999e-05*G2_1_1_0 - 6.25e-05*G2_1_2_1 - 0.000208333333333333*G3_0_0_0_0 - 0.000208333333333333*G3_0_0_1_0 + 0.000416666666666665*G3_0_0_2_0 + 0.00166666666666666*G3_0_0_3_0 + 0.00166666666666666*G3_0_0_4_0 + 0.000833333333333332*G3_0_0_5_0 - 0.000208333333333333*G3_0_0_6_1 - 0.000208333333333333*G3_0_0_7_1 + 0.000416666666666665*G3_0_0_8_1 + 0.00166666666666666*G3_0_0_9_1 + 0.00166666666666666*G3_0_0_10_1 + 0.000833333333333332*G3_0_0_11_1 - 0.000208333333333333*G3_0_1_0_0 - 0.000208333333333333*G3_0_1_1_0 + 0.000416666666666666*G3_0_1_2_0 + 0.00166666666666667*G3_0_1_3_0 + 0.00166666666666667*G3_0_1_4_0 + 0.000833333333333333*G3_0_1_5_0 - 0.000208333333333333*G3_0_1_6_1 - 0.000208333333333333*G3_0_1_7_1 + 0.000416666666666666*G3_0_1_8_1 + 0.00166666666666667*G3_0_1_9_1 + 0.00166666666666667*G3_0_1_10_1 + 0.000833333333333333*G3_0_1_11_1 + 0.000208333333333333*G3_1_0_0_0 + 0.000208333333333333*G3_1_0_1_0 - 0.000416666666666665*G3_1_0_2_0 - 0.00166666666666666*G3_1_0_3_0 - 0.00166666666666666*G3_1_0_4_0 - 0.000833333333333332*G3_1_0_5_0 + 0.000208333333333333*G3_1_0_6_1 + 0.000208333333333333*G3_1_0_7_1 - 0.000416666666666665*G3_1_0_8_1 - 0.00166666666666666*G3_1_0_9_1 - 0.00166666666666666*G3_1_0_10_1 - 0.000833333333333332*G3_1_0_11_1 + 0.000208333333333333*G3_2_1_0_0 + 0.000208333333333333*G3_2_1_1_0 - 0.000416666666666665*G3_2_1_2_0 - 0.00166666666666667*G3_2_1_3_0 - 0.00166666666666667*G3_2_1_4_0 - 0.000833333333333332*G3_2_1_5_0 + 0.000208333333333333*G3_2_1_6_1 + 0.000208333333333333*G3_2_1_7_1 - 0.000416666666666665*G3_2_1_8_1 - 0.00166666666666667*G3_2_1_9_1 - 0.00166666666666667*G3_2_1_10_1 - 0.000833333333333332*G3_2_1_11_1;
+    
+    // Compute circumradius of triangle in 2D
+    
+    
+    // Array of quadrature weights.
+    static const double W6[6] = {0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333, 0.0833333333333333};
+    // Quadrature points on the UFC reference element: (0.659027622374092, 0.231933368553031), (0.659027622374092, 0.109039009072877), (0.231933368553031, 0.659027622374092), (0.231933368553031, 0.109039009072877), (0.109039009072877, 0.659027622374092), (0.109039009072877, 0.231933368553031)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[6][3] = \
+    {{0.109039009072877, 0.659027622374092, 0.231933368553031},
+    {0.231933368553031, 0.659027622374092, 0.109039009072877},
+    {0.109039009072877, 0.231933368553031, 0.659027622374092},
+    {0.659027622374092, 0.231933368553031, 0.109039009072877},
+    {0.231933368553031, 0.109039009072877, 0.659027622374092},
+    {0.659027622374092, 0.109039009072877, 0.231933368553031}};
+    
+    static const double FE0_D01[6][3] = \
+    {{-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0},
+    {-1.0, 0.0, 1.0}};
+    
+    static const double FE0_D10[6][3] = \
+    {{-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0},
+    {-0.999999999999999, 0.999999999999999, 0.0}};
+    
+    static const double FE2_C0[6][12] = \
+    {{-0.0852599980736871, 0.209607191730006, -0.124347193656319, 0.611401985706872, 0.101159138711827, 0.287438875581301, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.124347193656319, 0.209607191730006, -0.0852599980736871, 0.287438875581301, 0.101159138711827, 0.611401985706872, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.085259998073687, -0.124347193656319, 0.209607191730006, 0.611401985706872, 0.287438875581301, 0.101159138711827, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.209607191730006, -0.124347193656319, -0.0852599980736871, 0.101159138711827, 0.287438875581301, 0.611401985706872, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.124347193656319, -0.0852599980736871, 0.209607191730006, 0.287438875581301, 0.611401985706872, 0.101159138711827, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.209607191730006, -0.0852599980736871, -0.124347193656319, 0.101159138711827, 0.611401985706872, 0.287438875581301, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[6][12] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.0852599980736871, 0.209607191730006, -0.124347193656319, 0.611401985706872, 0.101159138711827, 0.287438875581301},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.124347193656319, 0.209607191730006, -0.0852599980736871, 0.287438875581301, 0.101159138711827, 0.611401985706872},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.085259998073687, -0.124347193656319, 0.209607191730006, 0.611401985706872, 0.287438875581301, 0.101159138711827},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.209607191730006, -0.124347193656319, -0.0852599980736871, 0.101159138711827, 0.287438875581301, 0.611401985706872},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.124347193656319, -0.0852599980736871, 0.209607191730006, 0.287438875581301, 0.611401985706872, 0.101159138711827},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.209607191730006, -0.0852599980736871, -0.124347193656319, 0.101159138711827, 0.611401985706872, 0.287438875581301}};
+    
+    static const double FE3[6][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 3; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 1236
+    for (unsigned int ip = 0; ip < 6; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      double F4 = 0.0;
+      double F5 = 0.0;
+      double F6 = 0.0;
+      double F7 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F2 += FE3[ip][0]*w[5][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 30
+      for (unsigned int r = 0; r < 3; r++)
+      {
+        F0 += FE0[ip][r]*w[0][r];
+        F1 += FE0[ip][r]*w[2][r];
+        F3 += FE0[ip][r]*w[4][r];
+        F4 += FE0_D10[ip][r]*w[0][r];
+        F5 += FE0_D01[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 48
+      for (unsigned int r = 0; r < 12; r++)
+      {
+        F6 += FE2_C0[ip][r]*w[1][r];
+        F7 += FE2_C1[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 126
+      for (unsigned int j = 0; j < 3; j++)
+      {
+        // Number of operations to compute entry: 42
+        A[j] += ((((((((K[0]*FE0_D10[ip][j] + K[2]*FE0_D01[ip][j]))*((K[0]*F4 + K[2]*F5)) + ((K[1]*FE0_D10[ip][j] + K[3]*FE0_D01[ip][j]))*((K[1]*F4 + K[3]*F5))))*F3)*0.5*F2)*(-1.0) + (FE0[ip][j]*F0 + FE0[ip][j]*F1*F2)) + ((((FE0[ip][j]*((K[0]*F4 + K[2]*F5)))*F6 + (FE0[ip][j]*((K[1]*F4 + K[3]*F5)))*F7))*0.5*F2)*(-1.0))*W6[ip]*det;
+      } // end loop over 'j'
+    } // end loop over 'ip'
   }
 
 };
@@ -6383,7 +7082,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({false, false, false, true});
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
     return enabled;
   }
 
@@ -6395,9 +7094,9 @@ public:
                                int cell_orientation) const
   {
     // Number of operations (multiply-add pairs) for Jacobian data:      10
-    // Number of operations (multiply-add pairs) for geometry tensor:    3
+    // Number of operations (multiply-add pairs) for geometry tensor:    4
     // Number of operations (multiply-add pairs) for tensor contraction: 9
-    // Total number of operations (multiply-add pairs):                  22
+    // Total number of operations (multiply-add pairs):                  23
     
     // Compute Jacobian
     double J[4];
@@ -6420,9 +7119,9 @@ public:
     
     
     // Compute geometry tensor
-    const double G0_0 = det*w[3][0]*(1.0);
-    const double G0_1 = det*w[3][1]*(1.0);
-    const double G0_2 = det*w[3][2]*(1.0);
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
     
     // Compute element tensor
     switch (facet)
@@ -6430,21 +7129,21 @@ public:
     case 0:
       {
         A[0] = 0.0;
-      A[1] = 0.333333333333333*G0_1 + 0.166666666666667*G0_2;
-      A[2] = 0.166666666666667*G0_1 + 0.333333333333333*G0_2;
+      A[1] = 0.333333333333333*G0_1_0 + 0.166666666666667*G0_2_0;
+      A[2] = 0.166666666666667*G0_1_0 + 0.333333333333333*G0_2_0;
         break;
       }
     case 1:
       {
-        A[0] = 0.333333333333333*G0_0 + 0.166666666666667*G0_2;
+        A[0] = 0.333333333333333*G0_0_0 + 0.166666666666667*G0_2_0;
       A[1] = 0.0;
-      A[2] = 0.166666666666667*G0_0 + 0.333333333333333*G0_2;
+      A[2] = 0.166666666666667*G0_0_0 + 0.333333333333333*G0_2_0;
         break;
       }
     case 2:
       {
-        A[0] = 0.333333333333333*G0_0 + 0.166666666666667*G0_1;
-      A[1] = 0.166666666666667*G0_0 + 0.333333333333333*G0_1;
+        A[0] = 0.333333333333333*G0_0_0 + 0.166666666666667*G0_1_0;
+      A[1] = 0.166666666666667*G0_0_0 + 0.333333333333333*G0_1_0;
       A[2] = 0.0;
         break;
       }
@@ -6488,7 +7187,11 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
+<<<<<<< HEAD
     return "dfa7f7e5a6b13e2f171389e1ccba3f1947b7c19440f441967e68f1087fb9b14047ce5d23ebf369f9100726ee02fd0fb54a2edc784cd6ea87faa05f00b7b121b3";
+=======
+    return "9763da2c193b0918d030fd5b99cb44b42aa2818a7cfd91cfe528c091e4084b25c740d86fcfc8da98dea6dd55b26a51a64364a081651407f1ea8b539e68c57002";
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -6501,13 +7204,13 @@ public:
   /// Return the number of coefficients (n)
   virtual std::size_t num_coefficients() const
   {
-    return 1;
+    return 3;
   }
 
   /// Return original coefficient position for each coefficient (0 <= i < n)
   virtual std::size_t original_coefficient_position(std::size_t i) const
   {
-    static const std::vector<std::size_t> position({0});
+    static const std::vector<std::size_t> position({0, 1, 2});
     return position[i];
   }
 
@@ -6519,17 +7222,27 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion2d_finite_element_1();
+        return new convectiondiffusion2d_finite_element_2();
+        break;
+      }
+    case 3:
+      {
+        return new convectiondiffusion2d_finite_element_3();
+        break;
+      }
+    case 4:
+      {
+        return new convectiondiffusion2d_finite_element_0();
         break;
       }
     }
@@ -6544,17 +7257,27 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion2d_dofmap_1();
+        return new convectiondiffusion2d_dofmap_2();
+        break;
+      }
+    case 3:
+      {
+        return new convectiondiffusion2d_dofmap_3();
+        break;
+      }
+    case 4:
+      {
+        return new convectiondiffusion2d_dofmap_0();
         break;
       }
     }
@@ -6602,28 +7325,50 @@ public:
 
   /// Return whether the form has any exterior facet integrals
   virtual bool has_exterior_facet_integrals() const
+<<<<<<< HEAD
   {
     return false;
   }
 
   /// Return whether the form has any interior facet integrals
   virtual bool has_interior_facet_integrals() const
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
+<<<<<<< HEAD
   /// Return whether the form has any vertex integrals
   virtual bool has_vertex_integrals() const
+=======
+  /// Return whether the form has any interior facet integrals
+  virtual bool has_interior_facet_integrals() const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
+<<<<<<< HEAD
+  /// Return whether the form has any custom integrals
+  virtual bool has_custom_integrals() const
+=======
+  /// Return whether the form has any vertex integrals
+  virtual bool has_vertex_integrals() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return false;
+  }
+
+<<<<<<< HEAD
+=======
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
   {
     return false;
   }
 
+>>>>>>> remotes/origin/fenics_1.6.x
 
   /// Create a new cell integral on sub domain subdomain_id
   virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
@@ -6722,7 +7467,11 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
+<<<<<<< HEAD
     return "3208bc76b83c637c1f76cbdad4e56febfaed752c6fb5e5852536a7a1dd4588d28f271ed29da9ab9718ea17a7a42b406ccf185fd69bc3c79dd98ab3a3bd2fc8a1";
+=======
+    return "453e49d4dc6c416c9932bf550aa5f254bb16404f34850924c944a7e6d69bad947e68274190069b029443464447d7e08abb5d25f3a897daff1dd4bf13bb45cee0";
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -6735,13 +7484,13 @@ public:
   /// Return the number of coefficients (n)
   virtual std::size_t num_coefficients() const
   {
-    return 4;
+    return 6;
   }
 
   /// Return original coefficient position for each coefficient (0 <= i < n)
   virtual std::size_t original_coefficient_position(std::size_t i) const
   {
-    static const std::vector<std::size_t> position({0, 1, 2, 3});
+    static const std::vector<std::size_t> position({0, 1, 2, 3, 4, 5});
     return position[i];
   }
 
@@ -6753,27 +7502,37 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion2d_finite_element_1();
+        return new convectiondiffusion2d_finite_element_2();
         break;
       }
     case 3:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
         break;
       }
     case 4:
       {
-        return new convectiondiffusion2d_finite_element_2();
+        return new convectiondiffusion2d_finite_element_3();
+        break;
+      }
+    case 5:
+      {
+        return new convectiondiffusion2d_finite_element_3();
+        break;
+      }
+    case 6:
+      {
+        return new convectiondiffusion2d_finite_element_0();
         break;
       }
     }
@@ -6788,27 +7547,37 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion2d_dofmap_1();
+        return new convectiondiffusion2d_dofmap_2();
         break;
       }
     case 3:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
         break;
       }
     case 4:
       {
-        return new convectiondiffusion2d_dofmap_2();
+        return new convectiondiffusion2d_dofmap_3();
+        break;
+      }
+    case 5:
+      {
+        return new convectiondiffusion2d_dofmap_3();
+        break;
+      }
+    case 6:
+      {
+        return new convectiondiffusion2d_dofmap_0();
         break;
       }
     }
@@ -6874,6 +7643,8 @@ public:
 
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
+<<<<<<< HEAD
+=======
   {
     return false;
   }
@@ -6899,23 +7670,76 @@ public:
 
   /// Create a new vertex integral on sub domain subdomain_id
   virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
-    return 0;
+    return false;
   }
 
+<<<<<<< HEAD
+
+  /// Create a new cell integral on sub domain subdomain_id
+  virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
+=======
   /// Create a new custom integral on sub domain subdomain_id
   virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return 0;
   }
 
+<<<<<<< HEAD
+  /// Create a new exterior facet integral on sub domain subdomain_id
+  virtual ufc::exterior_facet_integral* create_exterior_facet_integral(std::size_t subdomain_id) const
+  {
+    return 0;
+  }
+
+  /// Create a new interior facet integral on sub domain subdomain_id
+  virtual ufc::interior_facet_integral* create_interior_facet_integral(std::size_t subdomain_id) const
+=======
 
   /// Create a new cell integral on everywhere else
   virtual ufc::cell_integral* create_default_cell_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Create a new vertex integral on sub domain subdomain_id
+  virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
+=======
+  /// Create a new exterior facet integral on everywhere else
+  virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Create a new custom integral on sub domain subdomain_id
+  virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
+=======
+  /// Create a new interior facet integral on everywhere else
+  virtual ufc::interior_facet_integral* create_default_interior_facet_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+
+  /// Create a new cell integral on everywhere else
+  virtual ufc::cell_integral* create_default_cell_integral() const
+=======
+  /// Create a new vertex integral on everywhere else
+  virtual ufc::vertex_integral* create_default_vertex_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return new convectiondiffusion2d_cell_integral_1_otherwise();
   }
 
+<<<<<<< HEAD
   /// Create a new exterior facet integral on everywhere else
   virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
   {
@@ -6934,6 +7758,8 @@ public:
     return 0;
   }
 
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Create a new custom integral on everywhere else
   virtual ufc::custom_integral* create_default_custom_integral() const
   {
@@ -6970,8 +7796,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_1()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -6979,8 +7810,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_1()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -6990,8 +7826,12 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_1()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -7000,8 +7840,63 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+  {
+    // Do nothing
+  }
+
+};
+
+class CoefficientSpace_c: public dolfin::FunctionSpace
+{
+public:
+
+  //--- Constructors for standard function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_c(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_c(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+  {
+    // Do nothing
+  }
+
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_c(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+<<<<<<< HEAD
+  CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_1()), *mesh, constrained_domain)))
+=======
+  CoefficientSpace_c(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7017,8 +7912,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7026,8 +7926,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7037,8 +7942,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -7047,8 +7957,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7064,8 +7979,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_g(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7073,6 +7993,7 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
   {
@@ -7087,6 +8008,29 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_g(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
   }
@@ -7094,30 +8038,39 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
 };
 
-class CoefficientSpace_u0: public dolfin::FunctionSpace
+class CoefficientSpace_k: public dolfin::FunctionSpace
 {
 public:
 
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
+<<<<<<< HEAD
   CoefficientSpace_u0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+  CoefficientSpace_k(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_0()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
+<<<<<<< HEAD
   CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
@@ -7134,37 +8087,71 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+  CoefficientSpace_k(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_0()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
+<<<<<<< HEAD
   // Create standard function space (shared pointer version)
   CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_k(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_0()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_k(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_0()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
 };
 
-class Form_a_FunctionSpace_0: public dolfin::FunctionSpace
+class CoefficientSpace_u0: public dolfin::FunctionSpace
 {
 public:
 
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
+<<<<<<< HEAD
   Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+  CoefficientSpace_u0(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
+<<<<<<< HEAD
   Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
@@ -7181,6 +8168,93 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_u0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+};
+
+class Form_a_FunctionSpace_0: public dolfin::FunctionSpace
+{
+public:
+
+  //--- Constructors for standard function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+<<<<<<< HEAD
+  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
   }
@@ -7188,12 +8262,23 @@ public:
   // Create standard function space (shared pointer version)
   Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
+<<<<<<< HEAD
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
 };
 
 class Form_a_FunctionSpace_1: public dolfin::FunctionSpace
@@ -7205,17 +8290,26 @@ public:
   // Create standard function space (reference version)
   Form_a_FunctionSpace_1(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+<<<<<<< HEAD
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+  {
+    // Do nothing
+=======
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
   {
     // Do nothing
   }
@@ -7225,8 +8319,8 @@ public:
   // Create standard function space (reference version)
   Form_a_FunctionSpace_1(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -7235,15 +8329,20 @@ public:
   // Create standard function space (shared pointer version)
   Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
   {
     // Do nothing
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
 
 typedef CoefficientSpace_b Form_a_FunctionSpace_2;
+
+typedef CoefficientSpace_c Form_a_FunctionSpace_3;
+
+typedef CoefficientSpace_k Form_a_FunctionSpace_4;
 
 class Form_a: public dolfin::Form
 {
@@ -7251,7 +8350,11 @@ public:
 
   // Constructor
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0):
+<<<<<<< HEAD
     dolfin::Form(2, 1), b(*this, 0)
+=======
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
@@ -7260,32 +8363,53 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
 
     this->b = b;
+    this->c = c;
+    this->k = k;
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_0());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
 
     this->b = *b;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_0());
   }
 
   // Constructor
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0):
+<<<<<<< HEAD
     dolfin::Form(2, 1), b(*this, 0)
+=======
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
@@ -7294,25 +8418,45 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = b;
+<<<<<<< HEAD
+=======
+    this->c = c;
+    this->k = k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_0());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = *b;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_0());
   }
@@ -7326,6 +8470,10 @@ public:
   {
     if (name == "b")
       return 0;
+    else if (name == "c")
+      return 1;
+    else if (name == "k")
+      return 2;
 
     dolfin::dolfin_error("generated code for class Form",
                          "access coefficient data",
@@ -7340,6 +8488,10 @@ public:
     {
     case 0:
       return "b";
+    case 1:
+      return "c";
+    case 2:
+      return "k";
     }
 
     dolfin::dolfin_error("generated code for class Form",
@@ -7352,9 +8504,16 @@ public:
   typedef Form_a_FunctionSpace_0 TestSpace;
   typedef Form_a_FunctionSpace_1 TrialSpace;
   typedef Form_a_FunctionSpace_2 CoefficientSpace_b;
+  typedef Form_a_FunctionSpace_3 CoefficientSpace_c;
+  typedef Form_a_FunctionSpace_4 CoefficientSpace_k;
 
   // Coefficients
   dolfin::CoefficientAssigner b;
+<<<<<<< HEAD
+=======
+  dolfin::CoefficientAssigner c;
+  dolfin::CoefficientAssigner k;
+>>>>>>> remotes/origin/fenics_1.6.x
 };
 
 class Form_L_FunctionSpace_0: public dolfin::FunctionSpace
@@ -7366,8 +8525,13 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7375,8 +8539,13 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7386,8 +8555,13 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -7396,8 +8570,13 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_2()), *mesh, constrained_domain)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion2d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion2d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -7412,13 +8591,21 @@ typedef CoefficientSpace_f Form_L_FunctionSpace_3;
 
 typedef CoefficientSpace_g Form_L_FunctionSpace_4;
 
+typedef CoefficientSpace_c Form_L_FunctionSpace_5;
+
+typedef CoefficientSpace_k Form_L_FunctionSpace_6;
+
 class Form_L: public dolfin::Form
 {
 public:
 
   // Constructor
   Form_L(const dolfin::FunctionSpace& V0):
+<<<<<<< HEAD
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -7426,8 +8613,13 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -7435,13 +8627,20 @@ public:
     this->b = b;
     this->f = f;
     this->g = g;
+    this->c = c;
+    this->k = k;
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_1());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -7449,13 +8648,22 @@ public:
     this->b = *b;
     this->f = *f;
     this->g = *g;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_1());
   }
 
   // Constructor
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0):
+<<<<<<< HEAD
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -7463,8 +8671,13 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -7472,7 +8685,19 @@ public:
     this->b = b;
     this->f = f;
     this->g = g;
+    this->c = c;
+    this->k = k;
 
+    _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_1());
+  }
+
+  // Constructor
+  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+  {
+    _function_spaces[0] = V0;
+
+<<<<<<< HEAD
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_1());
   }
 
@@ -7482,10 +8707,17 @@ public:
   {
     _function_spaces[0] = V0;
 
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
     this->u0 = *u0;
     this->b = *b;
     this->f = *f;
     this->g = *g;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion2d_form_1());
   }
@@ -7505,6 +8737,10 @@ public:
       return 2;
     else if (name == "g")
       return 3;
+    else if (name == "c")
+      return 4;
+    else if (name == "k")
+      return 5;
 
     dolfin::dolfin_error("generated code for class Form",
                          "access coefficient data",
@@ -7525,6 +8761,10 @@ public:
       return "f";
     case 3:
       return "g";
+    case 4:
+      return "c";
+    case 5:
+      return "k";
     }
 
     dolfin::dolfin_error("generated code for class Form",
@@ -7539,12 +8779,19 @@ public:
   typedef Form_L_FunctionSpace_2 CoefficientSpace_b;
   typedef Form_L_FunctionSpace_3 CoefficientSpace_f;
   typedef Form_L_FunctionSpace_4 CoefficientSpace_g;
+  typedef Form_L_FunctionSpace_5 CoefficientSpace_c;
+  typedef Form_L_FunctionSpace_6 CoefficientSpace_k;
 
   // Coefficients
   dolfin::CoefficientAssigner u0;
   dolfin::CoefficientAssigner b;
   dolfin::CoefficientAssigner f;
   dolfin::CoefficientAssigner g;
+<<<<<<< HEAD
+=======
+  dolfin::CoefficientAssigner c;
+  dolfin::CoefficientAssigner k;
+>>>>>>> remotes/origin/fenics_1.6.x
 };
 
 // Class typedefs

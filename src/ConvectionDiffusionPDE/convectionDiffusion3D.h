@@ -50,6 +50,321 @@ public:
   /// Return a string identifying the finite element
   virtual const char* signature() const
   {
+<<<<<<< HEAD
+    return "FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, None)";
+=======
+    return "FiniteElement('Real', Domain(Cell('tetrahedron', 3)), 0, None)";
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Return the cell shape
+  virtual ufc::shape cell_shape() const
+  {
+    return ufc::tetrahedron;
+  }
+
+  /// Return the topological dimension of the cell shape
+  virtual std::size_t topological_dimension() const
+  {
+    return 3;
+  }
+
+  /// Return the geometric dimension of the cell shape
+  virtual std::size_t geometric_dimension() const
+  {
+    return 3;
+  }
+
+  /// Return the dimension of the finite element function space
+  virtual std::size_t space_dimension() const
+  {
+    return 1;
+  }
+
+  /// Return the rank of the value space
+  virtual std::size_t value_rank() const
+<<<<<<< HEAD
+=======
+  {
+    return 0;
+  }
+
+  /// Return the dimension of the value space for axis i
+  virtual std::size_t value_dimension(std::size_t i) const
+  {
+    return 1;
+  }
+
+  /// Evaluate basis function i at given point x in cell (actual implementation)
+  static void _evaluate_basis(std::size_t i,
+                              double* values,
+                              const double* x,
+                              const double* vertex_coordinates,
+                              int cell_orientation)
+  {
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    
+    // Compute constants
+    
+    // Compute subdeterminants
+    
+    // Get coordinates and map to the reference (FIAT) element
+    
+    
+    // Reset values
+    *values = 0.0;
+    
+    // Array of basisvalues
+    double basisvalues[1] = {0.0};
+    
+    // Declare helper variables
+    
+    // Compute basisvalues
+    basisvalues[0] = 1.0;
+    
+    // Table(s) of coefficients
+    static const double coefficients0[1] = \
+    {1.0};
+    
+    // Compute value(s)
+    for (unsigned int r = 0; r < 1; r++)
+    {
+      *values += coefficients0[r]*basisvalues[r];
+    } // end loop over 'r'
+  }
+
+  /// Evaluate basis function i at given point x in cell (non-static member function)
+  virtual void evaluate_basis(std::size_t i,
+                              double* values,
+                              const double* x,
+                              const double* vertex_coordinates,
+                              int cell_orientation) const
+  {
+    _evaluate_basis(i, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate all basis functions at given point x in cell (actual implementation)
+  static void _evaluate_basis_all(double* values,
+                                  const double* x,
+                                  const double* vertex_coordinates,
+                                  int cell_orientation)
+  {
+    // Element is constant, calling evaluate_basis.
+    _evaluate_basis(0, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate all basis functions at given point x in cell (non-static member function)
+  virtual void evaluate_basis_all(double* values,
+                                  const double* x,
+                                  const double* vertex_coordinates,
+                                  int cell_orientation) const
+  {
+    _evaluate_basis_all(values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of basis function i at given point x in cell (actual implementation)
+  static void _evaluate_basis_derivatives(std::size_t i,
+                                          std::size_t n,
+                                          double* values,
+                                          const double* x,
+                                          const double* vertex_coordinates,
+                                          int cell_orientation)
+  {
+    
+    // Compute number of derivatives.
+    unsigned int num_derivatives = 1;
+    for (unsigned int r = 0; r < n; r++)
+    {
+      num_derivatives *= 3;
+    } // end loop over 'r'
+    
+    // Reset values. Assuming that values is always an array.
+    for (unsigned int r = 0; r < num_derivatives; r++)
+    {
+      values[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Call evaluate_basis if order of derivatives is equal to zero.
+    if (n == 0)
+    {
+      _evaluate_basis(i, values, x, vertex_coordinates, cell_orientation);
+      return ;
+    }
+    
+    // If order of derivatives is greater than the maximum polynomial degree, return zeros.
+    if (n > 0)
+    {
+    return ;
+    }
+    
+  }
+
+  /// Evaluate order n derivatives of basis function i at given point x in cell (non-static member function)
+  virtual void evaluate_basis_derivatives(std::size_t i,
+                                          std::size_t n,
+                                          double* values,
+                                          const double* x,
+                                          const double* vertex_coordinates,
+                                          int cell_orientation) const
+  {
+    _evaluate_basis_derivatives(i, n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of all basis functions at given point x in cell (actual implementation)
+  static void _evaluate_basis_derivatives_all(std::size_t n,
+                                              double* values,
+                                              const double* x,
+                                              const double* vertex_coordinates,
+                                              int cell_orientation)
+  {
+    // Element is constant, calling evaluate_basis_derivatives.
+    _evaluate_basis_derivatives(0, n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate order n derivatives of all basis functions at given point x in cell (non-static member function)
+  virtual void evaluate_basis_derivatives_all(std::size_t n,
+                                              double* values,
+                                              const double* x,
+                                              const double* vertex_coordinates,
+                                              int cell_orientation) const
+  {
+    _evaluate_basis_derivatives_all(n, values, x, vertex_coordinates, cell_orientation);
+  }
+
+  /// Evaluate linear functional for dof i on the function f
+  virtual double evaluate_dof(std::size_t i,
+                              const ufc::function& f,
+                              const double* vertex_coordinates,
+                              int cell_orientation,
+                              const ufc::cell& c) const
+  {
+    // Declare variables for result of evaluation
+    double vals[1];
+    
+    // Declare variable for physical coordinates
+    double y[3];
+    switch (i)
+    {
+    case 0:
+      {
+        y[0] = 0.25*vertex_coordinates[0] + 0.25*vertex_coordinates[3] + 0.25*vertex_coordinates[6] + 0.25*vertex_coordinates[9];
+      y[1] = 0.25*vertex_coordinates[1] + 0.25*vertex_coordinates[4] + 0.25*vertex_coordinates[7] + 0.25*vertex_coordinates[10];
+      y[2] = 0.25*vertex_coordinates[2] + 0.25*vertex_coordinates[5] + 0.25*vertex_coordinates[8] + 0.25*vertex_coordinates[11];
+      f.evaluate(vals, y, c);
+      return vals[0];
+        break;
+      }
+    }
+    
+    return 0.0;
+  }
+
+  /// Evaluate linear functionals for all dofs on the function f
+  virtual void evaluate_dofs(double* values,
+                             const ufc::function& f,
+                             const double* vertex_coordinates,
+                             int cell_orientation,
+                             const ufc::cell& c) const
+  {
+    // Declare variables for result of evaluation
+    double vals[1];
+    
+    // Declare variable for physical coordinates
+    double y[3];
+    y[0] = 0.25*vertex_coordinates[0] + 0.25*vertex_coordinates[3] + 0.25*vertex_coordinates[6] + 0.25*vertex_coordinates[9];
+    y[1] = 0.25*vertex_coordinates[1] + 0.25*vertex_coordinates[4] + 0.25*vertex_coordinates[7] + 0.25*vertex_coordinates[10];
+    y[2] = 0.25*vertex_coordinates[2] + 0.25*vertex_coordinates[5] + 0.25*vertex_coordinates[8] + 0.25*vertex_coordinates[11];
+    f.evaluate(vals, y, c);
+    values[0] = vals[0];
+  }
+
+  /// Interpolate vertex values from dof values
+  virtual void interpolate_vertex_values(double* vertex_values,
+                                         const double* dof_values,
+                                         const double* vertex_coordinates,
+                                         int cell_orientation,
+                                         const ufc::cell& c) const
+  {
+    // Evaluate function and change variables
+    vertex_values[0] = dof_values[0];
+    vertex_values[1] = dof_values[0];
+    vertex_values[2] = dof_values[0];
+    vertex_values[3] = dof_values[0];
+  }
+
+  /// Map coordinate xhat from reference cell to coordinate x in cell
+  virtual void map_from_reference_cell(double* x,
+                                       const double* xhat,
+                                       const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_from_reference_cell not yet implemented.");
+  }
+
+  /// Map from coordinate x in cell to coordinate xhat in reference cell
+  virtual void map_to_reference_cell(double* xhat,
+                                     const double* x,
+                                     const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_to_reference_cell not yet implemented.");
+  }
+
+  /// Return the number of sub elements (for a mixed element)
+  virtual std::size_t num_sub_elements() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Return the dimension of the value space for axis i
+  virtual std::size_t value_dimension(std::size_t i) const
+=======
+  /// Create a new finite element for sub element i (for a mixed element)
+  virtual ufc::finite_element* create_sub_element(std::size_t i) const
+  {
+    return 0;
+  }
+
+  /// Create a new class instance
+  virtual ufc::finite_element* create() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return new convectiondiffusion3d_finite_element_0();
+  }
+
+};
+
+/// This class defines the interface for a finite element.
+
+class convectiondiffusion3d_finite_element_1: public ufc::finite_element
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_finite_element_1() : ufc::finite_element()
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+=======
+  /// Destructor
+  virtual ~convectiondiffusion3d_finite_element_1()
+  {
+    // Do nothing
+  }
+
+  /// Return a string identifying the finite element
+  virtual const char* signature() const
+  {
     return "FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, None)";
   }
 
@@ -89,6 +404,7 @@ public:
     return 1;
   }
 
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Evaluate basis function i at given point x in cell (actual implementation)
   static void _evaluate_basis(std::size_t i,
                               double* values,
@@ -3075,25 +3391,33 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-    return new convectiondiffusion3d_finite_element_0();
+    return new convectiondiffusion3d_finite_element_1();
   }
 
 };
 
 /// This class defines the interface for a finite element.
 
-class convectiondiffusion3d_finite_element_1: public ufc::finite_element
+class convectiondiffusion3d_finite_element_2: public ufc::finite_element
 {
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion3d_finite_element_1() : ufc::finite_element()
+=======
+  convectiondiffusion3d_finite_element_2() : ufc::finite_element()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion3d_finite_element_1()
+=======
+  virtual ~convectiondiffusion3d_finite_element_2()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -11408,17 +11732,17 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_finite_element_0();
+        return new convectiondiffusion3d_finite_element_1();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_finite_element_0();
+        return new convectiondiffusion3d_finite_element_1();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_finite_element_0();
+        return new convectiondiffusion3d_finite_element_1();
         break;
       }
     }
@@ -11429,25 +11753,33 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-    return new convectiondiffusion3d_finite_element_1();
+    return new convectiondiffusion3d_finite_element_2();
   }
 
 };
 
 /// This class defines the interface for a finite element.
 
-class convectiondiffusion3d_finite_element_2: public ufc::finite_element
+class convectiondiffusion3d_finite_element_3: public ufc::finite_element
 {
 public:
 
   /// Constructor
+<<<<<<< HEAD
   convectiondiffusion3d_finite_element_2() : ufc::finite_element()
+=======
+  convectiondiffusion3d_finite_element_3() : ufc::finite_element()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
+<<<<<<< HEAD
   virtual ~convectiondiffusion3d_finite_element_2()
+=======
+  virtual ~convectiondiffusion3d_finite_element_3()
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -12627,6 +12959,7 @@ public:
   virtual void map_from_reference_cell(double* x,
                                        const double* xhat,
                                        const ufc::cell& c) const
+<<<<<<< HEAD
   {
     throw std::runtime_error("map_from_reference_cell not yet implemented.");
   }
@@ -12642,6 +12975,23 @@ public:
   /// Return the number of sub elements (for a mixed element)
   virtual std::size_t num_sub_elements() const
   {
+=======
+  {
+    throw std::runtime_error("map_from_reference_cell not yet implemented.");
+  }
+
+  /// Map from coordinate x in cell to coordinate xhat in reference cell
+  virtual void map_to_reference_cell(double* xhat,
+                                     const double* x,
+                                     const ufc::cell& c) const
+  {
+    throw std::runtime_error("map_to_reference_cell not yet implemented.");
+  }
+
+  /// Return the number of sub elements (for a mixed element)
+  virtual std::size_t num_sub_elements() const
+  {
+>>>>>>> remotes/origin/fenics_1.6.x
     return 0;
   }
 
@@ -12654,7 +13004,11 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
+<<<<<<< HEAD
     return new convectiondiffusion3d_finite_element_2();
+=======
+    return new convectiondiffusion3d_finite_element_3();
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
@@ -12681,6 +13035,232 @@ public:
   /// Return a string identifying the dofmap
   virtual const char* signature() const
   {
+<<<<<<< HEAD
+=======
+    return "FFC dofmap for FiniteElement('Real', Domain(Cell('tetrahedron', 3)), 0, None)";
+  }
+
+  /// Return true iff mesh entities of topological dimension d are needed
+  virtual bool needs_mesh_entities(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+        return false;
+        break;
+      }
+    case 1:
+      {
+        return false;
+        break;
+      }
+    case 2:
+      {
+        return false;
+        break;
+      }
+    case 3:
+      {
+        return false;
+        break;
+      }
+    }
+    
+    return false;
+  }
+
+  /// Return the topological dimension of the associated cell shape
+  virtual std::size_t topological_dimension() const
+  {
+    return 3;
+  }
+
+  /// Return the geometric dimension of the associated cell shape
+  virtual std::size_t geometric_dimension() const
+  {
+    return 3;
+  }
+
+  /// Return the dimension of the global finite element function space
+  virtual std::size_t global_dimension(const std::vector<std::size_t>&
+                                       num_global_entities) const
+  {
+    return 1;
+  }
+
+  /// Return the dimension of the local finite element function space for a cell
+  virtual std::size_t num_element_dofs() const
+  {
+    return 1;
+  }
+
+  /// Return the number of dofs on each cell facet
+  virtual std::size_t num_facet_dofs() const
+  {
+    return 0;
+  }
+
+  /// Return the number of dofs associated with each cell entity of dimension d
+  virtual std::size_t num_entity_dofs(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+        return 0;
+        break;
+      }
+    case 1:
+      {
+        return 0;
+        break;
+      }
+    case 2:
+      {
+        return 0;
+        break;
+      }
+    case 3:
+      {
+        return 1;
+        break;
+      }
+    }
+    
+    return 0;
+  }
+
+  /// Tabulate the local-to-global mapping of dofs on a cell
+  virtual void tabulate_dofs(std::size_t* dofs,
+                             const std::vector<std::size_t>& num_global_entities,
+                             const ufc::cell& c) const
+  {
+    dofs[0] = 0;
+  }
+
+  /// Tabulate the local-to-local mapping from facet dofs to cell dofs
+  virtual void tabulate_facet_dofs(std::size_t* dofs,
+                                   std::size_t facet) const
+  {
+    switch (facet)
+    {
+    case 0:
+      {
+        
+        break;
+      }
+    case 1:
+      {
+        
+        break;
+      }
+    case 2:
+      {
+        
+        break;
+      }
+    case 3:
+      {
+        
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the local-to-local mapping of dofs on entity (d, i)
+  virtual void tabulate_entity_dofs(std::size_t* dofs,
+                                    std::size_t d, std::size_t i) const
+  {
+    if (d > 3)
+    {
+    throw std::runtime_error("d is larger than dimension (3)");
+    }
+    
+    switch (d)
+    {
+    case 0:
+      {
+        
+        break;
+      }
+    case 1:
+      {
+        
+        break;
+      }
+    case 2:
+      {
+        
+        break;
+      }
+    case 3:
+      {
+        if (i > 0)
+      {
+      throw std::runtime_error("i is larger than number of entities (0)");
+      }
+      
+      dofs[0] = 0;
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the coordinates of all dofs on a cell
+  virtual void tabulate_coordinates(double* dof_coordinates,
+                                    const double* vertex_coordinates) const
+  {
+    dof_coordinates[0] = 0.25*vertex_coordinates[0] + 0.25*vertex_coordinates[3] + 0.25*vertex_coordinates[6] + 0.25*vertex_coordinates[9];
+    dof_coordinates[1] = 0.25*vertex_coordinates[1] + 0.25*vertex_coordinates[4] + 0.25*vertex_coordinates[7] + 0.25*vertex_coordinates[10];
+    dof_coordinates[2] = 0.25*vertex_coordinates[2] + 0.25*vertex_coordinates[5] + 0.25*vertex_coordinates[8] + 0.25*vertex_coordinates[11];
+  }
+
+  /// Return the number of sub dofmaps (for a mixed element)
+  virtual std::size_t num_sub_dofmaps() const
+  {
+    return 0;
+  }
+
+  /// Create a new dofmap for sub dofmap i (for a mixed element)
+  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
+  {
+    return 0;
+  }
+
+  /// Create a new class instance
+  virtual ufc::dofmap* create() const
+  {
+    return new convectiondiffusion3d_dofmap_0();
+  }
+
+};
+
+/// This class defines the interface for a local-to-global mapping of
+/// degrees of freedom (dofs).
+
+class convectiondiffusion3d_dofmap_1: public ufc::dofmap
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_dofmap_1() : ufc::dofmap()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_dofmap_1()
+  {
+    // Do nothing
+  }
+
+  /// Return a string identifying the dofmap
+  virtual const char* signature() const
+  {
+>>>>>>> remotes/origin/fenics_1.6.x
     return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, None)";
   }
 
@@ -12862,6 +13442,8 @@ public:
       {
       throw std::runtime_error("i is larger than number of entities (3)");
       }
+<<<<<<< HEAD
+=======
       
       switch (i)
       {
@@ -12997,7 +13579,7 @@ public:
   /// Create a new class instance
   virtual ufc::dofmap* create() const
   {
-    return new convectiondiffusion3d_dofmap_0();
+    return new convectiondiffusion3d_dofmap_1();
   }
 
 };
@@ -13005,18 +13587,18 @@ public:
 /// This class defines the interface for a local-to-global mapping of
 /// degrees of freedom (dofs).
 
-class convectiondiffusion3d_dofmap_1: public ufc::dofmap
+class convectiondiffusion3d_dofmap_2: public ufc::dofmap
 {
 public:
 
   /// Constructor
-  convectiondiffusion3d_dofmap_1() : ufc::dofmap()
+  convectiondiffusion3d_dofmap_2() : ufc::dofmap()
   {
     // Do nothing
   }
 
   /// Destructor
-  virtual ~convectiondiffusion3d_dofmap_1()
+  virtual ~convectiondiffusion3d_dofmap_2()
   {
     // Do nothing
   }
@@ -13277,6 +13859,559 @@ public:
       {
       throw std::runtime_error("i is larger than number of entities (3)");
       }
+>>>>>>> remotes/origin/fenics_1.6.x
+      
+      switch (i)
+      {
+      case 0:
+        {
+          dofs[0] = 0;
+          break;
+        }
+      case 1:
+        {
+          dofs[0] = 1;
+          break;
+        }
+      case 2:
+        {
+          dofs[0] = 2;
+          break;
+        }
+      case 3:
+        {
+          dofs[0] = 3;
+          break;
+        }
+      }
+      
+        break;
+      }
+    case 1:
+      {
+        if (i > 5)
+      {
+      throw std::runtime_error("i is larger than number of entities (5)");
+      }
+      
+      switch (i)
+      {
+      case 0:
+        {
+          dofs[0] = 4;
+          break;
+        }
+      case 1:
+        {
+          dofs[0] = 5;
+          break;
+        }
+      case 2:
+        {
+          dofs[0] = 6;
+          break;
+        }
+      case 3:
+        {
+          dofs[0] = 7;
+          break;
+        }
+      case 4:
+        {
+          dofs[0] = 8;
+          break;
+        }
+      case 5:
+        {
+          dofs[0] = 9;
+          break;
+        }
+      }
+      
+        break;
+      }
+    case 2:
+      {
+        
+        break;
+      }
+    case 3:
+      {
+        
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the coordinates of all dofs on a cell
+  virtual void tabulate_coordinates(double* dof_coordinates,
+                                    const double* vertex_coordinates) const
+  {
+    dof_coordinates[0] = vertex_coordinates[0];
+    dof_coordinates[1] = vertex_coordinates[1];
+    dof_coordinates[2] = vertex_coordinates[2];
+    dof_coordinates[3] = vertex_coordinates[3];
+    dof_coordinates[4] = vertex_coordinates[4];
+    dof_coordinates[5] = vertex_coordinates[5];
+    dof_coordinates[6] = vertex_coordinates[6];
+    dof_coordinates[7] = vertex_coordinates[7];
+    dof_coordinates[8] = vertex_coordinates[8];
+    dof_coordinates[9] = vertex_coordinates[9];
+    dof_coordinates[10] = vertex_coordinates[10];
+    dof_coordinates[11] = vertex_coordinates[11];
+    dof_coordinates[12] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
+    dof_coordinates[13] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
+    dof_coordinates[14] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
+    dof_coordinates[15] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
+    dof_coordinates[16] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
+    dof_coordinates[17] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
+    dof_coordinates[18] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
+    dof_coordinates[19] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
+    dof_coordinates[20] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
+    dof_coordinates[21] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
+    dof_coordinates[22] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
+    dof_coordinates[23] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
+    dof_coordinates[24] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
+    dof_coordinates[25] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
+    dof_coordinates[26] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
+    dof_coordinates[27] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
+    dof_coordinates[28] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
+    dof_coordinates[29] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
+<<<<<<< HEAD
+=======
+    dof_coordinates[30] = vertex_coordinates[0];
+    dof_coordinates[31] = vertex_coordinates[1];
+    dof_coordinates[32] = vertex_coordinates[2];
+    dof_coordinates[33] = vertex_coordinates[3];
+    dof_coordinates[34] = vertex_coordinates[4];
+    dof_coordinates[35] = vertex_coordinates[5];
+    dof_coordinates[36] = vertex_coordinates[6];
+    dof_coordinates[37] = vertex_coordinates[7];
+    dof_coordinates[38] = vertex_coordinates[8];
+    dof_coordinates[39] = vertex_coordinates[9];
+    dof_coordinates[40] = vertex_coordinates[10];
+    dof_coordinates[41] = vertex_coordinates[11];
+    dof_coordinates[42] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
+    dof_coordinates[43] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
+    dof_coordinates[44] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
+    dof_coordinates[45] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
+    dof_coordinates[46] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
+    dof_coordinates[47] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
+    dof_coordinates[48] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
+    dof_coordinates[49] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
+    dof_coordinates[50] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
+    dof_coordinates[51] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
+    dof_coordinates[52] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
+    dof_coordinates[53] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
+    dof_coordinates[54] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
+    dof_coordinates[55] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
+    dof_coordinates[56] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
+    dof_coordinates[57] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
+    dof_coordinates[58] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
+    dof_coordinates[59] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
+    dof_coordinates[60] = vertex_coordinates[0];
+    dof_coordinates[61] = vertex_coordinates[1];
+    dof_coordinates[62] = vertex_coordinates[2];
+    dof_coordinates[63] = vertex_coordinates[3];
+    dof_coordinates[64] = vertex_coordinates[4];
+    dof_coordinates[65] = vertex_coordinates[5];
+    dof_coordinates[66] = vertex_coordinates[6];
+    dof_coordinates[67] = vertex_coordinates[7];
+    dof_coordinates[68] = vertex_coordinates[8];
+    dof_coordinates[69] = vertex_coordinates[9];
+    dof_coordinates[70] = vertex_coordinates[10];
+    dof_coordinates[71] = vertex_coordinates[11];
+    dof_coordinates[72] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
+    dof_coordinates[73] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
+    dof_coordinates[74] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
+    dof_coordinates[75] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
+    dof_coordinates[76] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
+    dof_coordinates[77] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
+    dof_coordinates[78] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
+    dof_coordinates[79] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
+    dof_coordinates[80] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
+    dof_coordinates[81] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
+    dof_coordinates[82] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
+    dof_coordinates[83] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
+    dof_coordinates[84] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
+    dof_coordinates[85] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
+    dof_coordinates[86] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
+    dof_coordinates[87] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
+    dof_coordinates[88] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
+    dof_coordinates[89] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Return the number of sub dofmaps (for a mixed element)
+  virtual std::size_t num_sub_dofmaps() const
+  {
+    return 0;
+  }
+
+  /// Create a new dofmap for sub dofmap i (for a mixed element)
+  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
+  {
+<<<<<<< HEAD
+=======
+    switch (i)
+    {
+    case 0:
+      {
+        return new convectiondiffusion3d_dofmap_1();
+        break;
+      }
+    case 1:
+      {
+        return new convectiondiffusion3d_dofmap_1();
+        break;
+      }
+    case 2:
+      {
+        return new convectiondiffusion3d_dofmap_1();
+        break;
+      }
+    }
+    
+>>>>>>> remotes/origin/fenics_1.6.x
+    return 0;
+  }
+
+  /// Create a new class instance
+  virtual ufc::dofmap* create() const
+  {
+<<<<<<< HEAD
+    return new convectiondiffusion3d_dofmap_0();
+=======
+    return new convectiondiffusion3d_dofmap_2();
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+};
+
+/// This class defines the interface for a local-to-global mapping of
+/// degrees of freedom (dofs).
+
+<<<<<<< HEAD
+class convectiondiffusion3d_dofmap_1: public ufc::dofmap
+=======
+class convectiondiffusion3d_dofmap_3: public ufc::dofmap
+>>>>>>> remotes/origin/fenics_1.6.x
+{
+public:
+
+  /// Constructor
+<<<<<<< HEAD
+  convectiondiffusion3d_dofmap_1() : ufc::dofmap()
+=======
+  convectiondiffusion3d_dofmap_3() : ufc::dofmap()
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+<<<<<<< HEAD
+  virtual ~convectiondiffusion3d_dofmap_1()
+=======
+  virtual ~convectiondiffusion3d_dofmap_3()
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+  /// Return a string identifying the dofmap
+  virtual const char* signature() const
+  {
+<<<<<<< HEAD
+    return "FFC dofmap for VectorElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, 3, None)";
+=======
+    return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 1, None)";
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Return true iff mesh entities of topological dimension d are needed
+  virtual bool needs_mesh_entities(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+        return true;
+        break;
+      }
+    case 1:
+      {
+        return true;
+        break;
+      }
+    case 2:
+      {
+        return false;
+        break;
+      }
+    case 3:
+      {
+        return false;
+        break;
+      }
+    }
+    
+    return false;
+  }
+
+  /// Return the topological dimension of the associated cell shape
+  virtual std::size_t topological_dimension() const
+<<<<<<< HEAD
+=======
+  {
+    return 3;
+  }
+
+  /// Return the geometric dimension of the associated cell shape
+  virtual std::size_t geometric_dimension() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 3;
+  }
+
+<<<<<<< HEAD
+  /// Return the geometric dimension of the associated cell shape
+  virtual std::size_t geometric_dimension() const
+=======
+  /// Return the dimension of the global finite element function space
+  virtual std::size_t global_dimension(const std::vector<std::size_t>&
+                                       num_global_entities) const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 3;
+  }
+
+<<<<<<< HEAD
+  /// Return the dimension of the global finite element function space
+  virtual std::size_t global_dimension(const std::vector<std::size_t>&
+                                       num_global_entities) const
+=======
+  /// Return the dimension of the local finite element function space for a cell
+  virtual std::size_t num_element_dofs() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 3*num_global_entities[0] + 3*num_global_entities[1];
+  }
+
+<<<<<<< HEAD
+  /// Return the dimension of the local finite element function space for a cell
+  virtual std::size_t num_element_dofs() const
+=======
+  /// Return the number of dofs on each cell facet
+  virtual std::size_t num_facet_dofs() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 30;
+  }
+
+  /// Return the number of dofs on each cell facet
+  virtual std::size_t num_facet_dofs() const
+  {
+    return 18;
+  }
+
+  /// Return the number of dofs associated with each cell entity of dimension d
+  virtual std::size_t num_entity_dofs(std::size_t d) const
+  {
+    switch (d)
+    {
+    case 0:
+      {
+        return 3;
+        break;
+      }
+    case 1:
+      {
+        return 3;
+        break;
+      }
+    case 2:
+      {
+        return 0;
+        break;
+      }
+    case 3:
+      {
+        return 0;
+        break;
+      }
+    }
+    
+    return 0;
+  }
+
+  /// Tabulate the local-to-global mapping of dofs on a cell
+  virtual void tabulate_dofs(std::size_t* dofs,
+                             const std::vector<std::size_t>& num_global_entities,
+                             const ufc::cell& c) const
+  {
+<<<<<<< HEAD
+    unsigned int offset = 0;
+    dofs[0] = offset + c.entity_indices[0][0];
+    dofs[1] = offset + c.entity_indices[0][1];
+    dofs[2] = offset + c.entity_indices[0][2];
+    dofs[3] = offset + c.entity_indices[0][3];
+    offset += num_global_entities[0];
+    dofs[4] = offset + c.entity_indices[1][0];
+    dofs[5] = offset + c.entity_indices[1][1];
+    dofs[6] = offset + c.entity_indices[1][2];
+    dofs[7] = offset + c.entity_indices[1][3];
+    dofs[8] = offset + c.entity_indices[1][4];
+    dofs[9] = offset + c.entity_indices[1][5];
+    offset += num_global_entities[1];
+    dofs[10] = offset + c.entity_indices[0][0];
+    dofs[11] = offset + c.entity_indices[0][1];
+    dofs[12] = offset + c.entity_indices[0][2];
+    dofs[13] = offset + c.entity_indices[0][3];
+    offset += num_global_entities[0];
+    dofs[14] = offset + c.entity_indices[1][0];
+    dofs[15] = offset + c.entity_indices[1][1];
+    dofs[16] = offset + c.entity_indices[1][2];
+    dofs[17] = offset + c.entity_indices[1][3];
+    dofs[18] = offset + c.entity_indices[1][4];
+    dofs[19] = offset + c.entity_indices[1][5];
+    offset += num_global_entities[1];
+    dofs[20] = offset + c.entity_indices[0][0];
+    dofs[21] = offset + c.entity_indices[0][1];
+    dofs[22] = offset + c.entity_indices[0][2];
+    dofs[23] = offset + c.entity_indices[0][3];
+    offset += num_global_entities[0];
+    dofs[24] = offset + c.entity_indices[1][0];
+    dofs[25] = offset + c.entity_indices[1][1];
+    dofs[26] = offset + c.entity_indices[1][2];
+    dofs[27] = offset + c.entity_indices[1][3];
+    dofs[28] = offset + c.entity_indices[1][4];
+    dofs[29] = offset + c.entity_indices[1][5];
+    offset += num_global_entities[1];
+=======
+    dofs[0] = c.entity_indices[0][0];
+    dofs[1] = c.entity_indices[0][1];
+    dofs[2] = c.entity_indices[0][2];
+    dofs[3] = c.entity_indices[0][3];
+>>>>>>> remotes/origin/fenics_1.6.x
+  }
+
+  /// Tabulate the local-to-local mapping from facet dofs to cell dofs
+  virtual void tabulate_facet_dofs(std::size_t* dofs,
+                                   std::size_t facet) const
+  {
+    switch (facet)
+    {
+    case 0:
+      {
+        dofs[0] = 1;
+      dofs[1] = 2;
+      dofs[2] = 3;
+      dofs[3] = 4;
+      dofs[4] = 5;
+      dofs[5] = 6;
+      dofs[6] = 11;
+      dofs[7] = 12;
+      dofs[8] = 13;
+      dofs[9] = 14;
+      dofs[10] = 15;
+      dofs[11] = 16;
+      dofs[12] = 21;
+      dofs[13] = 22;
+      dofs[14] = 23;
+      dofs[15] = 24;
+      dofs[16] = 25;
+      dofs[17] = 26;
+        break;
+      }
+    case 1:
+      {
+        dofs[0] = 0;
+      dofs[1] = 2;
+      dofs[2] = 3;
+      dofs[3] = 4;
+      dofs[4] = 7;
+      dofs[5] = 8;
+      dofs[6] = 10;
+      dofs[7] = 12;
+      dofs[8] = 13;
+      dofs[9] = 14;
+      dofs[10] = 17;
+      dofs[11] = 18;
+      dofs[12] = 20;
+      dofs[13] = 22;
+      dofs[14] = 23;
+      dofs[15] = 24;
+      dofs[16] = 27;
+      dofs[17] = 28;
+        break;
+      }
+    case 2:
+      {
+        dofs[0] = 0;
+      dofs[1] = 1;
+      dofs[2] = 3;
+      dofs[3] = 5;
+      dofs[4] = 7;
+      dofs[5] = 9;
+      dofs[6] = 10;
+      dofs[7] = 11;
+      dofs[8] = 13;
+      dofs[9] = 15;
+      dofs[10] = 17;
+      dofs[11] = 19;
+      dofs[12] = 20;
+      dofs[13] = 21;
+      dofs[14] = 23;
+      dofs[15] = 25;
+      dofs[16] = 27;
+      dofs[17] = 29;
+        break;
+      }
+    case 3:
+      {
+        dofs[0] = 0;
+      dofs[1] = 1;
+      dofs[2] = 2;
+      dofs[3] = 6;
+      dofs[4] = 8;
+      dofs[5] = 9;
+      dofs[6] = 10;
+      dofs[7] = 11;
+      dofs[8] = 12;
+      dofs[9] = 16;
+      dofs[10] = 18;
+      dofs[11] = 19;
+      dofs[12] = 20;
+      dofs[13] = 21;
+      dofs[14] = 22;
+      dofs[15] = 26;
+      dofs[16] = 28;
+      dofs[17] = 29;
+        break;
+      }
+    }
+    
+  }
+
+  /// Tabulate the local-to-local mapping of dofs on entity (d, i)
+  virtual void tabulate_entity_dofs(std::size_t* dofs,
+                                    std::size_t d, std::size_t i) const
+  {
+    if (d > 3)
+    {
+    throw std::runtime_error("d is larger than dimension (3)");
+    }
+    
+    switch (d)
+    {
+    case 0:
+      {
+        if (i > 3)
+      {
+      throw std::runtime_error("i is larger than number of entities (3)");
+      }
       
       switch (i)
       {
@@ -13384,6 +14519,7 @@ public:
   /// Tabulate the coordinates of all dofs on a cell
   virtual void tabulate_coordinates(double* dof_coordinates,
                                     const double* vertex_coordinates) const
+<<<<<<< HEAD
   {
     dof_coordinates[0] = vertex_coordinates[0];
     dof_coordinates[1] = vertex_coordinates[1];
@@ -13771,6 +14907,32 @@ public:
   /// Create a new dofmap for sub dofmap i (for a mixed element)
   virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
   {
+=======
+  {
+    dof_coordinates[0] = vertex_coordinates[0];
+    dof_coordinates[1] = vertex_coordinates[1];
+    dof_coordinates[2] = vertex_coordinates[2];
+    dof_coordinates[3] = vertex_coordinates[3];
+    dof_coordinates[4] = vertex_coordinates[4];
+    dof_coordinates[5] = vertex_coordinates[5];
+    dof_coordinates[6] = vertex_coordinates[6];
+    dof_coordinates[7] = vertex_coordinates[7];
+    dof_coordinates[8] = vertex_coordinates[8];
+    dof_coordinates[9] = vertex_coordinates[9];
+    dof_coordinates[10] = vertex_coordinates[10];
+    dof_coordinates[11] = vertex_coordinates[11];
+  }
+
+  /// Return the number of sub dofmaps (for a mixed element)
+  virtual std::size_t num_sub_dofmaps() const
+  {
+    return 0;
+  }
+
+  /// Create a new dofmap for sub dofmap i (for a mixed element)
+  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
+  {
+>>>>>>> remotes/origin/fenics_1.6.x
     return 0;
   }
 
@@ -13805,7 +14967,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({true});
+    static const std::vector<bool> enabled({true, true, true});
     return enabled;
   }
 
@@ -13815,11 +14977,6 @@ public:
                                const double*  vertex_coordinates,
                                int cell_orientation) const
   {
-    // Number of operations (multiply-add pairs) for Jacobian data:      3
-    // Number of operations (multiply-add pairs) for geometry tensor:    162
-    // Number of operations (multiply-add pairs) for tensor contraction: 692
-    // Total number of operations (multiply-add pairs):                  857
-    
     // Compute Jacobian
     double J[9];
     compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
@@ -13832,125 +14989,124 @@ public:
     // Set scale factor
     const double det = std::abs(detJ);
     
-    // Compute geometry tensor
-    const double G0_ = det;
-    const double G1_0_0 = det*(K[0]*K[0] + K[1]*K[1] + K[2]*K[2]);
-    const double G1_0_1 = det*(K[0]*K[3] + K[1]*K[4] + K[2]*K[5]);
-    const double G1_0_2 = det*(K[0]*K[6] + K[1]*K[7] + K[2]*K[8]);
-    const double G1_1_0 = det*(K[3]*K[0] + K[4]*K[1] + K[5]*K[2]);
-    const double G1_1_1 = det*(K[3]*K[3] + K[4]*K[4] + K[5]*K[5]);
-    const double G1_1_2 = det*(K[3]*K[6] + K[4]*K[7] + K[5]*K[8]);
-    const double G1_2_0 = det*(K[6]*K[0] + K[7]*K[1] + K[8]*K[2]);
-    const double G1_2_1 = det*(K[6]*K[3] + K[7]*K[4] + K[8]*K[5]);
-    const double G1_2_2 = det*(K[6]*K[6] + K[7]*K[7] + K[8]*K[8]);
-    const double G2_0_0_0 = det*w[0][0]*K[0]*(1.0);
-    const double G2_0_1_0 = det*w[0][1]*K[0]*(1.0);
-    const double G2_0_2_0 = det*w[0][2]*K[0]*(1.0);
-    const double G2_0_3_0 = det*w[0][3]*K[0]*(1.0);
-    const double G2_0_4_0 = det*w[0][4]*K[0]*(1.0);
-    const double G2_0_5_0 = det*w[0][5]*K[0]*(1.0);
-    const double G2_0_6_0 = det*w[0][6]*K[0]*(1.0);
-    const double G2_0_7_0 = det*w[0][7]*K[0]*(1.0);
-    const double G2_0_8_0 = det*w[0][8]*K[0]*(1.0);
-    const double G2_0_9_0 = det*w[0][9]*K[0]*(1.0);
-    const double G2_0_10_1 = det*w[0][10]*K[1]*(1.0);
-    const double G2_0_11_1 = det*w[0][11]*K[1]*(1.0);
-    const double G2_0_12_1 = det*w[0][12]*K[1]*(1.0);
-    const double G2_0_13_1 = det*w[0][13]*K[1]*(1.0);
-    const double G2_0_14_1 = det*w[0][14]*K[1]*(1.0);
-    const double G2_0_15_1 = det*w[0][15]*K[1]*(1.0);
-    const double G2_0_16_1 = det*w[0][16]*K[1]*(1.0);
-    const double G2_0_17_1 = det*w[0][17]*K[1]*(1.0);
-    const double G2_0_18_1 = det*w[0][18]*K[1]*(1.0);
-    const double G2_0_19_1 = det*w[0][19]*K[1]*(1.0);
-    const double G2_0_20_2 = det*w[0][20]*K[2]*(1.0);
-    const double G2_0_21_2 = det*w[0][21]*K[2]*(1.0);
-    const double G2_0_22_2 = det*w[0][22]*K[2]*(1.0);
-    const double G2_0_23_2 = det*w[0][23]*K[2]*(1.0);
-    const double G2_0_24_2 = det*w[0][24]*K[2]*(1.0);
-    const double G2_0_25_2 = det*w[0][25]*K[2]*(1.0);
-    const double G2_0_26_2 = det*w[0][26]*K[2]*(1.0);
-    const double G2_0_27_2 = det*w[0][27]*K[2]*(1.0);
-    const double G2_0_28_2 = det*w[0][28]*K[2]*(1.0);
-    const double G2_0_29_2 = det*w[0][29]*K[2]*(1.0);
-    const double G2_1_0_0 = det*w[0][0]*K[3]*(1.0);
-    const double G2_1_1_0 = det*w[0][1]*K[3]*(1.0);
-    const double G2_1_2_0 = det*w[0][2]*K[3]*(1.0);
-    const double G2_1_3_0 = det*w[0][3]*K[3]*(1.0);
-    const double G2_1_4_0 = det*w[0][4]*K[3]*(1.0);
-    const double G2_1_5_0 = det*w[0][5]*K[3]*(1.0);
-    const double G2_1_6_0 = det*w[0][6]*K[3]*(1.0);
-    const double G2_1_7_0 = det*w[0][7]*K[3]*(1.0);
-    const double G2_1_8_0 = det*w[0][8]*K[3]*(1.0);
-    const double G2_1_9_0 = det*w[0][9]*K[3]*(1.0);
-    const double G2_1_10_1 = det*w[0][10]*K[4]*(1.0);
-    const double G2_1_11_1 = det*w[0][11]*K[4]*(1.0);
-    const double G2_1_12_1 = det*w[0][12]*K[4]*(1.0);
-    const double G2_1_13_1 = det*w[0][13]*K[4]*(1.0);
-    const double G2_1_14_1 = det*w[0][14]*K[4]*(1.0);
-    const double G2_1_15_1 = det*w[0][15]*K[4]*(1.0);
-    const double G2_1_16_1 = det*w[0][16]*K[4]*(1.0);
-    const double G2_1_17_1 = det*w[0][17]*K[4]*(1.0);
-    const double G2_1_18_1 = det*w[0][18]*K[4]*(1.0);
-    const double G2_1_19_1 = det*w[0][19]*K[4]*(1.0);
-    const double G2_1_20_2 = det*w[0][20]*K[5]*(1.0);
-    const double G2_1_21_2 = det*w[0][21]*K[5]*(1.0);
-    const double G2_1_22_2 = det*w[0][22]*K[5]*(1.0);
-    const double G2_1_23_2 = det*w[0][23]*K[5]*(1.0);
-    const double G2_1_24_2 = det*w[0][24]*K[5]*(1.0);
-    const double G2_1_25_2 = det*w[0][25]*K[5]*(1.0);
-    const double G2_1_26_2 = det*w[0][26]*K[5]*(1.0);
-    const double G2_1_27_2 = det*w[0][27]*K[5]*(1.0);
-    const double G2_1_28_2 = det*w[0][28]*K[5]*(1.0);
-    const double G2_1_29_2 = det*w[0][29]*K[5]*(1.0);
-    const double G2_2_0_0 = det*w[0][0]*K[6]*(1.0);
-    const double G2_2_1_0 = det*w[0][1]*K[6]*(1.0);
-    const double G2_2_2_0 = det*w[0][2]*K[6]*(1.0);
-    const double G2_2_3_0 = det*w[0][3]*K[6]*(1.0);
-    const double G2_2_4_0 = det*w[0][4]*K[6]*(1.0);
-    const double G2_2_5_0 = det*w[0][5]*K[6]*(1.0);
-    const double G2_2_6_0 = det*w[0][6]*K[6]*(1.0);
-    const double G2_2_7_0 = det*w[0][7]*K[6]*(1.0);
-    const double G2_2_8_0 = det*w[0][8]*K[6]*(1.0);
-    const double G2_2_9_0 = det*w[0][9]*K[6]*(1.0);
-    const double G2_2_10_1 = det*w[0][10]*K[7]*(1.0);
-    const double G2_2_11_1 = det*w[0][11]*K[7]*(1.0);
-    const double G2_2_12_1 = det*w[0][12]*K[7]*(1.0);
-    const double G2_2_13_1 = det*w[0][13]*K[7]*(1.0);
-    const double G2_2_14_1 = det*w[0][14]*K[7]*(1.0);
-    const double G2_2_15_1 = det*w[0][15]*K[7]*(1.0);
-    const double G2_2_16_1 = det*w[0][16]*K[7]*(1.0);
-    const double G2_2_17_1 = det*w[0][17]*K[7]*(1.0);
-    const double G2_2_18_1 = det*w[0][18]*K[7]*(1.0);
-    const double G2_2_19_1 = det*w[0][19]*K[7]*(1.0);
-    const double G2_2_20_2 = det*w[0][20]*K[8]*(1.0);
-    const double G2_2_21_2 = det*w[0][21]*K[8]*(1.0);
-    const double G2_2_22_2 = det*w[0][22]*K[8]*(1.0);
-    const double G2_2_23_2 = det*w[0][23]*K[8]*(1.0);
-    const double G2_2_24_2 = det*w[0][24]*K[8]*(1.0);
-    const double G2_2_25_2 = det*w[0][25]*K[8]*(1.0);
-    const double G2_2_26_2 = det*w[0][26]*K[8]*(1.0);
-    const double G2_2_27_2 = det*w[0][27]*K[8]*(1.0);
-    const double G2_2_28_2 = det*w[0][28]*K[8]*(1.0);
-    const double G2_2_29_2 = det*w[0][29]*K[8]*(1.0);
+    // Compute cell volume
     
-    // Compute element tensor
-    A[0] = 0.0166666666666667*G0_ + 2.08333333333333e-05*G1_0_0 + 2.08333333333333e-05*G1_0_1 + 2.08333333333333e-05*G1_0_2 + 2.08333333333333e-05*G1_1_0 + 2.08333333333333e-05*G1_1_1 + 2.08333333333333e-05*G1_1_2 + 2.08333333333333e-05*G1_2_0 + 2.08333333333333e-05*G1_2_1 + 2.08333333333333e-05*G1_2_2 + 6.94444444444443e-05*G2_0_1_0 + 6.94444444444444e-05*G2_0_2_0 + 6.94444444444444e-05*G2_0_3_0 - 0.000138888888888889*G2_0_4_0 - 0.000138888888888889*G2_0_5_0 - 0.000138888888888889*G2_0_6_0 - 0.000277777777777778*G2_0_7_0 - 0.000277777777777778*G2_0_8_0 - 0.000277777777777778*G2_0_9_0 + 6.94444444444443e-05*G2_0_11_1 + 6.94444444444444e-05*G2_0_12_1 + 6.94444444444444e-05*G2_0_13_1 - 0.000138888888888889*G2_0_14_1 - 0.000138888888888889*G2_0_15_1 - 0.000138888888888889*G2_0_16_1 - 0.000277777777777778*G2_0_17_1 - 0.000277777777777778*G2_0_18_1 - 0.000277777777777778*G2_0_19_1 + 6.94444444444443e-05*G2_0_21_2 + 6.94444444444444e-05*G2_0_22_2 + 6.94444444444444e-05*G2_0_23_2 - 0.000138888888888889*G2_0_24_2 - 0.000138888888888889*G2_0_25_2 - 0.000138888888888889*G2_0_26_2 - 0.000277777777777778*G2_0_27_2 - 0.000277777777777778*G2_0_28_2 - 0.000277777777777778*G2_0_29_2 + 6.94444444444444e-05*G2_1_1_0 + 6.94444444444444e-05*G2_1_2_0 + 6.94444444444444e-05*G2_1_3_0 - 0.000138888888888889*G2_1_4_0 - 0.000138888888888889*G2_1_5_0 - 0.000138888888888889*G2_1_6_0 - 0.000277777777777778*G2_1_7_0 - 0.000277777777777778*G2_1_8_0 - 0.000277777777777778*G2_1_9_0 + 6.94444444444444e-05*G2_1_11_1 + 6.94444444444444e-05*G2_1_12_1 + 6.94444444444444e-05*G2_1_13_1 - 0.000138888888888889*G2_1_14_1 - 0.000138888888888889*G2_1_15_1 - 0.000138888888888889*G2_1_16_1 - 0.000277777777777778*G2_1_17_1 - 0.000277777777777778*G2_1_18_1 - 0.000277777777777778*G2_1_19_1 + 6.94444444444444e-05*G2_1_21_2 + 6.94444444444444e-05*G2_1_22_2 + 6.94444444444444e-05*G2_1_23_2 - 0.000138888888888889*G2_1_24_2 - 0.000138888888888889*G2_1_25_2 - 0.000138888888888889*G2_1_26_2 - 0.000277777777777778*G2_1_27_2 - 0.000277777777777778*G2_1_28_2 - 0.000277777777777778*G2_1_29_2 + 6.94444444444444e-05*G2_2_1_0 + 6.94444444444444e-05*G2_2_2_0 + 6.94444444444444e-05*G2_2_3_0 - 0.000138888888888889*G2_2_4_0 - 0.000138888888888889*G2_2_5_0 - 0.000138888888888889*G2_2_6_0 - 0.000277777777777778*G2_2_7_0 - 0.000277777777777778*G2_2_8_0 - 0.000277777777777778*G2_2_9_0 + 6.94444444444444e-05*G2_2_11_1 + 6.94444444444444e-05*G2_2_12_1 + 6.94444444444444e-05*G2_2_13_1 - 0.000138888888888889*G2_2_14_1 - 0.000138888888888889*G2_2_15_1 - 0.000138888888888889*G2_2_16_1 - 0.000277777777777778*G2_2_17_1 - 0.000277777777777778*G2_2_18_1 - 0.000277777777777778*G2_2_19_1 + 6.94444444444444e-05*G2_2_21_2 + 6.94444444444444e-05*G2_2_22_2 + 6.94444444444444e-05*G2_2_23_2 - 0.000138888888888889*G2_2_24_2 - 0.000138888888888889*G2_2_25_2 - 0.000138888888888889*G2_2_26_2 - 0.000277777777777778*G2_2_27_2 - 0.000277777777777778*G2_2_28_2 - 0.000277777777777778*G2_2_29_2;
-    A[1] = 0.00833333333333333*G0_ - 2.08333333333333e-05*G1_0_0 - 2.08333333333333e-05*G1_1_0 - 2.08333333333333e-05*G1_2_0 - 6.94444444444443e-05*G2_0_1_0 - 6.94444444444444e-05*G2_0_2_0 - 6.94444444444444e-05*G2_0_3_0 + 0.000138888888888889*G2_0_4_0 + 0.000138888888888889*G2_0_5_0 + 0.000138888888888889*G2_0_6_0 + 0.000277777777777778*G2_0_7_0 + 0.000277777777777778*G2_0_8_0 + 0.000277777777777778*G2_0_9_0 - 6.94444444444443e-05*G2_0_11_1 - 6.94444444444444e-05*G2_0_12_1 - 6.94444444444444e-05*G2_0_13_1 + 0.000138888888888889*G2_0_14_1 + 0.000138888888888889*G2_0_15_1 + 0.000138888888888889*G2_0_16_1 + 0.000277777777777778*G2_0_17_1 + 0.000277777777777778*G2_0_18_1 + 0.000277777777777778*G2_0_19_1 - 6.94444444444443e-05*G2_0_21_2 - 6.94444444444444e-05*G2_0_22_2 - 6.94444444444444e-05*G2_0_23_2 + 0.000138888888888889*G2_0_24_2 + 0.000138888888888889*G2_0_25_2 + 0.000138888888888889*G2_0_26_2 + 0.000277777777777778*G2_0_27_2 + 0.000277777777777778*G2_0_28_2 + 0.000277777777777778*G2_0_29_2;
-    A[2] = 0.00833333333333334*G0_ - 2.08333333333333e-05*G1_0_1 - 2.08333333333333e-05*G1_1_1 - 2.08333333333333e-05*G1_2_1 - 6.94444444444444e-05*G2_1_1_0 - 6.94444444444444e-05*G2_1_2_0 - 6.94444444444445e-05*G2_1_3_0 + 0.000138888888888889*G2_1_4_0 + 0.000138888888888889*G2_1_5_0 + 0.000138888888888889*G2_1_6_0 + 0.000277777777777778*G2_1_7_0 + 0.000277777777777778*G2_1_8_0 + 0.000277777777777778*G2_1_9_0 - 6.94444444444444e-05*G2_1_11_1 - 6.94444444444444e-05*G2_1_12_1 - 6.94444444444445e-05*G2_1_13_1 + 0.000138888888888889*G2_1_14_1 + 0.000138888888888889*G2_1_15_1 + 0.000138888888888889*G2_1_16_1 + 0.000277777777777778*G2_1_17_1 + 0.000277777777777778*G2_1_18_1 + 0.000277777777777778*G2_1_19_1 - 6.94444444444444e-05*G2_1_21_2 - 6.94444444444444e-05*G2_1_22_2 - 6.94444444444445e-05*G2_1_23_2 + 0.000138888888888889*G2_1_24_2 + 0.000138888888888889*G2_1_25_2 + 0.000138888888888889*G2_1_26_2 + 0.000277777777777778*G2_1_27_2 + 0.000277777777777778*G2_1_28_2 + 0.000277777777777778*G2_1_29_2;
-    A[3] = 0.00833333333333334*G0_ - 2.08333333333333e-05*G1_0_2 - 2.08333333333333e-05*G1_1_2 - 2.08333333333333e-05*G1_2_2 - 6.94444444444444e-05*G2_2_1_0 - 6.94444444444444e-05*G2_2_2_0 - 6.94444444444444e-05*G2_2_3_0 + 0.000138888888888889*G2_2_4_0 + 0.000138888888888889*G2_2_5_0 + 0.000138888888888889*G2_2_6_0 + 0.000277777777777778*G2_2_7_0 + 0.000277777777777778*G2_2_8_0 + 0.000277777777777778*G2_2_9_0 - 6.94444444444444e-05*G2_2_11_1 - 6.94444444444444e-05*G2_2_12_1 - 6.94444444444444e-05*G2_2_13_1 + 0.000138888888888889*G2_2_14_1 + 0.000138888888888889*G2_2_15_1 + 0.000138888888888889*G2_2_16_1 + 0.000277777777777778*G2_2_17_1 + 0.000277777777777778*G2_2_18_1 + 0.000277777777777778*G2_2_19_1 - 6.94444444444444e-05*G2_2_21_2 - 6.94444444444444e-05*G2_2_22_2 - 6.94444444444444e-05*G2_2_23_2 + 0.000138888888888889*G2_2_24_2 + 0.000138888888888889*G2_2_25_2 + 0.000138888888888889*G2_2_26_2 + 0.000277777777777778*G2_2_27_2 + 0.000277777777777778*G2_2_28_2 + 0.000277777777777778*G2_2_29_2;
-    A[4] = 0.00833333333333333*G0_ - 2.08333333333333e-05*G1_0_0 - 2.08333333333333e-05*G1_0_1 - 2.08333333333333e-05*G1_0_2 + 6.94444444444443e-05*G2_0_0_0 + 6.94444444444443e-05*G2_0_2_0 + 6.94444444444443e-05*G2_0_3_0 - 0.000138888888888889*G2_0_4_0 - 0.000277777777777777*G2_0_5_0 - 0.000277777777777777*G2_0_6_0 - 0.000138888888888889*G2_0_7_0 - 0.000138888888888889*G2_0_8_0 - 0.000277777777777777*G2_0_9_0 + 6.94444444444443e-05*G2_0_10_1 + 6.94444444444443e-05*G2_0_12_1 + 6.94444444444443e-05*G2_0_13_1 - 0.000138888888888889*G2_0_14_1 - 0.000277777777777777*G2_0_15_1 - 0.000277777777777777*G2_0_16_1 - 0.000138888888888889*G2_0_17_1 - 0.000138888888888889*G2_0_18_1 - 0.000277777777777777*G2_0_19_1 + 6.94444444444443e-05*G2_0_20_2 + 6.94444444444443e-05*G2_0_22_2 + 6.94444444444443e-05*G2_0_23_2 - 0.000138888888888889*G2_0_24_2 - 0.000277777777777777*G2_0_25_2 - 0.000277777777777777*G2_0_26_2 - 0.000138888888888889*G2_0_27_2 - 0.000138888888888889*G2_0_28_2 - 0.000277777777777777*G2_0_29_2 + 6.94444444444443e-05*G2_1_0_0 + 6.94444444444443e-05*G2_1_2_0 + 6.94444444444443e-05*G2_1_3_0 - 0.000138888888888889*G2_1_4_0 - 0.000277777777777778*G2_1_5_0 - 0.000277777777777778*G2_1_6_0 - 0.000138888888888889*G2_1_7_0 - 0.000138888888888889*G2_1_8_0 - 0.000277777777777778*G2_1_9_0 + 6.94444444444443e-05*G2_1_10_1 + 6.94444444444443e-05*G2_1_12_1 + 6.94444444444443e-05*G2_1_13_1 - 0.000138888888888889*G2_1_14_1 - 0.000277777777777778*G2_1_15_1 - 0.000277777777777778*G2_1_16_1 - 0.000138888888888889*G2_1_17_1 - 0.000138888888888889*G2_1_18_1 - 0.000277777777777778*G2_1_19_1 + 6.94444444444443e-05*G2_1_20_2 + 6.94444444444443e-05*G2_1_22_2 + 6.94444444444443e-05*G2_1_23_2 - 0.000138888888888889*G2_1_24_2 - 0.000277777777777778*G2_1_25_2 - 0.000277777777777778*G2_1_26_2 - 0.000138888888888889*G2_1_27_2 - 0.000138888888888889*G2_1_28_2 - 0.000277777777777778*G2_1_29_2 + 6.94444444444443e-05*G2_2_0_0 + 6.94444444444443e-05*G2_2_2_0 + 6.94444444444443e-05*G2_2_3_0 - 0.000138888888888889*G2_2_4_0 - 0.000277777777777778*G2_2_5_0 - 0.000277777777777777*G2_2_6_0 - 0.000138888888888889*G2_2_7_0 - 0.000138888888888889*G2_2_8_0 - 0.000277777777777778*G2_2_9_0 + 6.94444444444443e-05*G2_2_10_1 + 6.94444444444443e-05*G2_2_12_1 + 6.94444444444443e-05*G2_2_13_1 - 0.000138888888888889*G2_2_14_1 - 0.000277777777777778*G2_2_15_1 - 0.000277777777777777*G2_2_16_1 - 0.000138888888888889*G2_2_17_1 - 0.000138888888888889*G2_2_18_1 - 0.000277777777777778*G2_2_19_1 + 6.94444444444443e-05*G2_2_20_2 + 6.94444444444443e-05*G2_2_22_2 + 6.94444444444443e-05*G2_2_23_2 - 0.000138888888888889*G2_2_24_2 - 0.000277777777777778*G2_2_25_2 - 0.000277777777777777*G2_2_26_2 - 0.000138888888888889*G2_2_27_2 - 0.000138888888888889*G2_2_28_2 - 0.000277777777777778*G2_2_29_2;
-    A[5] = 0.0166666666666667*G0_ + 2.08333333333333e-05*G1_0_0 - 6.94444444444443e-05*G2_0_0_0 - 6.94444444444443e-05*G2_0_2_0 - 6.94444444444443e-05*G2_0_3_0 + 0.000138888888888889*G2_0_4_0 + 0.000277777777777777*G2_0_5_0 + 0.000277777777777777*G2_0_6_0 + 0.000138888888888889*G2_0_7_0 + 0.000138888888888889*G2_0_8_0 + 0.000277777777777777*G2_0_9_0 - 6.94444444444443e-05*G2_0_10_1 - 6.94444444444443e-05*G2_0_12_1 - 6.94444444444443e-05*G2_0_13_1 + 0.000138888888888889*G2_0_14_1 + 0.000277777777777777*G2_0_15_1 + 0.000277777777777777*G2_0_16_1 + 0.000138888888888889*G2_0_17_1 + 0.000138888888888889*G2_0_18_1 + 0.000277777777777777*G2_0_19_1 - 6.94444444444443e-05*G2_0_20_2 - 6.94444444444443e-05*G2_0_22_2 - 6.94444444444443e-05*G2_0_23_2 + 0.000138888888888889*G2_0_24_2 + 0.000277777777777777*G2_0_25_2 + 0.000277777777777777*G2_0_26_2 + 0.000138888888888889*G2_0_27_2 + 0.000138888888888889*G2_0_28_2 + 0.000277777777777777*G2_0_29_2;
-    A[6] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_0_1 - 6.94444444444443e-05*G2_1_0_0 - 6.94444444444443e-05*G2_1_2_0 - 6.94444444444444e-05*G2_1_3_0 + 0.000138888888888889*G2_1_4_0 + 0.000277777777777778*G2_1_5_0 + 0.000277777777777778*G2_1_6_0 + 0.000138888888888889*G2_1_7_0 + 0.000138888888888889*G2_1_8_0 + 0.000277777777777778*G2_1_9_0 - 6.94444444444443e-05*G2_1_10_1 - 6.94444444444443e-05*G2_1_12_1 - 6.94444444444444e-05*G2_1_13_1 + 0.000138888888888889*G2_1_14_1 + 0.000277777777777778*G2_1_15_1 + 0.000277777777777778*G2_1_16_1 + 0.000138888888888889*G2_1_17_1 + 0.000138888888888889*G2_1_18_1 + 0.000277777777777778*G2_1_19_1 - 6.94444444444443e-05*G2_1_20_2 - 6.94444444444443e-05*G2_1_22_2 - 6.94444444444444e-05*G2_1_23_2 + 0.000138888888888889*G2_1_24_2 + 0.000277777777777778*G2_1_25_2 + 0.000277777777777778*G2_1_26_2 + 0.000138888888888889*G2_1_27_2 + 0.000138888888888889*G2_1_28_2 + 0.000277777777777778*G2_1_29_2;
-    A[7] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_0_2 - 6.94444444444443e-05*G2_2_0_0 - 6.94444444444443e-05*G2_2_2_0 - 6.94444444444443e-05*G2_2_3_0 + 0.000138888888888889*G2_2_4_0 + 0.000277777777777778*G2_2_5_0 + 0.000277777777777778*G2_2_6_0 + 0.000138888888888889*G2_2_7_0 + 0.000138888888888889*G2_2_8_0 + 0.000277777777777778*G2_2_9_0 - 6.94444444444443e-05*G2_2_10_1 - 6.94444444444443e-05*G2_2_12_1 - 6.94444444444443e-05*G2_2_13_1 + 0.000138888888888889*G2_2_14_1 + 0.000277777777777778*G2_2_15_1 + 0.000277777777777778*G2_2_16_1 + 0.000138888888888889*G2_2_17_1 + 0.000138888888888889*G2_2_18_1 + 0.000277777777777778*G2_2_19_1 - 6.94444444444443e-05*G2_2_20_2 - 6.94444444444443e-05*G2_2_22_2 - 6.94444444444443e-05*G2_2_23_2 + 0.000138888888888889*G2_2_24_2 + 0.000277777777777778*G2_2_25_2 + 0.000277777777777778*G2_2_26_2 + 0.000138888888888889*G2_2_27_2 + 0.000138888888888889*G2_2_28_2 + 0.000277777777777778*G2_2_29_2;
-    A[8] = 0.00833333333333334*G0_ - 2.08333333333333e-05*G1_1_0 - 2.08333333333333e-05*G1_1_1 - 2.08333333333333e-05*G1_1_2 + 6.94444444444443e-05*G2_0_0_0 + 6.94444444444443e-05*G2_0_1_0 + 6.94444444444444e-05*G2_0_3_0 - 0.000277777777777777*G2_0_4_0 - 0.000138888888888889*G2_0_5_0 - 0.000277777777777778*G2_0_6_0 - 0.000138888888888889*G2_0_7_0 - 0.000277777777777778*G2_0_8_0 - 0.000138888888888889*G2_0_9_0 + 6.94444444444443e-05*G2_0_10_1 + 6.94444444444443e-05*G2_0_11_1 + 6.94444444444444e-05*G2_0_13_1 - 0.000277777777777777*G2_0_14_1 - 0.000138888888888889*G2_0_15_1 - 0.000277777777777778*G2_0_16_1 - 0.000138888888888889*G2_0_17_1 - 0.000277777777777778*G2_0_18_1 - 0.000138888888888889*G2_0_19_1 + 6.94444444444443e-05*G2_0_20_2 + 6.94444444444443e-05*G2_0_21_2 + 6.94444444444444e-05*G2_0_23_2 - 0.000277777777777777*G2_0_24_2 - 0.000138888888888889*G2_0_25_2 - 0.000277777777777778*G2_0_26_2 - 0.000138888888888889*G2_0_27_2 - 0.000277777777777778*G2_0_28_2 - 0.000138888888888889*G2_0_29_2 + 6.94444444444443e-05*G2_1_0_0 + 6.94444444444443e-05*G2_1_1_0 + 6.94444444444444e-05*G2_1_3_0 - 0.000277777777777778*G2_1_4_0 - 0.000138888888888889*G2_1_5_0 - 0.000277777777777778*G2_1_6_0 - 0.000138888888888889*G2_1_7_0 - 0.000277777777777778*G2_1_8_0 - 0.000138888888888889*G2_1_9_0 + 6.94444444444443e-05*G2_1_10_1 + 6.94444444444443e-05*G2_1_11_1 + 6.94444444444444e-05*G2_1_13_1 - 0.000277777777777778*G2_1_14_1 - 0.000138888888888889*G2_1_15_1 - 0.000277777777777778*G2_1_16_1 - 0.000138888888888889*G2_1_17_1 - 0.000277777777777778*G2_1_18_1 - 0.000138888888888889*G2_1_19_1 + 6.94444444444443e-05*G2_1_20_2 + 6.94444444444443e-05*G2_1_21_2 + 6.94444444444444e-05*G2_1_23_2 - 0.000277777777777778*G2_1_24_2 - 0.000138888888888889*G2_1_25_2 - 0.000277777777777778*G2_1_26_2 - 0.000138888888888889*G2_1_27_2 - 0.000277777777777778*G2_1_28_2 - 0.000138888888888889*G2_1_29_2 + 6.94444444444443e-05*G2_2_0_0 + 6.94444444444443e-05*G2_2_1_0 + 6.94444444444444e-05*G2_2_3_0 - 0.000277777777777778*G2_2_4_0 - 0.000138888888888889*G2_2_5_0 - 0.000277777777777778*G2_2_6_0 - 0.000138888888888889*G2_2_7_0 - 0.000277777777777778*G2_2_8_0 - 0.000138888888888889*G2_2_9_0 + 6.94444444444443e-05*G2_2_10_1 + 6.94444444444443e-05*G2_2_11_1 + 6.94444444444444e-05*G2_2_13_1 - 0.000277777777777778*G2_2_14_1 - 0.000138888888888889*G2_2_15_1 - 0.000277777777777778*G2_2_16_1 - 0.000138888888888889*G2_2_17_1 - 0.000277777777777778*G2_2_18_1 - 0.000138888888888889*G2_2_19_1 + 6.94444444444443e-05*G2_2_20_2 + 6.94444444444443e-05*G2_2_21_2 + 6.94444444444444e-05*G2_2_23_2 - 0.000277777777777778*G2_2_24_2 - 0.000138888888888889*G2_2_25_2 - 0.000277777777777778*G2_2_26_2 - 0.000138888888888889*G2_2_27_2 - 0.000277777777777778*G2_2_28_2 - 0.000138888888888889*G2_2_29_2;
-    A[9] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_1_0 - 6.94444444444443e-05*G2_0_0_0 - 6.94444444444443e-05*G2_0_1_0 - 6.94444444444444e-05*G2_0_3_0 + 0.000277777777777777*G2_0_4_0 + 0.000138888888888889*G2_0_5_0 + 0.000277777777777778*G2_0_6_0 + 0.000138888888888889*G2_0_7_0 + 0.000277777777777778*G2_0_8_0 + 0.000138888888888889*G2_0_9_0 - 6.94444444444443e-05*G2_0_10_1 - 6.94444444444443e-05*G2_0_11_1 - 6.94444444444444e-05*G2_0_13_1 + 0.000277777777777777*G2_0_14_1 + 0.000138888888888889*G2_0_15_1 + 0.000277777777777778*G2_0_16_1 + 0.000138888888888889*G2_0_17_1 + 0.000277777777777778*G2_0_18_1 + 0.000138888888888889*G2_0_19_1 - 6.94444444444443e-05*G2_0_20_2 - 6.94444444444443e-05*G2_0_21_2 - 6.94444444444444e-05*G2_0_23_2 + 0.000277777777777777*G2_0_24_2 + 0.000138888888888889*G2_0_25_2 + 0.000277777777777778*G2_0_26_2 + 0.000138888888888889*G2_0_27_2 + 0.000277777777777778*G2_0_28_2 + 0.000138888888888889*G2_0_29_2;
-    A[10] = 0.0166666666666667*G0_ + 2.08333333333333e-05*G1_1_1 - 6.94444444444444e-05*G2_1_0_0 - 6.94444444444443e-05*G2_1_1_0 - 6.94444444444444e-05*G2_1_3_0 + 0.000277777777777778*G2_1_4_0 + 0.000138888888888889*G2_1_5_0 + 0.000277777777777778*G2_1_6_0 + 0.000138888888888889*G2_1_7_0 + 0.000277777777777778*G2_1_8_0 + 0.000138888888888889*G2_1_9_0 - 6.94444444444444e-05*G2_1_10_1 - 6.94444444444443e-05*G2_1_11_1 - 6.94444444444444e-05*G2_1_13_1 + 0.000277777777777778*G2_1_14_1 + 0.000138888888888889*G2_1_15_1 + 0.000277777777777778*G2_1_16_1 + 0.000138888888888889*G2_1_17_1 + 0.000277777777777778*G2_1_18_1 + 0.000138888888888889*G2_1_19_1 - 6.94444444444444e-05*G2_1_20_2 - 6.94444444444443e-05*G2_1_21_2 - 6.94444444444444e-05*G2_1_23_2 + 0.000277777777777778*G2_1_24_2 + 0.000138888888888889*G2_1_25_2 + 0.000277777777777778*G2_1_26_2 + 0.000138888888888889*G2_1_27_2 + 0.000277777777777778*G2_1_28_2 + 0.000138888888888889*G2_1_29_2;
-    A[11] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_1_2 - 6.94444444444443e-05*G2_2_0_0 - 6.94444444444443e-05*G2_2_1_0 - 6.94444444444444e-05*G2_2_3_0 + 0.000277777777777778*G2_2_4_0 + 0.000138888888888889*G2_2_5_0 + 0.000277777777777778*G2_2_6_0 + 0.000138888888888889*G2_2_7_0 + 0.000277777777777778*G2_2_8_0 + 0.000138888888888889*G2_2_9_0 - 6.94444444444443e-05*G2_2_10_1 - 6.94444444444443e-05*G2_2_11_1 - 6.94444444444444e-05*G2_2_13_1 + 0.000277777777777778*G2_2_14_1 + 0.000138888888888889*G2_2_15_1 + 0.000277777777777778*G2_2_16_1 + 0.000138888888888889*G2_2_17_1 + 0.000277777777777778*G2_2_18_1 + 0.000138888888888889*G2_2_19_1 - 6.94444444444443e-05*G2_2_20_2 - 6.94444444444443e-05*G2_2_21_2 - 6.94444444444444e-05*G2_2_23_2 + 0.000277777777777778*G2_2_24_2 + 0.000138888888888889*G2_2_25_2 + 0.000277777777777778*G2_2_26_2 + 0.000138888888888889*G2_2_27_2 + 0.000277777777777778*G2_2_28_2 + 0.000138888888888889*G2_2_29_2;
-    A[12] = 0.00833333333333334*G0_ - 2.08333333333333e-05*G1_2_0 - 2.08333333333333e-05*G1_2_1 - 2.08333333333333e-05*G1_2_2 + 6.94444444444443e-05*G2_0_0_0 + 6.94444444444443e-05*G2_0_1_0 + 6.94444444444444e-05*G2_0_2_0 - 0.000277777777777778*G2_0_4_0 - 0.000277777777777778*G2_0_5_0 - 0.000138888888888889*G2_0_6_0 - 0.000277777777777778*G2_0_7_0 - 0.000138888888888889*G2_0_8_0 - 0.000138888888888889*G2_0_9_0 + 6.94444444444443e-05*G2_0_10_1 + 6.94444444444443e-05*G2_0_11_1 + 6.94444444444444e-05*G2_0_12_1 - 0.000277777777777778*G2_0_14_1 - 0.000277777777777778*G2_0_15_1 - 0.000138888888888889*G2_0_16_1 - 0.000277777777777778*G2_0_17_1 - 0.000138888888888889*G2_0_18_1 - 0.000138888888888889*G2_0_19_1 + 6.94444444444443e-05*G2_0_20_2 + 6.94444444444443e-05*G2_0_21_2 + 6.94444444444444e-05*G2_0_22_2 - 0.000277777777777778*G2_0_24_2 - 0.000277777777777778*G2_0_25_2 - 0.000138888888888889*G2_0_26_2 - 0.000277777777777778*G2_0_27_2 - 0.000138888888888889*G2_0_28_2 - 0.000138888888888889*G2_0_29_2 + 6.94444444444443e-05*G2_1_0_0 + 6.94444444444443e-05*G2_1_1_0 + 6.94444444444444e-05*G2_1_2_0 - 0.000277777777777778*G2_1_4_0 - 0.000277777777777778*G2_1_5_0 - 0.000138888888888889*G2_1_6_0 - 0.000277777777777778*G2_1_7_0 - 0.000138888888888889*G2_1_8_0 - 0.000138888888888889*G2_1_9_0 + 6.94444444444443e-05*G2_1_10_1 + 6.94444444444443e-05*G2_1_11_1 + 6.94444444444444e-05*G2_1_12_1 - 0.000277777777777778*G2_1_14_1 - 0.000277777777777778*G2_1_15_1 - 0.000138888888888889*G2_1_16_1 - 0.000277777777777778*G2_1_17_1 - 0.000138888888888889*G2_1_18_1 - 0.000138888888888889*G2_1_19_1 + 6.94444444444443e-05*G2_1_20_2 + 6.94444444444443e-05*G2_1_21_2 + 6.94444444444444e-05*G2_1_22_2 - 0.000277777777777778*G2_1_24_2 - 0.000277777777777778*G2_1_25_2 - 0.000138888888888889*G2_1_26_2 - 0.000277777777777778*G2_1_27_2 - 0.000138888888888889*G2_1_28_2 - 0.000138888888888889*G2_1_29_2 + 6.94444444444443e-05*G2_2_0_0 + 6.94444444444443e-05*G2_2_1_0 + 6.94444444444444e-05*G2_2_2_0 - 0.000277777777777778*G2_2_4_0 - 0.000277777777777778*G2_2_5_0 - 0.000138888888888889*G2_2_6_0 - 0.000277777777777778*G2_2_7_0 - 0.000138888888888889*G2_2_8_0 - 0.000138888888888889*G2_2_9_0 + 6.94444444444443e-05*G2_2_10_1 + 6.94444444444443e-05*G2_2_11_1 + 6.94444444444444e-05*G2_2_12_1 - 0.000277777777777778*G2_2_14_1 - 0.000277777777777778*G2_2_15_1 - 0.000138888888888889*G2_2_16_1 - 0.000277777777777778*G2_2_17_1 - 0.000138888888888889*G2_2_18_1 - 0.000138888888888889*G2_2_19_1 + 6.94444444444443e-05*G2_2_20_2 + 6.94444444444443e-05*G2_2_21_2 + 6.94444444444444e-05*G2_2_22_2 - 0.000277777777777778*G2_2_24_2 - 0.000277777777777778*G2_2_25_2 - 0.000138888888888889*G2_2_26_2 - 0.000277777777777778*G2_2_27_2 - 0.000138888888888889*G2_2_28_2 - 0.000138888888888889*G2_2_29_2;
-    A[13] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_2_0 - 6.94444444444443e-05*G2_0_0_0 - 6.94444444444443e-05*G2_0_1_0 - 6.94444444444444e-05*G2_0_2_0 + 0.000277777777777778*G2_0_4_0 + 0.000277777777777778*G2_0_5_0 + 0.000138888888888889*G2_0_6_0 + 0.000277777777777778*G2_0_7_0 + 0.000138888888888889*G2_0_8_0 + 0.000138888888888889*G2_0_9_0 - 6.94444444444443e-05*G2_0_10_1 - 6.94444444444443e-05*G2_0_11_1 - 6.94444444444444e-05*G2_0_12_1 + 0.000277777777777778*G2_0_14_1 + 0.000277777777777778*G2_0_15_1 + 0.000138888888888889*G2_0_16_1 + 0.000277777777777778*G2_0_17_1 + 0.000138888888888889*G2_0_18_1 + 0.000138888888888889*G2_0_19_1 - 6.94444444444443e-05*G2_0_20_2 - 6.94444444444443e-05*G2_0_21_2 - 6.94444444444444e-05*G2_0_22_2 + 0.000277777777777778*G2_0_24_2 + 0.000277777777777778*G2_0_25_2 + 0.000138888888888889*G2_0_26_2 + 0.000277777777777778*G2_0_27_2 + 0.000138888888888889*G2_0_28_2 + 0.000138888888888889*G2_0_29_2;
-    A[14] = 0.00833333333333333*G0_ + 2.08333333333333e-05*G1_2_1 - 6.94444444444444e-05*G2_1_0_0 - 6.94444444444443e-05*G2_1_1_0 - 6.94444444444444e-05*G2_1_2_0 + 0.000277777777777778*G2_1_4_0 + 0.000277777777777778*G2_1_5_0 + 0.000138888888888889*G2_1_6_0 + 0.000277777777777778*G2_1_7_0 + 0.000138888888888889*G2_1_8_0 + 0.000138888888888889*G2_1_9_0 - 6.94444444444444e-05*G2_1_10_1 - 6.94444444444443e-05*G2_1_11_1 - 6.94444444444444e-05*G2_1_12_1 + 0.000277777777777778*G2_1_14_1 + 0.000277777777777778*G2_1_15_1 + 0.000138888888888889*G2_1_16_1 + 0.000277777777777778*G2_1_17_1 + 0.000138888888888889*G2_1_18_1 + 0.000138888888888889*G2_1_19_1 - 6.94444444444444e-05*G2_1_20_2 - 6.94444444444443e-05*G2_1_21_2 - 6.94444444444444e-05*G2_1_22_2 + 0.000277777777777778*G2_1_24_2 + 0.000277777777777778*G2_1_25_2 + 0.000138888888888889*G2_1_26_2 + 0.000277777777777778*G2_1_27_2 + 0.000138888888888889*G2_1_28_2 + 0.000138888888888889*G2_1_29_2;
-    A[15] = 0.0166666666666667*G0_ + 2.08333333333333e-05*G1_2_2 - 6.94444444444444e-05*G2_2_0_0 - 6.94444444444443e-05*G2_2_1_0 - 6.94444444444444e-05*G2_2_2_0 + 0.000277777777777778*G2_2_4_0 + 0.000277777777777778*G2_2_5_0 + 0.000138888888888889*G2_2_6_0 + 0.000277777777777778*G2_2_7_0 + 0.000138888888888889*G2_2_8_0 + 0.000138888888888889*G2_2_9_0 - 6.94444444444444e-05*G2_2_10_1 - 6.94444444444443e-05*G2_2_11_1 - 6.94444444444444e-05*G2_2_12_1 + 0.000277777777777778*G2_2_14_1 + 0.000277777777777778*G2_2_15_1 + 0.000138888888888889*G2_2_16_1 + 0.000277777777777778*G2_2_17_1 + 0.000138888888888889*G2_2_18_1 + 0.000138888888888889*G2_2_19_1 - 6.94444444444444e-05*G2_2_20_2 - 6.94444444444443e-05*G2_2_21_2 - 6.94444444444444e-05*G2_2_22_2 + 0.000277777777777778*G2_2_24_2 + 0.000277777777777778*G2_2_25_2 + 0.000138888888888889*G2_2_26_2 + 0.000277777777777778*G2_2_27_2 + 0.000138888888888889*G2_2_28_2 + 0.000138888888888889*G2_2_29_2;
+    
+    // Compute circumradius
+    
+    
+    // Array of quadrature weights.
+    static const double W5[5] = {-0.133333333333333, 0.075, 0.075, 0.075, 0.075};
+    // Quadrature points on the UFC reference element: (0.25, 0.25, 0.25), (0.5, 0.166666666666667, 0.166666666666667), (0.166666666666667, 0.5, 0.166666666666667), (0.166666666666667, 0.166666666666667, 0.5), (0.166666666666667, 0.166666666666667, 0.166666666666667)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[5][4] = \
+    {{0.25, 0.25, 0.25, 0.25},
+    {0.166666666666667, 0.5, 0.166666666666667, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.5, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.166666666666667, 0.5},
+    {0.5, 0.166666666666667, 0.166666666666667, 0.166666666666667}};
+    
+    static const double FE0_D001[5][4] = \
+    {{-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0}};
+    
+    static const double FE0_D010[5][4] = \
+    {{-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0}};
+    
+    static const double FE0_D100[5][4] = \
+    {{-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0}};
+    
+    static const double FE2_C0[5][30] = \
+    {{-0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C2[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333}};
+    
+    static const double FE3[5][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 16; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 6470
+    for (unsigned int ip = 0; ip < 5; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      double F4 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F0 += FE3[ip][0]*w[2][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 8
+      for (unsigned int r = 0; r < 4; r++)
+      {
+        F1 += FE0[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 180
+      for (unsigned int r = 0; r < 30; r++)
+      {
+        F2 += FE2_C0[ip][r]*w[0][r];
+        F3 += FE2_C1[ip][r]*w[0][r];
+        F4 += FE2_C2[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 1104
+      for (unsigned int j = 0; j < 4; j++)
+      {
+        for (unsigned int k = 0; k < 4; k++)
+        {
+          // Number of operations to compute entry: 69
+          A[j*4 + k] += (((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k])) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k])) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))))*F1)*0.5*F0 + FE0[ip][j]*FE0[ip][k]) + (((((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k]))*FE0[ip][j])*F2 + (((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k]))*FE0[ip][j])*F3 + (((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))*FE0[ip][j])*F4))*0.5*F0)*W5[ip]*det;
+        } // end loop over 'k'
+      } // end loop over 'j'
+    } // end loop over 'ip'
   }
 
 };
@@ -13978,7 +15134,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({true, true, true, false});
+    static const std::vector<bool> enabled({true, true, true, false, true, true});
     return enabled;
   }
 
@@ -13988,11 +15144,6 @@ public:
                                const double*  vertex_coordinates,
                                int cell_orientation) const
   {
-    // Number of operations (multiply-add pairs) for Jacobian data:      3
-    // Number of operations (multiply-add pairs) for geometry tensor:    431
-    // Number of operations (multiply-add pairs) for tensor contraction: 714
-    // Total number of operations (multiply-add pairs):                  1148
-    
     // Compute Jacobian
     double J[9];
     compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
@@ -14005,219 +15156,131 @@ public:
     // Set scale factor
     const double det = std::abs(detJ);
     
-    // Compute geometry tensor
-    const double G0_0 = det*w[0][0]*(1.0);
-    const double G0_1 = det*w[0][1]*(1.0);
-    const double G0_2 = det*w[0][2]*(1.0);
-    const double G0_3 = det*w[0][3]*(1.0);
-    const double G1_0 = det*w[2][0]*(1.0);
-    const double G1_1 = det*w[2][1]*(1.0);
-    const double G1_2 = det*w[2][2]*(1.0);
-    const double G1_3 = det*w[2][3]*(1.0);
-    const double G2_0_0_0 = det*(w[0][0]*((K[0]*K[0] + K[1]*K[1] + K[2]*K[2])));
-    const double G2_0_0_1 = det*(w[0][0]*((K[0]*K[3] + K[1]*K[4] + K[2]*K[5])));
-    const double G2_0_0_2 = det*(w[0][0]*((K[0]*K[6] + K[1]*K[7] + K[2]*K[8])));
-    const double G2_0_1_0 = det*(w[0][1]*((K[0]*K[0] + K[1]*K[1] + K[2]*K[2])));
-    const double G2_0_2_1 = det*(w[0][2]*((K[0]*K[3] + K[1]*K[4] + K[2]*K[5])));
-    const double G2_0_3_2 = det*(w[0][3]*((K[0]*K[6] + K[1]*K[7] + K[2]*K[8])));
-    const double G2_1_0_0 = det*(w[0][0]*((K[3]*K[0] + K[4]*K[1] + K[5]*K[2])));
-    const double G2_1_0_1 = det*(w[0][0]*((K[3]*K[3] + K[4]*K[4] + K[5]*K[5])));
-    const double G2_1_0_2 = det*(w[0][0]*((K[3]*K[6] + K[4]*K[7] + K[5]*K[8])));
-    const double G2_1_1_0 = det*(w[0][1]*((K[3]*K[0] + K[4]*K[1] + K[5]*K[2])));
-    const double G2_1_2_1 = det*(w[0][2]*((K[3]*K[3] + K[4]*K[4] + K[5]*K[5])));
-    const double G2_1_3_2 = det*(w[0][3]*((K[3]*K[6] + K[4]*K[7] + K[5]*K[8])));
-    const double G2_2_0_0 = det*(w[0][0]*((K[6]*K[0] + K[7]*K[1] + K[8]*K[2])));
-    const double G2_2_0_1 = det*(w[0][0]*((K[6]*K[3] + K[7]*K[4] + K[8]*K[5])));
-    const double G2_2_0_2 = det*(w[0][0]*((K[6]*K[6] + K[7]*K[7] + K[8]*K[8])));
-    const double G2_2_1_0 = det*(w[0][1]*((K[6]*K[0] + K[7]*K[1] + K[8]*K[2])));
-    const double G2_2_2_1 = det*(w[0][2]*((K[6]*K[3] + K[7]*K[4] + K[8]*K[5])));
-    const double G2_2_3_2 = det*(w[0][3]*((K[6]*K[6] + K[7]*K[7] + K[8]*K[8])));
-    const double G3_0_0_0_0 = det*w[0][0]*w[1][0]*K[0]*(1.0);
-    const double G3_0_0_1_0 = det*w[0][0]*w[1][1]*K[0]*(1.0);
-    const double G3_0_0_2_0 = det*w[0][0]*w[1][2]*K[0]*(1.0);
-    const double G3_0_0_3_0 = det*w[0][0]*w[1][3]*K[0]*(1.0);
-    const double G3_0_0_4_0 = det*w[0][0]*w[1][4]*K[0]*(1.0);
-    const double G3_0_0_5_0 = det*w[0][0]*w[1][5]*K[0]*(1.0);
-    const double G3_0_0_6_0 = det*w[0][0]*w[1][6]*K[0]*(1.0);
-    const double G3_0_0_7_0 = det*w[0][0]*w[1][7]*K[0]*(1.0);
-    const double G3_0_0_8_0 = det*w[0][0]*w[1][8]*K[0]*(1.0);
-    const double G3_0_0_9_0 = det*w[0][0]*w[1][9]*K[0]*(1.0);
-    const double G3_0_0_10_1 = det*w[0][0]*w[1][10]*K[1]*(1.0);
-    const double G3_0_0_11_1 = det*w[0][0]*w[1][11]*K[1]*(1.0);
-    const double G3_0_0_12_1 = det*w[0][0]*w[1][12]*K[1]*(1.0);
-    const double G3_0_0_13_1 = det*w[0][0]*w[1][13]*K[1]*(1.0);
-    const double G3_0_0_14_1 = det*w[0][0]*w[1][14]*K[1]*(1.0);
-    const double G3_0_0_15_1 = det*w[0][0]*w[1][15]*K[1]*(1.0);
-    const double G3_0_0_16_1 = det*w[0][0]*w[1][16]*K[1]*(1.0);
-    const double G3_0_0_17_1 = det*w[0][0]*w[1][17]*K[1]*(1.0);
-    const double G3_0_0_18_1 = det*w[0][0]*w[1][18]*K[1]*(1.0);
-    const double G3_0_0_19_1 = det*w[0][0]*w[1][19]*K[1]*(1.0);
-    const double G3_0_0_20_2 = det*w[0][0]*w[1][20]*K[2]*(1.0);
-    const double G3_0_0_21_2 = det*w[0][0]*w[1][21]*K[2]*(1.0);
-    const double G3_0_0_22_2 = det*w[0][0]*w[1][22]*K[2]*(1.0);
-    const double G3_0_0_23_2 = det*w[0][0]*w[1][23]*K[2]*(1.0);
-    const double G3_0_0_24_2 = det*w[0][0]*w[1][24]*K[2]*(1.0);
-    const double G3_0_0_25_2 = det*w[0][0]*w[1][25]*K[2]*(1.0);
-    const double G3_0_0_26_2 = det*w[0][0]*w[1][26]*K[2]*(1.0);
-    const double G3_0_0_27_2 = det*w[0][0]*w[1][27]*K[2]*(1.0);
-    const double G3_0_0_28_2 = det*w[0][0]*w[1][28]*K[2]*(1.0);
-    const double G3_0_0_29_2 = det*w[0][0]*w[1][29]*K[2]*(1.0);
-    const double G3_0_1_0_0 = det*w[0][0]*w[1][0]*K[3]*(1.0);
-    const double G3_0_1_1_0 = det*w[0][0]*w[1][1]*K[3]*(1.0);
-    const double G3_0_1_2_0 = det*w[0][0]*w[1][2]*K[3]*(1.0);
-    const double G3_0_1_3_0 = det*w[0][0]*w[1][3]*K[3]*(1.0);
-    const double G3_0_1_4_0 = det*w[0][0]*w[1][4]*K[3]*(1.0);
-    const double G3_0_1_5_0 = det*w[0][0]*w[1][5]*K[3]*(1.0);
-    const double G3_0_1_6_0 = det*w[0][0]*w[1][6]*K[3]*(1.0);
-    const double G3_0_1_7_0 = det*w[0][0]*w[1][7]*K[3]*(1.0);
-    const double G3_0_1_8_0 = det*w[0][0]*w[1][8]*K[3]*(1.0);
-    const double G3_0_1_9_0 = det*w[0][0]*w[1][9]*K[3]*(1.0);
-    const double G3_0_1_10_1 = det*w[0][0]*w[1][10]*K[4]*(1.0);
-    const double G3_0_1_11_1 = det*w[0][0]*w[1][11]*K[4]*(1.0);
-    const double G3_0_1_12_1 = det*w[0][0]*w[1][12]*K[4]*(1.0);
-    const double G3_0_1_13_1 = det*w[0][0]*w[1][13]*K[4]*(1.0);
-    const double G3_0_1_14_1 = det*w[0][0]*w[1][14]*K[4]*(1.0);
-    const double G3_0_1_15_1 = det*w[0][0]*w[1][15]*K[4]*(1.0);
-    const double G3_0_1_16_1 = det*w[0][0]*w[1][16]*K[4]*(1.0);
-    const double G3_0_1_17_1 = det*w[0][0]*w[1][17]*K[4]*(1.0);
-    const double G3_0_1_18_1 = det*w[0][0]*w[1][18]*K[4]*(1.0);
-    const double G3_0_1_19_1 = det*w[0][0]*w[1][19]*K[4]*(1.0);
-    const double G3_0_1_20_2 = det*w[0][0]*w[1][20]*K[5]*(1.0);
-    const double G3_0_1_21_2 = det*w[0][0]*w[1][21]*K[5]*(1.0);
-    const double G3_0_1_22_2 = det*w[0][0]*w[1][22]*K[5]*(1.0);
-    const double G3_0_1_23_2 = det*w[0][0]*w[1][23]*K[5]*(1.0);
-    const double G3_0_1_24_2 = det*w[0][0]*w[1][24]*K[5]*(1.0);
-    const double G3_0_1_25_2 = det*w[0][0]*w[1][25]*K[5]*(1.0);
-    const double G3_0_1_26_2 = det*w[0][0]*w[1][26]*K[5]*(1.0);
-    const double G3_0_1_27_2 = det*w[0][0]*w[1][27]*K[5]*(1.0);
-    const double G3_0_1_28_2 = det*w[0][0]*w[1][28]*K[5]*(1.0);
-    const double G3_0_1_29_2 = det*w[0][0]*w[1][29]*K[5]*(1.0);
-    const double G3_0_2_0_0 = det*w[0][0]*w[1][0]*K[6]*(1.0);
-    const double G3_0_2_1_0 = det*w[0][0]*w[1][1]*K[6]*(1.0);
-    const double G3_0_2_2_0 = det*w[0][0]*w[1][2]*K[6]*(1.0);
-    const double G3_0_2_3_0 = det*w[0][0]*w[1][3]*K[6]*(1.0);
-    const double G3_0_2_4_0 = det*w[0][0]*w[1][4]*K[6]*(1.0);
-    const double G3_0_2_5_0 = det*w[0][0]*w[1][5]*K[6]*(1.0);
-    const double G3_0_2_6_0 = det*w[0][0]*w[1][6]*K[6]*(1.0);
-    const double G3_0_2_7_0 = det*w[0][0]*w[1][7]*K[6]*(1.0);
-    const double G3_0_2_8_0 = det*w[0][0]*w[1][8]*K[6]*(1.0);
-    const double G3_0_2_9_0 = det*w[0][0]*w[1][9]*K[6]*(1.0);
-    const double G3_0_2_10_1 = det*w[0][0]*w[1][10]*K[7]*(1.0);
-    const double G3_0_2_11_1 = det*w[0][0]*w[1][11]*K[7]*(1.0);
-    const double G3_0_2_12_1 = det*w[0][0]*w[1][12]*K[7]*(1.0);
-    const double G3_0_2_13_1 = det*w[0][0]*w[1][13]*K[7]*(1.0);
-    const double G3_0_2_14_1 = det*w[0][0]*w[1][14]*K[7]*(1.0);
-    const double G3_0_2_15_1 = det*w[0][0]*w[1][15]*K[7]*(1.0);
-    const double G3_0_2_16_1 = det*w[0][0]*w[1][16]*K[7]*(1.0);
-    const double G3_0_2_17_1 = det*w[0][0]*w[1][17]*K[7]*(1.0);
-    const double G3_0_2_18_1 = det*w[0][0]*w[1][18]*K[7]*(1.0);
-    const double G3_0_2_19_1 = det*w[0][0]*w[1][19]*K[7]*(1.0);
-    const double G3_0_2_20_2 = det*w[0][0]*w[1][20]*K[8]*(1.0);
-    const double G3_0_2_21_2 = det*w[0][0]*w[1][21]*K[8]*(1.0);
-    const double G3_0_2_22_2 = det*w[0][0]*w[1][22]*K[8]*(1.0);
-    const double G3_0_2_23_2 = det*w[0][0]*w[1][23]*K[8]*(1.0);
-    const double G3_0_2_24_2 = det*w[0][0]*w[1][24]*K[8]*(1.0);
-    const double G3_0_2_25_2 = det*w[0][0]*w[1][25]*K[8]*(1.0);
-    const double G3_0_2_26_2 = det*w[0][0]*w[1][26]*K[8]*(1.0);
-    const double G3_0_2_27_2 = det*w[0][0]*w[1][27]*K[8]*(1.0);
-    const double G3_0_2_28_2 = det*w[0][0]*w[1][28]*K[8]*(1.0);
-    const double G3_0_2_29_2 = det*w[0][0]*w[1][29]*K[8]*(1.0);
-    const double G3_1_0_0_0 = det*w[0][1]*w[1][0]*K[0]*(1.0);
-    const double G3_1_0_1_0 = det*w[0][1]*w[1][1]*K[0]*(1.0);
-    const double G3_1_0_2_0 = det*w[0][1]*w[1][2]*K[0]*(1.0);
-    const double G3_1_0_3_0 = det*w[0][1]*w[1][3]*K[0]*(1.0);
-    const double G3_1_0_4_0 = det*w[0][1]*w[1][4]*K[0]*(1.0);
-    const double G3_1_0_5_0 = det*w[0][1]*w[1][5]*K[0]*(1.0);
-    const double G3_1_0_6_0 = det*w[0][1]*w[1][6]*K[0]*(1.0);
-    const double G3_1_0_7_0 = det*w[0][1]*w[1][7]*K[0]*(1.0);
-    const double G3_1_0_8_0 = det*w[0][1]*w[1][8]*K[0]*(1.0);
-    const double G3_1_0_9_0 = det*w[0][1]*w[1][9]*K[0]*(1.0);
-    const double G3_1_0_10_1 = det*w[0][1]*w[1][10]*K[1]*(1.0);
-    const double G3_1_0_11_1 = det*w[0][1]*w[1][11]*K[1]*(1.0);
-    const double G3_1_0_12_1 = det*w[0][1]*w[1][12]*K[1]*(1.0);
-    const double G3_1_0_13_1 = det*w[0][1]*w[1][13]*K[1]*(1.0);
-    const double G3_1_0_14_1 = det*w[0][1]*w[1][14]*K[1]*(1.0);
-    const double G3_1_0_15_1 = det*w[0][1]*w[1][15]*K[1]*(1.0);
-    const double G3_1_0_16_1 = det*w[0][1]*w[1][16]*K[1]*(1.0);
-    const double G3_1_0_17_1 = det*w[0][1]*w[1][17]*K[1]*(1.0);
-    const double G3_1_0_18_1 = det*w[0][1]*w[1][18]*K[1]*(1.0);
-    const double G3_1_0_19_1 = det*w[0][1]*w[1][19]*K[1]*(1.0);
-    const double G3_1_0_20_2 = det*w[0][1]*w[1][20]*K[2]*(1.0);
-    const double G3_1_0_21_2 = det*w[0][1]*w[1][21]*K[2]*(1.0);
-    const double G3_1_0_22_2 = det*w[0][1]*w[1][22]*K[2]*(1.0);
-    const double G3_1_0_23_2 = det*w[0][1]*w[1][23]*K[2]*(1.0);
-    const double G3_1_0_24_2 = det*w[0][1]*w[1][24]*K[2]*(1.0);
-    const double G3_1_0_25_2 = det*w[0][1]*w[1][25]*K[2]*(1.0);
-    const double G3_1_0_26_2 = det*w[0][1]*w[1][26]*K[2]*(1.0);
-    const double G3_1_0_27_2 = det*w[0][1]*w[1][27]*K[2]*(1.0);
-    const double G3_1_0_28_2 = det*w[0][1]*w[1][28]*K[2]*(1.0);
-    const double G3_1_0_29_2 = det*w[0][1]*w[1][29]*K[2]*(1.0);
-    const double G3_2_1_0_0 = det*w[0][2]*w[1][0]*K[3]*(1.0);
-    const double G3_2_1_1_0 = det*w[0][2]*w[1][1]*K[3]*(1.0);
-    const double G3_2_1_2_0 = det*w[0][2]*w[1][2]*K[3]*(1.0);
-    const double G3_2_1_3_0 = det*w[0][2]*w[1][3]*K[3]*(1.0);
-    const double G3_2_1_4_0 = det*w[0][2]*w[1][4]*K[3]*(1.0);
-    const double G3_2_1_5_0 = det*w[0][2]*w[1][5]*K[3]*(1.0);
-    const double G3_2_1_6_0 = det*w[0][2]*w[1][6]*K[3]*(1.0);
-    const double G3_2_1_7_0 = det*w[0][2]*w[1][7]*K[3]*(1.0);
-    const double G3_2_1_8_0 = det*w[0][2]*w[1][8]*K[3]*(1.0);
-    const double G3_2_1_9_0 = det*w[0][2]*w[1][9]*K[3]*(1.0);
-    const double G3_2_1_10_1 = det*w[0][2]*w[1][10]*K[4]*(1.0);
-    const double G3_2_1_11_1 = det*w[0][2]*w[1][11]*K[4]*(1.0);
-    const double G3_2_1_12_1 = det*w[0][2]*w[1][12]*K[4]*(1.0);
-    const double G3_2_1_13_1 = det*w[0][2]*w[1][13]*K[4]*(1.0);
-    const double G3_2_1_14_1 = det*w[0][2]*w[1][14]*K[4]*(1.0);
-    const double G3_2_1_15_1 = det*w[0][2]*w[1][15]*K[4]*(1.0);
-    const double G3_2_1_16_1 = det*w[0][2]*w[1][16]*K[4]*(1.0);
-    const double G3_2_1_17_1 = det*w[0][2]*w[1][17]*K[4]*(1.0);
-    const double G3_2_1_18_1 = det*w[0][2]*w[1][18]*K[4]*(1.0);
-    const double G3_2_1_19_1 = det*w[0][2]*w[1][19]*K[4]*(1.0);
-    const double G3_2_1_20_2 = det*w[0][2]*w[1][20]*K[5]*(1.0);
-    const double G3_2_1_21_2 = det*w[0][2]*w[1][21]*K[5]*(1.0);
-    const double G3_2_1_22_2 = det*w[0][2]*w[1][22]*K[5]*(1.0);
-    const double G3_2_1_23_2 = det*w[0][2]*w[1][23]*K[5]*(1.0);
-    const double G3_2_1_24_2 = det*w[0][2]*w[1][24]*K[5]*(1.0);
-    const double G3_2_1_25_2 = det*w[0][2]*w[1][25]*K[5]*(1.0);
-    const double G3_2_1_26_2 = det*w[0][2]*w[1][26]*K[5]*(1.0);
-    const double G3_2_1_27_2 = det*w[0][2]*w[1][27]*K[5]*(1.0);
-    const double G3_2_1_28_2 = det*w[0][2]*w[1][28]*K[5]*(1.0);
-    const double G3_2_1_29_2 = det*w[0][2]*w[1][29]*K[5]*(1.0);
-    const double G3_3_2_0_0 = det*w[0][3]*w[1][0]*K[6]*(1.0);
-    const double G3_3_2_1_0 = det*w[0][3]*w[1][1]*K[6]*(1.0);
-    const double G3_3_2_2_0 = det*w[0][3]*w[1][2]*K[6]*(1.0);
-    const double G3_3_2_3_0 = det*w[0][3]*w[1][3]*K[6]*(1.0);
-    const double G3_3_2_4_0 = det*w[0][3]*w[1][4]*K[6]*(1.0);
-    const double G3_3_2_5_0 = det*w[0][3]*w[1][5]*K[6]*(1.0);
-    const double G3_3_2_6_0 = det*w[0][3]*w[1][6]*K[6]*(1.0);
-    const double G3_3_2_7_0 = det*w[0][3]*w[1][7]*K[6]*(1.0);
-    const double G3_3_2_8_0 = det*w[0][3]*w[1][8]*K[6]*(1.0);
-    const double G3_3_2_9_0 = det*w[0][3]*w[1][9]*K[6]*(1.0);
-    const double G3_3_2_10_1 = det*w[0][3]*w[1][10]*K[7]*(1.0);
-    const double G3_3_2_11_1 = det*w[0][3]*w[1][11]*K[7]*(1.0);
-    const double G3_3_2_12_1 = det*w[0][3]*w[1][12]*K[7]*(1.0);
-    const double G3_3_2_13_1 = det*w[0][3]*w[1][13]*K[7]*(1.0);
-    const double G3_3_2_14_1 = det*w[0][3]*w[1][14]*K[7]*(1.0);
-    const double G3_3_2_15_1 = det*w[0][3]*w[1][15]*K[7]*(1.0);
-    const double G3_3_2_16_1 = det*w[0][3]*w[1][16]*K[7]*(1.0);
-    const double G3_3_2_17_1 = det*w[0][3]*w[1][17]*K[7]*(1.0);
-    const double G3_3_2_18_1 = det*w[0][3]*w[1][18]*K[7]*(1.0);
-    const double G3_3_2_19_1 = det*w[0][3]*w[1][19]*K[7]*(1.0);
-    const double G3_3_2_20_2 = det*w[0][3]*w[1][20]*K[8]*(1.0);
-    const double G3_3_2_21_2 = det*w[0][3]*w[1][21]*K[8]*(1.0);
-    const double G3_3_2_22_2 = det*w[0][3]*w[1][22]*K[8]*(1.0);
-    const double G3_3_2_23_2 = det*w[0][3]*w[1][23]*K[8]*(1.0);
-    const double G3_3_2_24_2 = det*w[0][3]*w[1][24]*K[8]*(1.0);
-    const double G3_3_2_25_2 = det*w[0][3]*w[1][25]*K[8]*(1.0);
-    const double G3_3_2_26_2 = det*w[0][3]*w[1][26]*K[8]*(1.0);
-    const double G3_3_2_27_2 = det*w[0][3]*w[1][27]*K[8]*(1.0);
-    const double G3_3_2_28_2 = det*w[0][3]*w[1][28]*K[8]*(1.0);
-    const double G3_3_2_29_2 = det*w[0][3]*w[1][29]*K[8]*(1.0);
+    // Compute cell volume
     
-    // Compute element tensor
-    A[0] = 0.0166666666666667*G0_0 + 0.00833333333333333*G0_1 + 0.00833333333333334*G0_2 + 0.00833333333333334*G0_3 + 0.000833333333333334*G1_0 + 0.000416666666666667*G1_1 + 0.000416666666666667*G1_2 + 0.000416666666666667*G1_3 - 2.08333333333333e-05*G2_0_0_0 - 2.08333333333333e-05*G2_0_0_1 - 2.08333333333333e-05*G2_0_0_2 + 2.08333333333333e-05*G2_0_1_0 + 2.08333333333333e-05*G2_0_2_1 + 2.08333333333333e-05*G2_0_3_2 - 2.08333333333333e-05*G2_1_0_0 - 2.08333333333333e-05*G2_1_0_1 - 2.08333333333333e-05*G2_1_0_2 + 2.08333333333333e-05*G2_1_1_0 + 2.08333333333333e-05*G2_1_2_1 + 2.08333333333333e-05*G2_1_3_2 - 2.08333333333333e-05*G2_2_0_0 - 2.08333333333333e-05*G2_2_0_1 - 2.08333333333333e-05*G2_2_0_2 + 2.08333333333333e-05*G2_2_1_0 + 2.08333333333333e-05*G2_2_2_1 + 2.08333333333333e-05*G2_2_3_2 - 6.94444444444443e-05*G3_0_0_1_0 - 6.94444444444444e-05*G3_0_0_2_0 - 6.94444444444444e-05*G3_0_0_3_0 + 0.000138888888888889*G3_0_0_4_0 + 0.000138888888888889*G3_0_0_5_0 + 0.000138888888888889*G3_0_0_6_0 + 0.000277777777777778*G3_0_0_7_0 + 0.000277777777777778*G3_0_0_8_0 + 0.000277777777777778*G3_0_0_9_0 - 6.94444444444443e-05*G3_0_0_11_1 - 6.94444444444444e-05*G3_0_0_12_1 - 6.94444444444444e-05*G3_0_0_13_1 + 0.000138888888888889*G3_0_0_14_1 + 0.000138888888888889*G3_0_0_15_1 + 0.000138888888888889*G3_0_0_16_1 + 0.000277777777777778*G3_0_0_17_1 + 0.000277777777777778*G3_0_0_18_1 + 0.000277777777777778*G3_0_0_19_1 - 6.94444444444443e-05*G3_0_0_21_2 - 6.94444444444444e-05*G3_0_0_22_2 - 6.94444444444444e-05*G3_0_0_23_2 + 0.000138888888888889*G3_0_0_24_2 + 0.000138888888888889*G3_0_0_25_2 + 0.000138888888888889*G3_0_0_26_2 + 0.000277777777777778*G3_0_0_27_2 + 0.000277777777777778*G3_0_0_28_2 + 0.000277777777777778*G3_0_0_29_2 - 6.94444444444444e-05*G3_0_1_1_0 - 6.94444444444444e-05*G3_0_1_2_0 - 6.94444444444444e-05*G3_0_1_3_0 + 0.000138888888888889*G3_0_1_4_0 + 0.000138888888888889*G3_0_1_5_0 + 0.000138888888888889*G3_0_1_6_0 + 0.000277777777777778*G3_0_1_7_0 + 0.000277777777777778*G3_0_1_8_0 + 0.000277777777777778*G3_0_1_9_0 - 6.94444444444444e-05*G3_0_1_11_1 - 6.94444444444444e-05*G3_0_1_12_1 - 6.94444444444444e-05*G3_0_1_13_1 + 0.000138888888888889*G3_0_1_14_1 + 0.000138888888888889*G3_0_1_15_1 + 0.000138888888888889*G3_0_1_16_1 + 0.000277777777777778*G3_0_1_17_1 + 0.000277777777777778*G3_0_1_18_1 + 0.000277777777777778*G3_0_1_19_1 - 6.94444444444444e-05*G3_0_1_21_2 - 6.94444444444444e-05*G3_0_1_22_2 - 6.94444444444444e-05*G3_0_1_23_2 + 0.000138888888888889*G3_0_1_24_2 + 0.000138888888888889*G3_0_1_25_2 + 0.000138888888888889*G3_0_1_26_2 + 0.000277777777777778*G3_0_1_27_2 + 0.000277777777777778*G3_0_1_28_2 + 0.000277777777777778*G3_0_1_29_2 - 6.94444444444444e-05*G3_0_2_1_0 - 6.94444444444444e-05*G3_0_2_2_0 - 6.94444444444444e-05*G3_0_2_3_0 + 0.000138888888888889*G3_0_2_4_0 + 0.000138888888888889*G3_0_2_5_0 + 0.000138888888888889*G3_0_2_6_0 + 0.000277777777777778*G3_0_2_7_0 + 0.000277777777777778*G3_0_2_8_0 + 0.000277777777777778*G3_0_2_9_0 - 6.94444444444444e-05*G3_0_2_11_1 - 6.94444444444444e-05*G3_0_2_12_1 - 6.94444444444444e-05*G3_0_2_13_1 + 0.000138888888888889*G3_0_2_14_1 + 0.000138888888888889*G3_0_2_15_1 + 0.000138888888888889*G3_0_2_16_1 + 0.000277777777777778*G3_0_2_17_1 + 0.000277777777777778*G3_0_2_18_1 + 0.000277777777777778*G3_0_2_19_1 - 6.94444444444444e-05*G3_0_2_21_2 - 6.94444444444444e-05*G3_0_2_22_2 - 6.94444444444444e-05*G3_0_2_23_2 + 0.000138888888888889*G3_0_2_24_2 + 0.000138888888888889*G3_0_2_25_2 + 0.000138888888888889*G3_0_2_26_2 + 0.000277777777777778*G3_0_2_27_2 + 0.000277777777777778*G3_0_2_28_2 + 0.000277777777777778*G3_0_2_29_2 + 6.94444444444443e-05*G3_1_0_1_0 + 6.94444444444444e-05*G3_1_0_2_0 + 6.94444444444444e-05*G3_1_0_3_0 - 0.000138888888888889*G3_1_0_4_0 - 0.000138888888888889*G3_1_0_5_0 - 0.000138888888888889*G3_1_0_6_0 - 0.000277777777777778*G3_1_0_7_0 - 0.000277777777777778*G3_1_0_8_0 - 0.000277777777777778*G3_1_0_9_0 + 6.94444444444443e-05*G3_1_0_11_1 + 6.94444444444444e-05*G3_1_0_12_1 + 6.94444444444444e-05*G3_1_0_13_1 - 0.000138888888888889*G3_1_0_14_1 - 0.000138888888888889*G3_1_0_15_1 - 0.000138888888888889*G3_1_0_16_1 - 0.000277777777777778*G3_1_0_17_1 - 0.000277777777777778*G3_1_0_18_1 - 0.000277777777777778*G3_1_0_19_1 + 6.94444444444443e-05*G3_1_0_21_2 + 6.94444444444444e-05*G3_1_0_22_2 + 6.94444444444444e-05*G3_1_0_23_2 - 0.000138888888888889*G3_1_0_24_2 - 0.000138888888888889*G3_1_0_25_2 - 0.000138888888888889*G3_1_0_26_2 - 0.000277777777777778*G3_1_0_27_2 - 0.000277777777777778*G3_1_0_28_2 - 0.000277777777777778*G3_1_0_29_2 + 6.94444444444444e-05*G3_2_1_1_0 + 6.94444444444444e-05*G3_2_1_2_0 + 6.94444444444445e-05*G3_2_1_3_0 - 0.000138888888888889*G3_2_1_4_0 - 0.000138888888888889*G3_2_1_5_0 - 0.000138888888888889*G3_2_1_6_0 - 0.000277777777777778*G3_2_1_7_0 - 0.000277777777777778*G3_2_1_8_0 - 0.000277777777777778*G3_2_1_9_0 + 6.94444444444444e-05*G3_2_1_11_1 + 6.94444444444444e-05*G3_2_1_12_1 + 6.94444444444445e-05*G3_2_1_13_1 - 0.000138888888888889*G3_2_1_14_1 - 0.000138888888888889*G3_2_1_15_1 - 0.000138888888888889*G3_2_1_16_1 - 0.000277777777777778*G3_2_1_17_1 - 0.000277777777777778*G3_2_1_18_1 - 0.000277777777777778*G3_2_1_19_1 + 6.94444444444444e-05*G3_2_1_21_2 + 6.94444444444444e-05*G3_2_1_22_2 + 6.94444444444445e-05*G3_2_1_23_2 - 0.000138888888888889*G3_2_1_24_2 - 0.000138888888888889*G3_2_1_25_2 - 0.000138888888888889*G3_2_1_26_2 - 0.000277777777777778*G3_2_1_27_2 - 0.000277777777777778*G3_2_1_28_2 - 0.000277777777777778*G3_2_1_29_2 + 6.94444444444444e-05*G3_3_2_1_0 + 6.94444444444444e-05*G3_3_2_2_0 + 6.94444444444444e-05*G3_3_2_3_0 - 0.000138888888888889*G3_3_2_4_0 - 0.000138888888888889*G3_3_2_5_0 - 0.000138888888888889*G3_3_2_6_0 - 0.000277777777777778*G3_3_2_7_0 - 0.000277777777777778*G3_3_2_8_0 - 0.000277777777777778*G3_3_2_9_0 + 6.94444444444444e-05*G3_3_2_11_1 + 6.94444444444444e-05*G3_3_2_12_1 + 6.94444444444444e-05*G3_3_2_13_1 - 0.000138888888888889*G3_3_2_14_1 - 0.000138888888888889*G3_3_2_15_1 - 0.000138888888888889*G3_3_2_16_1 - 0.000277777777777778*G3_3_2_17_1 - 0.000277777777777778*G3_3_2_18_1 - 0.000277777777777778*G3_3_2_19_1 + 6.94444444444444e-05*G3_3_2_21_2 + 6.94444444444444e-05*G3_3_2_22_2 + 6.94444444444444e-05*G3_3_2_23_2 - 0.000138888888888889*G3_3_2_24_2 - 0.000138888888888889*G3_3_2_25_2 - 0.000138888888888889*G3_3_2_26_2 - 0.000277777777777778*G3_3_2_27_2 - 0.000277777777777778*G3_3_2_28_2 - 0.000277777777777778*G3_3_2_29_2;
-    A[1] = 0.00833333333333333*G0_0 + 0.0166666666666667*G0_1 + 0.00833333333333333*G0_2 + 0.00833333333333333*G0_3 + 0.000416666666666667*G1_0 + 0.000833333333333333*G1_1 + 0.000416666666666666*G1_2 + 0.000416666666666666*G1_3 + 2.08333333333333e-05*G2_0_0_0 + 2.08333333333333e-05*G2_0_0_1 + 2.08333333333333e-05*G2_0_0_2 - 2.08333333333333e-05*G2_0_1_0 - 2.08333333333333e-05*G2_0_2_1 - 2.08333333333333e-05*G2_0_3_2 - 6.94444444444443e-05*G3_0_0_0_0 - 6.94444444444443e-05*G3_0_0_2_0 - 6.94444444444443e-05*G3_0_0_3_0 + 0.000138888888888889*G3_0_0_4_0 + 0.000277777777777777*G3_0_0_5_0 + 0.000277777777777777*G3_0_0_6_0 + 0.000138888888888889*G3_0_0_7_0 + 0.000138888888888889*G3_0_0_8_0 + 0.000277777777777777*G3_0_0_9_0 - 6.94444444444443e-05*G3_0_0_10_1 - 6.94444444444443e-05*G3_0_0_12_1 - 6.94444444444443e-05*G3_0_0_13_1 + 0.000138888888888889*G3_0_0_14_1 + 0.000277777777777777*G3_0_0_15_1 + 0.000277777777777777*G3_0_0_16_1 + 0.000138888888888889*G3_0_0_17_1 + 0.000138888888888889*G3_0_0_18_1 + 0.000277777777777777*G3_0_0_19_1 - 6.94444444444443e-05*G3_0_0_20_2 - 6.94444444444443e-05*G3_0_0_22_2 - 6.94444444444443e-05*G3_0_0_23_2 + 0.000138888888888889*G3_0_0_24_2 + 0.000277777777777777*G3_0_0_25_2 + 0.000277777777777777*G3_0_0_26_2 + 0.000138888888888889*G3_0_0_27_2 + 0.000138888888888889*G3_0_0_28_2 + 0.000277777777777777*G3_0_0_29_2 - 6.94444444444443e-05*G3_0_1_0_0 - 6.94444444444443e-05*G3_0_1_2_0 - 6.94444444444443e-05*G3_0_1_3_0 + 0.000138888888888889*G3_0_1_4_0 + 0.000277777777777778*G3_0_1_5_0 + 0.000277777777777778*G3_0_1_6_0 + 0.000138888888888889*G3_0_1_7_0 + 0.000138888888888889*G3_0_1_8_0 + 0.000277777777777778*G3_0_1_9_0 - 6.94444444444443e-05*G3_0_1_10_1 - 6.94444444444443e-05*G3_0_1_12_1 - 6.94444444444443e-05*G3_0_1_13_1 + 0.000138888888888889*G3_0_1_14_1 + 0.000277777777777778*G3_0_1_15_1 + 0.000277777777777778*G3_0_1_16_1 + 0.000138888888888889*G3_0_1_17_1 + 0.000138888888888889*G3_0_1_18_1 + 0.000277777777777778*G3_0_1_19_1 - 6.94444444444443e-05*G3_0_1_20_2 - 6.94444444444443e-05*G3_0_1_22_2 - 6.94444444444443e-05*G3_0_1_23_2 + 0.000138888888888889*G3_0_1_24_2 + 0.000277777777777778*G3_0_1_25_2 + 0.000277777777777778*G3_0_1_26_2 + 0.000138888888888889*G3_0_1_27_2 + 0.000138888888888889*G3_0_1_28_2 + 0.000277777777777778*G3_0_1_29_2 - 6.94444444444443e-05*G3_0_2_0_0 - 6.94444444444443e-05*G3_0_2_2_0 - 6.94444444444443e-05*G3_0_2_3_0 + 0.000138888888888889*G3_0_2_4_0 + 0.000277777777777778*G3_0_2_5_0 + 0.000277777777777777*G3_0_2_6_0 + 0.000138888888888889*G3_0_2_7_0 + 0.000138888888888889*G3_0_2_8_0 + 0.000277777777777778*G3_0_2_9_0 - 6.94444444444443e-05*G3_0_2_10_1 - 6.94444444444443e-05*G3_0_2_12_1 - 6.94444444444443e-05*G3_0_2_13_1 + 0.000138888888888889*G3_0_2_14_1 + 0.000277777777777778*G3_0_2_15_1 + 0.000277777777777777*G3_0_2_16_1 + 0.000138888888888889*G3_0_2_17_1 + 0.000138888888888889*G3_0_2_18_1 + 0.000277777777777778*G3_0_2_19_1 - 6.94444444444443e-05*G3_0_2_20_2 - 6.94444444444443e-05*G3_0_2_22_2 - 6.94444444444443e-05*G3_0_2_23_2 + 0.000138888888888889*G3_0_2_24_2 + 0.000277777777777778*G3_0_2_25_2 + 0.000277777777777777*G3_0_2_26_2 + 0.000138888888888889*G3_0_2_27_2 + 0.000138888888888889*G3_0_2_28_2 + 0.000277777777777778*G3_0_2_29_2 + 6.94444444444443e-05*G3_1_0_0_0 + 6.94444444444443e-05*G3_1_0_2_0 + 6.94444444444443e-05*G3_1_0_3_0 - 0.000138888888888889*G3_1_0_4_0 - 0.000277777777777777*G3_1_0_5_0 - 0.000277777777777777*G3_1_0_6_0 - 0.000138888888888889*G3_1_0_7_0 - 0.000138888888888889*G3_1_0_8_0 - 0.000277777777777777*G3_1_0_9_0 + 6.94444444444443e-05*G3_1_0_10_1 + 6.94444444444443e-05*G3_1_0_12_1 + 6.94444444444443e-05*G3_1_0_13_1 - 0.000138888888888889*G3_1_0_14_1 - 0.000277777777777777*G3_1_0_15_1 - 0.000277777777777777*G3_1_0_16_1 - 0.000138888888888889*G3_1_0_17_1 - 0.000138888888888889*G3_1_0_18_1 - 0.000277777777777777*G3_1_0_19_1 + 6.94444444444443e-05*G3_1_0_20_2 + 6.94444444444443e-05*G3_1_0_22_2 + 6.94444444444443e-05*G3_1_0_23_2 - 0.000138888888888889*G3_1_0_24_2 - 0.000277777777777777*G3_1_0_25_2 - 0.000277777777777777*G3_1_0_26_2 - 0.000138888888888889*G3_1_0_27_2 - 0.000138888888888889*G3_1_0_28_2 - 0.000277777777777777*G3_1_0_29_2 + 6.94444444444443e-05*G3_2_1_0_0 + 6.94444444444443e-05*G3_2_1_2_0 + 6.94444444444444e-05*G3_2_1_3_0 - 0.000138888888888889*G3_2_1_4_0 - 0.000277777777777778*G3_2_1_5_0 - 0.000277777777777778*G3_2_1_6_0 - 0.000138888888888889*G3_2_1_7_0 - 0.000138888888888889*G3_2_1_8_0 - 0.000277777777777778*G3_2_1_9_0 + 6.94444444444443e-05*G3_2_1_10_1 + 6.94444444444443e-05*G3_2_1_12_1 + 6.94444444444444e-05*G3_2_1_13_1 - 0.000138888888888889*G3_2_1_14_1 - 0.000277777777777778*G3_2_1_15_1 - 0.000277777777777778*G3_2_1_16_1 - 0.000138888888888889*G3_2_1_17_1 - 0.000138888888888889*G3_2_1_18_1 - 0.000277777777777778*G3_2_1_19_1 + 6.94444444444443e-05*G3_2_1_20_2 + 6.94444444444443e-05*G3_2_1_22_2 + 6.94444444444444e-05*G3_2_1_23_2 - 0.000138888888888889*G3_2_1_24_2 - 0.000277777777777778*G3_2_1_25_2 - 0.000277777777777778*G3_2_1_26_2 - 0.000138888888888889*G3_2_1_27_2 - 0.000138888888888889*G3_2_1_28_2 - 0.000277777777777778*G3_2_1_29_2 + 6.94444444444443e-05*G3_3_2_0_0 + 6.94444444444443e-05*G3_3_2_2_0 + 6.94444444444443e-05*G3_3_2_3_0 - 0.000138888888888889*G3_3_2_4_0 - 0.000277777777777778*G3_3_2_5_0 - 0.000277777777777778*G3_3_2_6_0 - 0.000138888888888889*G3_3_2_7_0 - 0.000138888888888889*G3_3_2_8_0 - 0.000277777777777778*G3_3_2_9_0 + 6.94444444444443e-05*G3_3_2_10_1 + 6.94444444444443e-05*G3_3_2_12_1 + 6.94444444444443e-05*G3_3_2_13_1 - 0.000138888888888889*G3_3_2_14_1 - 0.000277777777777778*G3_3_2_15_1 - 0.000277777777777778*G3_3_2_16_1 - 0.000138888888888889*G3_3_2_17_1 - 0.000138888888888889*G3_3_2_18_1 - 0.000277777777777778*G3_3_2_19_1 + 6.94444444444443e-05*G3_3_2_20_2 + 6.94444444444443e-05*G3_3_2_22_2 + 6.94444444444443e-05*G3_3_2_23_2 - 0.000138888888888889*G3_3_2_24_2 - 0.000277777777777778*G3_3_2_25_2 - 0.000277777777777778*G3_3_2_26_2 - 0.000138888888888889*G3_3_2_27_2 - 0.000138888888888889*G3_3_2_28_2 - 0.000277777777777778*G3_3_2_29_2;
-    A[2] = 0.00833333333333334*G0_0 + 0.00833333333333333*G0_1 + 0.0166666666666667*G0_2 + 0.00833333333333333*G0_3 + 0.000416666666666667*G1_0 + 0.000416666666666666*G1_1 + 0.000833333333333333*G1_2 + 0.000416666666666666*G1_3 + 2.08333333333333e-05*G2_1_0_0 + 2.08333333333333e-05*G2_1_0_1 + 2.08333333333333e-05*G2_1_0_2 - 2.08333333333333e-05*G2_1_1_0 - 2.08333333333333e-05*G2_1_2_1 - 2.08333333333333e-05*G2_1_3_2 - 6.94444444444443e-05*G3_0_0_0_0 - 6.94444444444443e-05*G3_0_0_1_0 - 6.94444444444444e-05*G3_0_0_3_0 + 0.000277777777777777*G3_0_0_4_0 + 0.000138888888888889*G3_0_0_5_0 + 0.000277777777777778*G3_0_0_6_0 + 0.000138888888888889*G3_0_0_7_0 + 0.000277777777777778*G3_0_0_8_0 + 0.000138888888888889*G3_0_0_9_0 - 6.94444444444443e-05*G3_0_0_10_1 - 6.94444444444443e-05*G3_0_0_11_1 - 6.94444444444444e-05*G3_0_0_13_1 + 0.000277777777777777*G3_0_0_14_1 + 0.000138888888888889*G3_0_0_15_1 + 0.000277777777777778*G3_0_0_16_1 + 0.000138888888888889*G3_0_0_17_1 + 0.000277777777777778*G3_0_0_18_1 + 0.000138888888888889*G3_0_0_19_1 - 6.94444444444443e-05*G3_0_0_20_2 - 6.94444444444443e-05*G3_0_0_21_2 - 6.94444444444444e-05*G3_0_0_23_2 + 0.000277777777777777*G3_0_0_24_2 + 0.000138888888888889*G3_0_0_25_2 + 0.000277777777777778*G3_0_0_26_2 + 0.000138888888888889*G3_0_0_27_2 + 0.000277777777777778*G3_0_0_28_2 + 0.000138888888888889*G3_0_0_29_2 - 6.94444444444443e-05*G3_0_1_0_0 - 6.94444444444443e-05*G3_0_1_1_0 - 6.94444444444444e-05*G3_0_1_3_0 + 0.000277777777777778*G3_0_1_4_0 + 0.000138888888888889*G3_0_1_5_0 + 0.000277777777777778*G3_0_1_6_0 + 0.000138888888888889*G3_0_1_7_0 + 0.000277777777777778*G3_0_1_8_0 + 0.000138888888888889*G3_0_1_9_0 - 6.94444444444443e-05*G3_0_1_10_1 - 6.94444444444443e-05*G3_0_1_11_1 - 6.94444444444444e-05*G3_0_1_13_1 + 0.000277777777777778*G3_0_1_14_1 + 0.000138888888888889*G3_0_1_15_1 + 0.000277777777777778*G3_0_1_16_1 + 0.000138888888888889*G3_0_1_17_1 + 0.000277777777777778*G3_0_1_18_1 + 0.000138888888888889*G3_0_1_19_1 - 6.94444444444443e-05*G3_0_1_20_2 - 6.94444444444443e-05*G3_0_1_21_2 - 6.94444444444444e-05*G3_0_1_23_2 + 0.000277777777777778*G3_0_1_24_2 + 0.000138888888888889*G3_0_1_25_2 + 0.000277777777777778*G3_0_1_26_2 + 0.000138888888888889*G3_0_1_27_2 + 0.000277777777777778*G3_0_1_28_2 + 0.000138888888888889*G3_0_1_29_2 - 6.94444444444443e-05*G3_0_2_0_0 - 6.94444444444443e-05*G3_0_2_1_0 - 6.94444444444444e-05*G3_0_2_3_0 + 0.000277777777777778*G3_0_2_4_0 + 0.000138888888888889*G3_0_2_5_0 + 0.000277777777777778*G3_0_2_6_0 + 0.000138888888888889*G3_0_2_7_0 + 0.000277777777777778*G3_0_2_8_0 + 0.000138888888888889*G3_0_2_9_0 - 6.94444444444443e-05*G3_0_2_10_1 - 6.94444444444443e-05*G3_0_2_11_1 - 6.94444444444444e-05*G3_0_2_13_1 + 0.000277777777777778*G3_0_2_14_1 + 0.000138888888888889*G3_0_2_15_1 + 0.000277777777777778*G3_0_2_16_1 + 0.000138888888888889*G3_0_2_17_1 + 0.000277777777777778*G3_0_2_18_1 + 0.000138888888888889*G3_0_2_19_1 - 6.94444444444443e-05*G3_0_2_20_2 - 6.94444444444443e-05*G3_0_2_21_2 - 6.94444444444444e-05*G3_0_2_23_2 + 0.000277777777777778*G3_0_2_24_2 + 0.000138888888888889*G3_0_2_25_2 + 0.000277777777777778*G3_0_2_26_2 + 0.000138888888888889*G3_0_2_27_2 + 0.000277777777777778*G3_0_2_28_2 + 0.000138888888888889*G3_0_2_29_2 + 6.94444444444443e-05*G3_1_0_0_0 + 6.94444444444443e-05*G3_1_0_1_0 + 6.94444444444444e-05*G3_1_0_3_0 - 0.000277777777777777*G3_1_0_4_0 - 0.000138888888888889*G3_1_0_5_0 - 0.000277777777777778*G3_1_0_6_0 - 0.000138888888888889*G3_1_0_7_0 - 0.000277777777777778*G3_1_0_8_0 - 0.000138888888888889*G3_1_0_9_0 + 6.94444444444443e-05*G3_1_0_10_1 + 6.94444444444443e-05*G3_1_0_11_1 + 6.94444444444444e-05*G3_1_0_13_1 - 0.000277777777777777*G3_1_0_14_1 - 0.000138888888888889*G3_1_0_15_1 - 0.000277777777777778*G3_1_0_16_1 - 0.000138888888888889*G3_1_0_17_1 - 0.000277777777777778*G3_1_0_18_1 - 0.000138888888888889*G3_1_0_19_1 + 6.94444444444443e-05*G3_1_0_20_2 + 6.94444444444443e-05*G3_1_0_21_2 + 6.94444444444444e-05*G3_1_0_23_2 - 0.000277777777777777*G3_1_0_24_2 - 0.000138888888888889*G3_1_0_25_2 - 0.000277777777777778*G3_1_0_26_2 - 0.000138888888888889*G3_1_0_27_2 - 0.000277777777777778*G3_1_0_28_2 - 0.000138888888888889*G3_1_0_29_2 + 6.94444444444444e-05*G3_2_1_0_0 + 6.94444444444443e-05*G3_2_1_1_0 + 6.94444444444444e-05*G3_2_1_3_0 - 0.000277777777777778*G3_2_1_4_0 - 0.000138888888888889*G3_2_1_5_0 - 0.000277777777777778*G3_2_1_6_0 - 0.000138888888888889*G3_2_1_7_0 - 0.000277777777777778*G3_2_1_8_0 - 0.000138888888888889*G3_2_1_9_0 + 6.94444444444444e-05*G3_2_1_10_1 + 6.94444444444443e-05*G3_2_1_11_1 + 6.94444444444444e-05*G3_2_1_13_1 - 0.000277777777777778*G3_2_1_14_1 - 0.000138888888888889*G3_2_1_15_1 - 0.000277777777777778*G3_2_1_16_1 - 0.000138888888888889*G3_2_1_17_1 - 0.000277777777777778*G3_2_1_18_1 - 0.000138888888888889*G3_2_1_19_1 + 6.94444444444444e-05*G3_2_1_20_2 + 6.94444444444443e-05*G3_2_1_21_2 + 6.94444444444444e-05*G3_2_1_23_2 - 0.000277777777777778*G3_2_1_24_2 - 0.000138888888888889*G3_2_1_25_2 - 0.000277777777777778*G3_2_1_26_2 - 0.000138888888888889*G3_2_1_27_2 - 0.000277777777777778*G3_2_1_28_2 - 0.000138888888888889*G3_2_1_29_2 + 6.94444444444443e-05*G3_3_2_0_0 + 6.94444444444443e-05*G3_3_2_1_0 + 6.94444444444444e-05*G3_3_2_3_0 - 0.000277777777777778*G3_3_2_4_0 - 0.000138888888888889*G3_3_2_5_0 - 0.000277777777777778*G3_3_2_6_0 - 0.000138888888888889*G3_3_2_7_0 - 0.000277777777777778*G3_3_2_8_0 - 0.000138888888888889*G3_3_2_9_0 + 6.94444444444443e-05*G3_3_2_10_1 + 6.94444444444443e-05*G3_3_2_11_1 + 6.94444444444444e-05*G3_3_2_13_1 - 0.000277777777777778*G3_3_2_14_1 - 0.000138888888888889*G3_3_2_15_1 - 0.000277777777777778*G3_3_2_16_1 - 0.000138888888888889*G3_3_2_17_1 - 0.000277777777777778*G3_3_2_18_1 - 0.000138888888888889*G3_3_2_19_1 + 6.94444444444443e-05*G3_3_2_20_2 + 6.94444444444443e-05*G3_3_2_21_2 + 6.94444444444444e-05*G3_3_2_23_2 - 0.000277777777777778*G3_3_2_24_2 - 0.000138888888888889*G3_3_2_25_2 - 0.000277777777777778*G3_3_2_26_2 - 0.000138888888888889*G3_3_2_27_2 - 0.000277777777777778*G3_3_2_28_2 - 0.000138888888888889*G3_3_2_29_2;
-    A[3] = 0.00833333333333334*G0_0 + 0.00833333333333333*G0_1 + 0.00833333333333333*G0_2 + 0.0166666666666667*G0_3 + 0.000416666666666667*G1_0 + 0.000416666666666666*G1_1 + 0.000416666666666666*G1_2 + 0.000833333333333333*G1_3 + 2.08333333333333e-05*G2_2_0_0 + 2.08333333333333e-05*G2_2_0_1 + 2.08333333333333e-05*G2_2_0_2 - 2.08333333333333e-05*G2_2_1_0 - 2.08333333333333e-05*G2_2_2_1 - 2.08333333333333e-05*G2_2_3_2 - 6.94444444444443e-05*G3_0_0_0_0 - 6.94444444444443e-05*G3_0_0_1_0 - 6.94444444444444e-05*G3_0_0_2_0 + 0.000277777777777778*G3_0_0_4_0 + 0.000277777777777778*G3_0_0_5_0 + 0.000138888888888889*G3_0_0_6_0 + 0.000277777777777778*G3_0_0_7_0 + 0.000138888888888889*G3_0_0_8_0 + 0.000138888888888889*G3_0_0_9_0 - 6.94444444444443e-05*G3_0_0_10_1 - 6.94444444444443e-05*G3_0_0_11_1 - 6.94444444444444e-05*G3_0_0_12_1 + 0.000277777777777778*G3_0_0_14_1 + 0.000277777777777778*G3_0_0_15_1 + 0.000138888888888889*G3_0_0_16_1 + 0.000277777777777778*G3_0_0_17_1 + 0.000138888888888889*G3_0_0_18_1 + 0.000138888888888889*G3_0_0_19_1 - 6.94444444444443e-05*G3_0_0_20_2 - 6.94444444444443e-05*G3_0_0_21_2 - 6.94444444444444e-05*G3_0_0_22_2 + 0.000277777777777778*G3_0_0_24_2 + 0.000277777777777778*G3_0_0_25_2 + 0.000138888888888889*G3_0_0_26_2 + 0.000277777777777778*G3_0_0_27_2 + 0.000138888888888889*G3_0_0_28_2 + 0.000138888888888889*G3_0_0_29_2 - 6.94444444444443e-05*G3_0_1_0_0 - 6.94444444444443e-05*G3_0_1_1_0 - 6.94444444444444e-05*G3_0_1_2_0 + 0.000277777777777778*G3_0_1_4_0 + 0.000277777777777778*G3_0_1_5_0 + 0.000138888888888889*G3_0_1_6_0 + 0.000277777777777778*G3_0_1_7_0 + 0.000138888888888889*G3_0_1_8_0 + 0.000138888888888889*G3_0_1_9_0 - 6.94444444444443e-05*G3_0_1_10_1 - 6.94444444444443e-05*G3_0_1_11_1 - 6.94444444444444e-05*G3_0_1_12_1 + 0.000277777777777778*G3_0_1_14_1 + 0.000277777777777778*G3_0_1_15_1 + 0.000138888888888889*G3_0_1_16_1 + 0.000277777777777778*G3_0_1_17_1 + 0.000138888888888889*G3_0_1_18_1 + 0.000138888888888889*G3_0_1_19_1 - 6.94444444444443e-05*G3_0_1_20_2 - 6.94444444444443e-05*G3_0_1_21_2 - 6.94444444444444e-05*G3_0_1_22_2 + 0.000277777777777778*G3_0_1_24_2 + 0.000277777777777778*G3_0_1_25_2 + 0.000138888888888889*G3_0_1_26_2 + 0.000277777777777778*G3_0_1_27_2 + 0.000138888888888889*G3_0_1_28_2 + 0.000138888888888889*G3_0_1_29_2 - 6.94444444444443e-05*G3_0_2_0_0 - 6.94444444444443e-05*G3_0_2_1_0 - 6.94444444444444e-05*G3_0_2_2_0 + 0.000277777777777778*G3_0_2_4_0 + 0.000277777777777778*G3_0_2_5_0 + 0.000138888888888889*G3_0_2_6_0 + 0.000277777777777778*G3_0_2_7_0 + 0.000138888888888889*G3_0_2_8_0 + 0.000138888888888889*G3_0_2_9_0 - 6.94444444444443e-05*G3_0_2_10_1 - 6.94444444444443e-05*G3_0_2_11_1 - 6.94444444444444e-05*G3_0_2_12_1 + 0.000277777777777778*G3_0_2_14_1 + 0.000277777777777778*G3_0_2_15_1 + 0.000138888888888889*G3_0_2_16_1 + 0.000277777777777778*G3_0_2_17_1 + 0.000138888888888889*G3_0_2_18_1 + 0.000138888888888889*G3_0_2_19_1 - 6.94444444444443e-05*G3_0_2_20_2 - 6.94444444444443e-05*G3_0_2_21_2 - 6.94444444444444e-05*G3_0_2_22_2 + 0.000277777777777778*G3_0_2_24_2 + 0.000277777777777778*G3_0_2_25_2 + 0.000138888888888889*G3_0_2_26_2 + 0.000277777777777778*G3_0_2_27_2 + 0.000138888888888889*G3_0_2_28_2 + 0.000138888888888889*G3_0_2_29_2 + 6.94444444444443e-05*G3_1_0_0_0 + 6.94444444444443e-05*G3_1_0_1_0 + 6.94444444444444e-05*G3_1_0_2_0 - 0.000277777777777778*G3_1_0_4_0 - 0.000277777777777778*G3_1_0_5_0 - 0.000138888888888889*G3_1_0_6_0 - 0.000277777777777778*G3_1_0_7_0 - 0.000138888888888889*G3_1_0_8_0 - 0.000138888888888889*G3_1_0_9_0 + 6.94444444444443e-05*G3_1_0_10_1 + 6.94444444444443e-05*G3_1_0_11_1 + 6.94444444444444e-05*G3_1_0_12_1 - 0.000277777777777778*G3_1_0_14_1 - 0.000277777777777778*G3_1_0_15_1 - 0.000138888888888889*G3_1_0_16_1 - 0.000277777777777778*G3_1_0_17_1 - 0.000138888888888889*G3_1_0_18_1 - 0.000138888888888889*G3_1_0_19_1 + 6.94444444444443e-05*G3_1_0_20_2 + 6.94444444444443e-05*G3_1_0_21_2 + 6.94444444444444e-05*G3_1_0_22_2 - 0.000277777777777778*G3_1_0_24_2 - 0.000277777777777778*G3_1_0_25_2 - 0.000138888888888889*G3_1_0_26_2 - 0.000277777777777778*G3_1_0_27_2 - 0.000138888888888889*G3_1_0_28_2 - 0.000138888888888889*G3_1_0_29_2 + 6.94444444444444e-05*G3_2_1_0_0 + 6.94444444444443e-05*G3_2_1_1_0 + 6.94444444444444e-05*G3_2_1_2_0 - 0.000277777777777778*G3_2_1_4_0 - 0.000277777777777778*G3_2_1_5_0 - 0.000138888888888889*G3_2_1_6_0 - 0.000277777777777778*G3_2_1_7_0 - 0.000138888888888889*G3_2_1_8_0 - 0.000138888888888889*G3_2_1_9_0 + 6.94444444444444e-05*G3_2_1_10_1 + 6.94444444444443e-05*G3_2_1_11_1 + 6.94444444444444e-05*G3_2_1_12_1 - 0.000277777777777778*G3_2_1_14_1 - 0.000277777777777778*G3_2_1_15_1 - 0.000138888888888889*G3_2_1_16_1 - 0.000277777777777778*G3_2_1_17_1 - 0.000138888888888889*G3_2_1_18_1 - 0.000138888888888889*G3_2_1_19_1 + 6.94444444444444e-05*G3_2_1_20_2 + 6.94444444444443e-05*G3_2_1_21_2 + 6.94444444444444e-05*G3_2_1_22_2 - 0.000277777777777778*G3_2_1_24_2 - 0.000277777777777778*G3_2_1_25_2 - 0.000138888888888889*G3_2_1_26_2 - 0.000277777777777778*G3_2_1_27_2 - 0.000138888888888889*G3_2_1_28_2 - 0.000138888888888889*G3_2_1_29_2 + 6.94444444444444e-05*G3_3_2_0_0 + 6.94444444444443e-05*G3_3_2_1_0 + 6.94444444444444e-05*G3_3_2_2_0 - 0.000277777777777778*G3_3_2_4_0 - 0.000277777777777778*G3_3_2_5_0 - 0.000138888888888889*G3_3_2_6_0 - 0.000277777777777778*G3_3_2_7_0 - 0.000138888888888889*G3_3_2_8_0 - 0.000138888888888889*G3_3_2_9_0 + 6.94444444444444e-05*G3_3_2_10_1 + 6.94444444444443e-05*G3_3_2_11_1 + 6.94444444444444e-05*G3_3_2_12_1 - 0.000277777777777778*G3_3_2_14_1 - 0.000277777777777778*G3_3_2_15_1 - 0.000138888888888889*G3_3_2_16_1 - 0.000277777777777778*G3_3_2_17_1 - 0.000138888888888889*G3_3_2_18_1 - 0.000138888888888889*G3_3_2_19_1 + 6.94444444444444e-05*G3_3_2_20_2 + 6.94444444444443e-05*G3_3_2_21_2 + 6.94444444444444e-05*G3_3_2_22_2 - 0.000277777777777778*G3_3_2_24_2 - 0.000277777777777778*G3_3_2_25_2 - 0.000138888888888889*G3_3_2_26_2 - 0.000277777777777778*G3_3_2_27_2 - 0.000138888888888889*G3_3_2_28_2 - 0.000138888888888889*G3_3_2_29_2;
+    
+    // Compute circumradius
+    
+    
+    // Array of quadrature weights.
+    static const double W5[5] = {-0.133333333333333, 0.075, 0.075, 0.075, 0.075};
+    // Quadrature points on the UFC reference element: (0.25, 0.25, 0.25), (0.5, 0.166666666666667, 0.166666666666667), (0.166666666666667, 0.5, 0.166666666666667), (0.166666666666667, 0.166666666666667, 0.5), (0.166666666666667, 0.166666666666667, 0.166666666666667)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[5][4] = \
+    {{0.25, 0.25, 0.25, 0.25},
+    {0.166666666666667, 0.5, 0.166666666666667, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.5, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.166666666666667, 0.5},
+    {0.5, 0.166666666666667, 0.166666666666667, 0.166666666666667}};
+    
+    static const double FE0_D001[5][4] = \
+    {{-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0}};
+    
+    static const double FE0_D010[5][4] = \
+    {{-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0}};
+    
+    static const double FE0_D100[5][4] = \
+    {{-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0}};
+    
+    static const double FE2_C0[5][30] = \
+    {{-0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C2[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333}};
+    
+    static const double FE3[5][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 4; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 2630
+    for (unsigned int ip = 0; ip < 5; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      double F4 = 0.0;
+      double F5 = 0.0;
+      double F6 = 0.0;
+      double F7 = 0.0;
+      double F8 = 0.0;
+      double F9 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F2 += FE3[ip][0]*w[5][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 48
+      for (unsigned int r = 0; r < 4; r++)
+      {
+        F0 += FE0[ip][r]*w[0][r];
+        F1 += FE0[ip][r]*w[2][r];
+        F3 += FE0[ip][r]*w[4][r];
+        F4 += FE0_D100[ip][r]*w[0][r];
+        F5 += FE0_D010[ip][r]*w[0][r];
+        F6 += FE0_D001[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 180
+      for (unsigned int r = 0; r < 30; r++)
+      {
+        F7 += FE2_C0[ip][r]*w[1][r];
+        F8 += FE2_C1[ip][r]*w[1][r];
+        F9 += FE2_C2[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 296
+      for (unsigned int j = 0; j < 4; j++)
+      {
+        // Number of operations to compute entry: 74
+        A[j] += ((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F4 + K[3]*F5 + K[6]*F6)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F4 + K[4]*F5 + K[7]*F6)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F4 + K[5]*F5 + K[8]*F6))))*F3)*0.5*F2)*(-1.0) + (FE0[ip][j]*F0 + FE0[ip][j]*F1*F2)) + ((((FE0[ip][j]*((K[0]*F4 + K[3]*F5 + K[6]*F6)))*F7 + (FE0[ip][j]*((K[1]*F4 + K[4]*F5 + K[7]*F6)))*F8 + (FE0[ip][j]*((K[2]*F4 + K[5]*F5 + K[8]*F6)))*F9))*0.5*F2)*(-1.0))*W5[ip]*det;
+      } // end loop over 'j'
+    } // end loop over 'ip'
   }
 
 };
@@ -14245,7 +15308,7 @@ public:
   /// Tabulate which form coefficients are used by this integral
   virtual const std::vector<bool> & enabled_coefficients() const
   {
-    static const std::vector<bool> enabled({false, false, false, true});
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
     return enabled;
   }
 
@@ -14257,9 +15320,9 @@ public:
                                int cell_orientation) const
   {
     // Number of operations (multiply-add pairs) for Jacobian data:      59
-    // Number of operations (multiply-add pairs) for geometry tensor:    4
+    // Number of operations (multiply-add pairs) for geometry tensor:    6
     // Number of operations (multiply-add pairs) for tensor contraction: 30
-    // Total number of operations (multiply-add pairs):                  93
+    // Total number of operations (multiply-add pairs):                  95
     
     // Compute Jacobian
     double J[9];
@@ -14287,10 +15350,10 @@ public:
     
     
     // Compute geometry tensor
-    const double G0_0 = det*w[3][0]*(1.0);
-    const double G0_1 = det*w[3][1]*(1.0);
-    const double G0_2 = det*w[3][2]*(1.0);
-    const double G0_3 = det*w[3][3]*(1.0);
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
+    const double G0_3_0 = det*w[3][3]*w[5][0]*(1.0);
     
     // Compute element tensor
     switch (facet)
@@ -14298,32 +15361,32 @@ public:
     case 0:
       {
         A[0] = 0.0;
-      A[1] = 0.0833333333333333*G0_1 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
-      A[2] = 0.0416666666666667*G0_1 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
-      A[3] = 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+      A[1] = 0.0833333333333333*G0_1_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[2] = 0.0416666666666667*G0_1_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_1_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
         break;
       }
     case 1:
       {
-        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
       A[1] = 0.0;
-      A[2] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
-      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
         break;
       }
     case 2:
       {
-        A[0] = 0.0833333333333333*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_3;
-      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666667*G0_3;
+        A[0] = 0.0833333333333333*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_3_0;
       A[2] = 0.0;
-      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_3;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_3_0;
         break;
       }
     case 3:
       {
-        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2;
-      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666666*G0_2;
-      A[2] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_2;
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_2_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_2_0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_2_0;
       A[3] = 0.0;
         break;
       }
@@ -14367,7 +15430,11 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
+<<<<<<< HEAD
     return "408c20f0574f9788da826efb73452cf40d24866d332fd648d3852038b9bebf70b0644b35990be57c55063ec72dc8146269a02d034474b8624f86b517ba2976f2";
+=======
+    return "20580ba5ab4e11322289ef9020544e9354a580d9c74eb5876261e2f5801b15430fafb0f86059a207d8db7517925b14b1057a68504a822999dcb9d4a39b2404ae";
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -14380,13 +15447,13 @@ public:
   /// Return the number of coefficients (n)
   virtual std::size_t num_coefficients() const
   {
-    return 1;
+    return 3;
   }
 
   /// Return original coefficient position for each coefficient (0 <= i < n)
   virtual std::size_t original_coefficient_position(std::size_t i) const
   {
-    static const std::vector<std::size_t> position({0});
+    static const std::vector<std::size_t> position({0, 1, 2});
     return position[i];
   }
 
@@ -14398,17 +15465,27 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_finite_element_1();
+        return new convectiondiffusion3d_finite_element_2();
+        break;
+      }
+    case 3:
+      {
+        return new convectiondiffusion3d_finite_element_3();
+        break;
+      }
+    case 4:
+      {
+        return new convectiondiffusion3d_finite_element_0();
         break;
       }
     }
@@ -14423,17 +15500,27 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_dofmap_1();
+        return new convectiondiffusion3d_dofmap_2();
+        break;
+      }
+    case 3:
+      {
+        return new convectiondiffusion3d_dofmap_3();
+        break;
+      }
+    case 4:
+      {
+        return new convectiondiffusion3d_dofmap_0();
         break;
       }
     }
@@ -14481,28 +15568,50 @@ public:
 
   /// Return whether the form has any exterior facet integrals
   virtual bool has_exterior_facet_integrals() const
+<<<<<<< HEAD
   {
     return false;
   }
 
   /// Return whether the form has any interior facet integrals
   virtual bool has_interior_facet_integrals() const
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
+<<<<<<< HEAD
   /// Return whether the form has any vertex integrals
   virtual bool has_vertex_integrals() const
+=======
+  /// Return whether the form has any interior facet integrals
+  virtual bool has_interior_facet_integrals() const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
+<<<<<<< HEAD
+  /// Return whether the form has any custom integrals
+  virtual bool has_custom_integrals() const
+=======
+  /// Return whether the form has any vertex integrals
+  virtual bool has_vertex_integrals() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return false;
+  }
+
+<<<<<<< HEAD
+=======
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
   {
     return false;
   }
 
+>>>>>>> remotes/origin/fenics_1.6.x
 
   /// Create a new cell integral on sub domain subdomain_id
   virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
@@ -14601,7 +15710,11 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
+<<<<<<< HEAD
     return "7049a1e8a8585d96c2c35b1e012aa728915771acd53445f62954b25ff2f11473996b5ef0d2fd5ec4a13620a0e8c2d2720fca7d1c7d0d1bdad96373da2bd838e6";
+=======
+    return "51eb6ee84152c332707b571fe6eeb456e0be363620eccb75ac7e2230b2875053f91e8fd01270c55ec3624325d8392d28ee08a7991ef07a9a064760db48fcd56e";
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -14614,13 +15727,13 @@ public:
   /// Return the number of coefficients (n)
   virtual std::size_t num_coefficients() const
   {
-    return 4;
+    return 6;
   }
 
   /// Return original coefficient position for each coefficient (0 <= i < n)
   virtual std::size_t original_coefficient_position(std::size_t i) const
   {
-    static const std::vector<std::size_t> position({0, 1, 2, 3});
+    static const std::vector<std::size_t> position({0, 1, 2, 3, 4, 5});
     return position[i];
   }
 
@@ -14632,27 +15745,37 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_finite_element_1();
+        return new convectiondiffusion3d_finite_element_2();
         break;
       }
     case 3:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
         break;
       }
     case 4:
       {
-        return new convectiondiffusion3d_finite_element_2();
+        return new convectiondiffusion3d_finite_element_3();
+        break;
+      }
+    case 5:
+      {
+        return new convectiondiffusion3d_finite_element_3();
+        break;
+      }
+    case 6:
+      {
+        return new convectiondiffusion3d_finite_element_0();
         break;
       }
     }
@@ -14667,27 +15790,37 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_dofmap_1();
+        return new convectiondiffusion3d_dofmap_2();
         break;
       }
     case 3:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
         break;
       }
     case 4:
       {
-        return new convectiondiffusion3d_dofmap_2();
+        return new convectiondiffusion3d_dofmap_3();
+        break;
+      }
+    case 5:
+      {
+        return new convectiondiffusion3d_dofmap_3();
+        break;
+      }
+    case 6:
+      {
+        return new convectiondiffusion3d_dofmap_0();
         break;
       }
     }
@@ -14753,6 +15886,8 @@ public:
 
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
+<<<<<<< HEAD
+=======
   {
     return false;
   }
@@ -14778,23 +15913,76 @@ public:
 
   /// Create a new vertex integral on sub domain subdomain_id
   virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
-    return 0;
+    return false;
   }
 
+<<<<<<< HEAD
+
+  /// Create a new cell integral on sub domain subdomain_id
+  virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
+=======
   /// Create a new custom integral on sub domain subdomain_id
   virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return 0;
   }
 
+<<<<<<< HEAD
+  /// Create a new exterior facet integral on sub domain subdomain_id
+  virtual ufc::exterior_facet_integral* create_exterior_facet_integral(std::size_t subdomain_id) const
+  {
+    return 0;
+  }
+
+  /// Create a new interior facet integral on sub domain subdomain_id
+  virtual ufc::interior_facet_integral* create_interior_facet_integral(std::size_t subdomain_id) const
+=======
 
   /// Create a new cell integral on everywhere else
   virtual ufc::cell_integral* create_default_cell_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Create a new vertex integral on sub domain subdomain_id
+  virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
+=======
+  /// Create a new exterior facet integral on everywhere else
+  virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+  /// Create a new custom integral on sub domain subdomain_id
+  virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
+=======
+  /// Create a new interior facet integral on everywhere else
+  virtual ufc::interior_facet_integral* create_default_interior_facet_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    return 0;
+  }
+
+<<<<<<< HEAD
+
+  /// Create a new cell integral on everywhere else
+  virtual ufc::cell_integral* create_default_cell_integral() const
+=======
+  /// Create a new vertex integral on everywhere else
+  virtual ufc::vertex_integral* create_default_vertex_integral() const
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     return new convectiondiffusion3d_cell_integral_1_otherwise();
   }
 
+<<<<<<< HEAD
   /// Create a new exterior facet integral on everywhere else
   virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
   {
@@ -14813,6 +16001,8 @@ public:
     return 0;
   }
 
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
   /// Create a new custom integral on everywhere else
   virtual ufc::custom_integral* create_default_custom_integral() const
   {
@@ -14849,8 +16039,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14858,8 +16053,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14869,8 +16069,12 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -14879,8 +16083,63 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+  {
+    // Do nothing
+  }
+
+};
+
+class CoefficientSpace_c: public dolfin::FunctionSpace
+{
+public:
+
+  //--- Constructors for standard function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_c(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_c(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+  {
+    // Do nothing
+  }
+
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_c(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+<<<<<<< HEAD
+  CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), *mesh, constrained_domain)))
+=======
+  CoefficientSpace_c(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14896,8 +16155,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14905,8 +16169,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14916,8 +16185,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -14926,8 +16200,13 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14943,8 +16222,13 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_g(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -14952,6 +16236,7 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
   {
@@ -14966,6 +16251,29 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_g(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
   }
@@ -14973,30 +16281,39 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
 };
 
-class CoefficientSpace_u0: public dolfin::FunctionSpace
+class CoefficientSpace_k: public dolfin::FunctionSpace
 {
 public:
 
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
+<<<<<<< HEAD
   CoefficientSpace_u0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+  CoefficientSpace_k(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
+<<<<<<< HEAD
   CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
@@ -15013,37 +16330,71 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+  CoefficientSpace_k(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
+<<<<<<< HEAD
   // Create standard function space (shared pointer version)
   CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_k(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_k(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
 };
 
-class Form_a_FunctionSpace_0: public dolfin::FunctionSpace
+class CoefficientSpace_u0: public dolfin::FunctionSpace
 {
 public:
 
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
+<<<<<<< HEAD
   Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+  CoefficientSpace_u0(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
+<<<<<<< HEAD
   Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
@@ -15060,6 +16411,93 @@ public:
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
+  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  CoefficientSpace_u0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+};
+
+class Form_a_FunctionSpace_0: public dolfin::FunctionSpace
+{
+public:
+
+  //--- Constructors for standard function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+<<<<<<< HEAD
+  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+  {
+    // Do nothing
+  }
+
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
+  {
+    // Do nothing
+  }
+
+<<<<<<< HEAD
+  // Create standard function space (shared pointer version)
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
+=======
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
   }
@@ -15067,12 +16505,23 @@ public:
   // Create standard function space (shared pointer version)
   Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
+<<<<<<< HEAD
+  //--- Constructors for constrained function space, 2 different versions ---
+
+  // Create standard function space (reference version)
+  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
+    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
+                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
+=======
 };
 
 class Form_a_FunctionSpace_1: public dolfin::FunctionSpace
@@ -15084,17 +16533,26 @@ public:
   // Create standard function space (reference version)
   Form_a_FunctionSpace_1(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+<<<<<<< HEAD
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+  {
+    // Do nothing
+=======
+  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
+    dolfin::FunctionSpace(mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
   {
     // Do nothing
   }
@@ -15104,8 +16562,8 @@ public:
   // Create standard function space (reference version)
   Form_a_FunctionSpace_1(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -15114,15 +16572,20 @@ public:
   // Create standard function space (shared pointer version)
   Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
   {
     // Do nothing
+>>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
 
 typedef CoefficientSpace_b Form_a_FunctionSpace_2;
+
+typedef CoefficientSpace_c Form_a_FunctionSpace_3;
+
+typedef CoefficientSpace_k Form_a_FunctionSpace_4;
 
 class Form_a: public dolfin::Form
 {
@@ -15130,7 +16593,11 @@ public:
 
   // Constructor
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0):
+<<<<<<< HEAD
     dolfin::Form(2, 1), b(*this, 0)
+=======
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
@@ -15139,32 +16606,53 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
 
     this->b = b;
+    this->c = c;
+    this->k = k;
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
 
     this->b = *b;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
 
   // Constructor
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0):
+<<<<<<< HEAD
     dolfin::Form(2, 1), b(*this, 0)
+=======
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
@@ -15173,25 +16661,45 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = b;
+<<<<<<< HEAD
+=======
+    this->c = c;
+    this->k = k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b):
     dolfin::Form(2, 1), b(*this, 0)
+=======
+  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = *b;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
@@ -15205,6 +16713,10 @@ public:
   {
     if (name == "b")
       return 0;
+    else if (name == "c")
+      return 1;
+    else if (name == "k")
+      return 2;
 
     dolfin::dolfin_error("generated code for class Form",
                          "access coefficient data",
@@ -15219,6 +16731,10 @@ public:
     {
     case 0:
       return "b";
+    case 1:
+      return "c";
+    case 2:
+      return "k";
     }
 
     dolfin::dolfin_error("generated code for class Form",
@@ -15231,9 +16747,16 @@ public:
   typedef Form_a_FunctionSpace_0 TestSpace;
   typedef Form_a_FunctionSpace_1 TrialSpace;
   typedef Form_a_FunctionSpace_2 CoefficientSpace_b;
+  typedef Form_a_FunctionSpace_3 CoefficientSpace_c;
+  typedef Form_a_FunctionSpace_4 CoefficientSpace_k;
 
   // Coefficients
   dolfin::CoefficientAssigner b;
+<<<<<<< HEAD
+=======
+  dolfin::CoefficientAssigner c;
+  dolfin::CoefficientAssigner k;
+>>>>>>> remotes/origin/fenics_1.6.x
 };
 
 class Form_L_FunctionSpace_0: public dolfin::FunctionSpace
@@ -15245,8 +16768,13 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -15254,8 +16782,13 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -15265,8 +16798,13 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
+>>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -15275,8 +16813,13 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
+<<<<<<< HEAD
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
+=======
+                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
+                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -15291,13 +16834,21 @@ typedef CoefficientSpace_f Form_L_FunctionSpace_3;
 
 typedef CoefficientSpace_g Form_L_FunctionSpace_4;
 
+typedef CoefficientSpace_c Form_L_FunctionSpace_5;
+
+typedef CoefficientSpace_k Form_L_FunctionSpace_6;
+
 class Form_L: public dolfin::Form
 {
 public:
 
   // Constructor
   Form_L(const dolfin::FunctionSpace& V0):
+<<<<<<< HEAD
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -15305,8 +16856,13 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -15314,13 +16870,20 @@ public:
     this->b = b;
     this->f = f;
     this->g = g;
+    this->c = c;
+    this->k = k;
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -15328,13 +16891,22 @@ public:
     this->b = *b;
     this->f = *f;
     this->g = *g;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
 
   // Constructor
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0):
+<<<<<<< HEAD
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -15342,8 +16914,13 @@ public:
   }
 
   // Constructor
+<<<<<<< HEAD
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
     dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
+=======
+  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+>>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -15351,7 +16928,19 @@ public:
     this->b = b;
     this->f = f;
     this->g = g;
+    this->c = c;
+    this->k = k;
 
+    _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
+  }
+
+  // Constructor
+  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
+    dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
+  {
+    _function_spaces[0] = V0;
+
+<<<<<<< HEAD
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
 
@@ -15361,10 +16950,17 @@ public:
   {
     _function_spaces[0] = V0;
 
+=======
+>>>>>>> remotes/origin/fenics_1.6.x
     this->u0 = *u0;
     this->b = *b;
     this->f = *f;
     this->g = *g;
+<<<<<<< HEAD
+=======
+    this->c = *c;
+    this->k = *k;
+>>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
@@ -15384,6 +16980,10 @@ public:
       return 2;
     else if (name == "g")
       return 3;
+    else if (name == "c")
+      return 4;
+    else if (name == "k")
+      return 5;
 
     dolfin::dolfin_error("generated code for class Form",
                          "access coefficient data",
@@ -15404,6 +17004,10 @@ public:
       return "f";
     case 3:
       return "g";
+    case 4:
+      return "c";
+    case 5:
+      return "k";
     }
 
     dolfin::dolfin_error("generated code for class Form",
@@ -15418,12 +17022,19 @@ public:
   typedef Form_L_FunctionSpace_2 CoefficientSpace_b;
   typedef Form_L_FunctionSpace_3 CoefficientSpace_f;
   typedef Form_L_FunctionSpace_4 CoefficientSpace_g;
+  typedef Form_L_FunctionSpace_5 CoefficientSpace_c;
+  typedef Form_L_FunctionSpace_6 CoefficientSpace_k;
 
   // Coefficients
   dolfin::CoefficientAssigner u0;
   dolfin::CoefficientAssigner b;
   dolfin::CoefficientAssigner f;
   dolfin::CoefficientAssigner g;
+<<<<<<< HEAD
+=======
+  dolfin::CoefficientAssigner c;
+  dolfin::CoefficientAssigner k;
+>>>>>>> remotes/origin/fenics_1.6.x
 };
 
 // Class typedefs

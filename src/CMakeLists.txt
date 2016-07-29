@@ -37,7 +37,11 @@ include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
 set(SOURCE_FILES main.cpp pdeTestExamples.h)
 
 # Executable
+<<<<<<< HEAD
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PRE_BUILD_FFC_COMPILE})
+=======
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+>>>>>>> remotes/origin/fenics_1.6.x
 add_subdirectory(PoissonPDE)
 add_subdirectory(ConvectionDiffusionPDE)
 

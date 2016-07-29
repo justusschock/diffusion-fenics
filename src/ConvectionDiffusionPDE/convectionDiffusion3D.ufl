@@ -1,7 +1,9 @@
 #Define Convetion-Diffusion PDE in 1D
 
-scalar = FiniteElement("Lagrange", tetrahedron, 1)
-vector = VectorElement("Lagrange", tetrahedron, 2)
+cell = tetrahedron
+
+scalar = FiniteElement("Lagrange", cell, 1)
+vector = VectorElement("Lagrange", cell, 2)
 
 u = TrialFunction(scalar)
 v  = TestFunction(scalar)
@@ -10,9 +12,9 @@ b  = Coefficient(vector)
 f  = Coefficient(scalar)
 g = Coefficient(scalar)
 
-c = 0.005
-k = 0.05
+c = Coefficient(scalar)
+k = Constant(cell)
 
 a = u*v*dx + 0.5*k*(dot(b, grad(u)*v)*dx + c*dot(grad(u), grad(v))*dx)
 L = u0*v*dx - 0.5*k*(dot(b, grad(u0)*v)*dx + c*dot( grad(u0), grad(v))*dx) \
-    + k*f*v*dx + g*v*ds
+    + k*f*v*dx + k*g*v*ds
