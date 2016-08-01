@@ -10,509 +10,507 @@
 #include <ctime>
 #include <cmath>
 
-class TestInitial : public dolfin::Expression {
-    void eval(dolfin::Array<double>& values,
-              const dolfin::Array<double>& x) const
-    {
-        values[0] = 0;
-    }
-};
+namespace Poisson {
+	template <class Case>
+	class SetupCase {
+		public:
+        	std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
+        	std::shared_ptr<dolfin::Expression> getInitial()
+        	{
+            		return this->initial;
+        	}
+        	std::shared_ptr<dolfin::SubDomain> getDirichletBoundary()
+        	{
+            		return this->dirichletBoundary;
+        	}
+        	std::shared_ptr<dolfin::Expression> getSource() { return this->source; }
+        	std::shared_ptr<dolfin::Expression> getNeumann()
+        	{
+            		return this->neumann;
+        	}
+        
 
-// sourceTerm (right-hand side)
-class TestSource : public dolfin::Expression {
-    void eval(dolfin::Array<double>& values,
-              const dolfin::Array<double>& x) const
-    {
-        values[0] = 0;
-        if (x[0] > 1 - (0.5 + DOLFIN_EPS) and x[0] < 1 - (0.5 - DOLFIN_EPS) and
-            x[1] > 1 - (0.5 + DOLFIN_EPS) and x[1] < 1 - (0.5 - DOLFIN_EPS))
-            values[0] = 20000;
-    }
-};
+		SetupCase(std::size_t dim)
+            	: initial(std::make_shared<typename Case::Initial>()),
+              	dirichletBoundary(
+                  std::make_shared<typename Case::DirichletBoundary>()),
+              	source(std::make_shared<typename Case::Source>()),
+              	neumann(std::make_shared<typename Case::Neumann>())
+        	{
+            		if (dim == 1) {
+                		mesh = std::make_shared<dolfin::UnitIntervalMesh>(50);
+            		} else if (dim == 2) {
+                		mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
+            		} else if (dim == 3) {
+                		mesh = std::make_shared<dolfin::UnitCubeMesh>(50, 50, 50);
+            		} else {
+                		mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
+            		}	
+        	}
 
-// Normal derivative (used for Neumann boundary condition)
-class TestdUdN : public dolfin::Expression {
-    void eval(dolfin::Array<double>& values,
-              const dolfin::Array<double>& x) const
-    {
-        values[0] = x[0];
-    }
-};
+       		protected:
+        	std::shared_ptr<dolfin::Mesh> mesh;
+        	std::shared_ptr<dolfin::Expression> initial;
+        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
+        	std::shared_ptr<dolfin::Expression> source;
+        	std::shared_ptr<dolfin::Expression> neumann;
+	};
 
-// Sub domain for Dirichlet boundary condition
-class TestDirichletBoundary : public dolfin::SubDomain {
-    bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-    {
-        return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or
-               x[1] < DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
-    }
-};
+	class General {
+		public:
 
-class TestVelocity : public dolfin::Expression {
-    void eval(dolfin::Array<double>& values,
-              const dolfin::Array<double>& x) const
-    {
-        for (int i = 0; i < values.size(); i++) {
-            values[i] = 0;
-        }
-    }
+		class Initial : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = 0;
+    			}
+		};
 
-   public:
-    TestVelocity(std::size_t dim) : dolfin::Expression(dim){};
-};
+		// sourceTerm (right-hand side)
+		class Source : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = 0;
+        			if (x[0] > 1 - (0.5 + DOLFIN_EPS) and x[0] < 1 - (0.5 - DOLFIN_EPS) and
+            			x[1] > 1 - (0.5 + DOLFIN_EPS) and x[1] < 1 - (0.5 - DOLFIN_EPS))
+            			values[0] = 20000;
+    		}
+		};
 
-class TestDiffusivity : public dolfin::Expression {
-    void eval(dolfin::Array<double>& values,
-              const dolfin::Array<double>& x) const
-    {
-        values[0] = 0.05;
-    }
-};
+		// Normal derivative (used for Neumann boundary condition)
+		class Neumann : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = x[0];
+    			}
+		};
+
+		// Sub domain for Dirichlet boundary condition
+		class DirichletBoundary : public dolfin::SubDomain {
+    			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+    			{
+        			return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or
+               			x[1] < DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
+    			}
+		};
+
+	};
+
+}
 
 namespace ConvectionDiffusion {
 
-    template <class TestCase>
-    class TestCases {
-       public:
-        std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
-        std::shared_ptr<dolfin::Expression> getInitial()
-        {
-            return this->initial;
-        }
-        std::shared_ptr<dolfin::SubDomain> getDirichletBoundary()
-        {
-            return this->dirichletBoundary;
-        }
-        std::shared_ptr<dolfin::Expression> getSource() { return this->source; }
-        std::shared_ptr<dolfin::Expression> getNeumann()
-        {
-            return this->neumann;
-        }
-        std::shared_ptr<dolfin::Expression> getVelocity()
-        {
-            return this->velocity;
-        }
-        std::shared_ptr<dolfin::Expression> getDiffusivity()
-        {
-            return this->diffusivity;
-        }
+	template <class Case>
+    	class SetupCase {
+       		public:
+        	std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
+        	std::shared_ptr<dolfin::Expression> getInitial()
+        	{
+            		return this->initial;
+        	}
+        	std::shared_ptr<dolfin::SubDomain> getDirichletBoundary()
+        	{
+            		return this->dirichletBoundary;
+        	}
+        	std::shared_ptr<dolfin::Expression> getSource() { return this->source; }
+        	std::shared_ptr<dolfin::Expression> getNeumann()
+        	{
+            		return this->neumann;
+        	}
+        	std::shared_ptr<dolfin::Expression> getVelocity()
+        	{
+            		return this->velocity;
+        	}
+        	std::shared_ptr<dolfin::Expression> getDiffusivity()
+        	{
+            		return this->diffusivity;
+        	}
 
-        TestCases(std::size_t dim)
-            : initial(std::make_shared<typename TestCase::Initial>()),
-              dirichletBoundary(
-                  std::make_shared<typename TestCase::DirichletBoundary>()),
-              source(std::make_shared<typename TestCase::Source>()),
-              neumann(std::make_shared<typename TestCase::Neumann>()),
-              velocity(std::make_shared<typename TestCase::Velocity>(dim)),
-              diffusivity(std::make_shared<typename TestCase::Diffusivity>())
-        {
-            if (dim == 1) {
-                mesh = std::make_shared<dolfin::UnitIntervalMesh>(50);
-            } else if (dim == 2) {
-                mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
-            } else if (dim == 3) {
-                mesh = std::make_shared<dolfin::UnitCubeMesh>(50, 50, 50);
-            } else {
-                mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
-            }
-        }
+		SetupCase(std::size_t dim)
+            	: initial(std::make_shared<typename Case::Initial>()),
+              	dirichletBoundary(
+                  std::make_shared<typename Case::DirichletBoundary>()),
+              	source(std::make_shared<typename Case::Source>()),
+              	neumann(std::make_shared<typename Case::Neumann>()),
+              	velocity(std::make_shared<typename Case::Velocity>(dim)),
+              	diffusivity(std::make_shared<typename Case::Diffusivity>())
+        	{
+            		if (dim == 1) {
+                		mesh = std::make_shared<dolfin::UnitIntervalMesh>(50);
+            		} else if (dim == 2) {
+                		mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
+            		} else if (dim == 3) {
+                		mesh = std::make_shared<dolfin::UnitCubeMesh>(50, 50, 50);
+            		} else {
+                		mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
+            		}
+        	}
 
-       protected:
-        std::shared_ptr<dolfin::Mesh> mesh;
-        std::shared_ptr<dolfin::Expression> initial;
-        std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
-        std::shared_ptr<dolfin::Expression> source;
-        std::shared_ptr<dolfin::Expression> neumann;
-        std::shared_ptr<dolfin::Expression> velocity;
-        std::shared_ptr<dolfin::Expression> diffusiCube;
+       		protected:
+       		std::shared_ptr<dolfin::Mesh> mesh;
+        	std::shared_ptr<dolfin::Expression> initial;
+        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
+        	std::shared_ptr<dolfin::Expression> source;
+        	std::shared_ptr<dolfin::Expression> neumann;
+        	std::shared_ptr<dolfin::Expression> velocity;
+        	std::shared_ptr<dolfin::Expression> diffusivity;
+	};
 
-    class CaseInOut {
-       public:
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-            }
-        };
+    	class General {
 
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                // return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or x[1] <
-                // DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
-                return false;
-            }
+		public:
+		class Initial : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = 0;
+    			}
+		};
 
-           public:
-            // DirichletBoundary(DirichletBoundary& copy) :
-            // dolfin::SubDomain(copy.map_tolerance){}
-        };
+		// sourceTerm (right-hand side)
+		class Source : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = 0;
+        			if (x[0] > 1 - (0.5 + DOLFIN_EPS) and x[0] < 1 - (0.5 - DOLFIN_EPS) and
+            			x[1] > 1 - (0.5 + DOLFIN_EPS) and x[1] < 1 - (0.5 - DOLFIN_EPS))
+            				values[0] = 20000;
+    			}
+		};
 
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                if (x[0] < DOLFIN_EPS)
-                    values[0] = 3;
-                else if (x[0] > 1.0 - DOLFIN_EPS)
-                    values[0] = -2;
-            }
-        };
+		// Normal derivative (used for Neumann boundary condition)
+		class Neumann : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = x[0];
+ 		   	}
+		};
 
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+		// Sub domain for Dirichlet boundary condition
+		class DirichletBoundary : public dolfin::SubDomain {
+    			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+    			{
+        			return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or
+               			x[1] < DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
+    			}
+		};
 
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[i] = 0;
-                }
-            }
+		class Velocity : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			for (int i = 0; i < values.size(); i++) {
+            				values[i] = 0;
+        			}
+    			}
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+   			public:
+    			Velocity(std::size_t dim) : dolfin::Expression(dim){};
+		};
 
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0.5;
-            }
-        };
-    };
+		class Diffusivity : public dolfin::Expression {
+    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+    			{
+        			values[0] = 0.05;
+    			}
+		};
+	};
 
-    namespace InOut {
-        // Class for setting 1 as initial value on the entire domain
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+    	class InOut{
 
-        // Class for defining on which part of the boundary the dirichlet
-        // condition
-        // should be applied (here none)
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                // return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or x[1] <
-                // DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
-                return false;
-            }
+       		public:
+        	class Initial : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1;
+            		}
+        	};
 
-           public:
-            // DirichletBoundary(DirichletBoundary& copy) :
-            // dolfin::SubDomain(copy.map_tolerance){}
-        };
+       		class DirichletBoundary : public dolfin::SubDomain {
+            		bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+            		{
+                		// return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or x[1] <
+                		// DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
+                		return false;
+            		}
 
-        // class for setting a constant source on the left side of the domain
-        // and a
-        // constant sink on the right side of the domain
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                if (x[0] < DOLFIN_EPS)
-                    values[0] = 5;
-                else if (x[0] > 1.0 - DOLFIN_EPS)
-                    values[0] = -2;
-            }
-        };
+           		public:
+            		// DirichletBoundary(DirichletBoundary& copy) :
+            		// dolfin::SubDomain(copy.map_tolerance){}
+        	};
 
-        // class fpr setting neumann boundary condition (0 = disabled)
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+        	class Source : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+                		if (x[0] < DOLFIN_EPS)
+                    			values[0] = 3;
+                		else if (x[0] > 1.0 - DOLFIN_EPS)
+                    			values[0] = -2;
+            		}
+        	};
 
-        // class for defining the velocity-Field (0 = disabled)
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[i] = 0;
-                }
-            }
+        	class Neumann : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+            		}
+        	};
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+        	class Velocity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		for (int i = 0; i < values.size(); i++) {
+                    			values[i] = 0;
+               		 	}
+            		}
 
-        // class for setting a onstant diffusivity
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0.5;
-            }
-        };
-    }
+           		public:
+            		Velocity(std::size_t dim) : dolfin::Expression(dim) {}
+        	};
 
-    namespace ConstSides {
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1.0;
-            }
-        };
+        	class Diffusivity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0.5;
+            		}
+        	};
+    	};
 
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                return x[0] < 0.05 or x[0] > 1.0 - 0.05;
-            }
-        };
+    	class ConstSides{
 
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                if (x[0] > 0.45 && x[0] < 0.55 && x[1] > 0.45 && x[1] < 0.55)
-                    values[0] = 1;
-            }
-        };
+		public:
+		class Initial : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1.0;
+            		}
+        	};
 
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+        	class DirichletBoundary : public dolfin::SubDomain {
+            		bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+            		{
+                		return x[0] < 0.05 or x[0] > 1.0 - 0.05;
+            		}
+        	};
 
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[0] = 0;
-                }
-            }
+        	class Source : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+                		if (x[0] > 0.45 && x[0] < 0.55 && x[1] > 0.45 && x[1] < 0.55)
+                    			values[0] = 1;
+            		}
+        	};
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+        	class Neumann : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+            		}
+        	};
 
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0.5;
-            }
-        };
-    }
+        	class Velocity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		for (int i = 0; i < values.size(); i++) {
+                    			values[0] = 0;
+                		}
+            		}
 
-    namespace RandomSource {
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = -0.5 + x[0];
-            }
-        };
+          		public:
+            		Velocity(std::size_t dim) : dolfin::Expression(dim) {}
+        	};
 
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                return false;
-            }
-        };
+        	class Diffusivity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0.5;
+            		}
+        	};
+	};
 
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                if (x[0] > 1.0 - (0.5 + DOLFIN_EPS) &&
-                    x[0] < 1.0 - (0.5 - DOLFIN_EPS) &&
-                    x[1] > 1.0 - (0.5 + DOLFIN_EPS) &&
-                    x[1] < 1.0 - (0.5 - DOLFIN_EPS))
-                    values[0] = 10;
-            }
-        };
+    	class RandomSource {
 
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+		public:
+        	class Initial : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = -0.5 + x[0];
+            		}
+        	};
 
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[0] = 0;
-                }
-            }
+        	class DirichletBoundary : public dolfin::SubDomain {
+            		bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+            		{
+                		return false;
+            		}
+       	 	};
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+        	class Source : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+                		if (x[0] > 1.0 - (0.5 + DOLFIN_EPS) &&
+                    		x[0] < 1.0 - (0.5 - DOLFIN_EPS) &&
+                    		x[1] > 1.0 - (0.5 + DOLFIN_EPS) &&
+                    		x[1] < 1.0 - (0.5 - DOLFIN_EPS))
+                    			values[0] = 10;
+            		}
+        	};
 
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-            }
-        };
-    }
+        	class Neumann : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+            		}
+        	};
 
-    namespace DifferentDiffusivities {
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-                if (x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
-                    values[0] = 10;
-                else if (x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
-                    values[0] = 10;
-            }
-        };
+        	class Velocity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		for (int i = 0; i < values.size(); i++) {
+                    			values[0] = 0;
+                		}
+            		}
 
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                return false;
-            }
-        };
+           		public:
+            		Velocity(std::size_t dim) : dolfin::Expression(dim) {}
+        	};
 
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                // if(x[0]>1.0-(0.5+DOLFIN_EPS) && x[0]<1.0-(0.5-DOLFIN_EPS) &&
-                // x[1]>1.0-(0.5+DOLFIN_EPS) && x[1]<1.0-(0.5-DOLFIN_EPS))
-                // values[0] = 10;
-            }
-        };
+        	class Diffusivity : public dolfin::Expression {
+			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+          		{
+               			values[0] = 1;
+          		}
+        	};
+	};
 
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+    	class DifferentDiffusivities {
+	    
+		public:
+        	class Initial : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1;
+                		if (x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
+                    			values[0] = 10;
+                		else if (x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
+                    			values[0] = 10;
+            		}
+        	};
 
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[0] = 0;
-                }
-            }
+        	class DirichletBoundary : public dolfin::SubDomain {
+            		bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+            		{
+                		return false;
+            		}
+        	};
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+        	class Source : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+                		// if(x[0]>1.0-(0.5+DOLFIN_EPS) && x[0]<1.0-(0.5-DOLFIN_EPS) &&
+                		// x[1]>1.0-(0.5+DOLFIN_EPS) && x[1]<1.0-(0.5-DOLFIN_EPS))
+                		// values[0] = 10;
+            		}
+        	};
 
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-                if (x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
-                    values[0] = 0.5;
-                else if (x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
-                    values[0] = 0.75;
-            }
-        };
-    }
+        	class Neumann : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+            		}
+        	};
 
-    namespace TransferFunction {
+        	class Velocity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		for (int i = 0; i < values.size(); i++) {
+                    			values[0] = 0;
+                		}
+            		}
 
-        class Initial : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-                if (x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
-                    values[0] = 10;
-            }
-        };
+           		public:
+            		Velocity(std::size_t dim) : dolfin::Expression(dim) {}
+        	};
 
-        class DirichletBoundary : public dolfin::SubDomain {
-            bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-            {
-                return false;
-            }
-        };
+        	class Diffusivity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1;
+                		if (x[0] > 0.2 && x[0] < 0.4 && x[1] > 0.2 && x[1] < 0.8)
+                    			values[0] = 0.5;
+                		else if (x[0] > 0.6 && x[0] < 0.8 && x[1] > 0.2 && x[1] < 0.8)
+                    			values[0] = 0.75;
+            		}
+        	};
+    	};
 
-        class Source : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-                if (((x[0] > 0.4 && x[0] < 0.4 + DOLFIN_EPS) or
-                     (x[0] > 0.6 - DOLFIN_EPS && x[0] < 0.6)) and
-                    ((x[1] > 0.4 && x[1] < 0.4 + DOLFIN_EPS) or
-                     (x[1] > 0.6 - DOLFIN_EPS && x[1] < 0.6))) {
-                    values[0] = -5;
-                } else if (((x[0] > 0.4 - DOLFIN_EPS && x[0] < 0.4) or
-                            (x[0] > 0.6 && x[0] < 0.6 + DOLFIN_EPS)) and
-                           ((x[1] > 0.4 - DOLFIN_EPS && x[1] < 0.4) or
-                            (x[1] > 0.6 && x[1] < 0.6 + DOLFIN_EPS))) {
-                    values[0] = 5;
-                }
-            }
-        };
+    	class TransferFunction {
+	
+		public:
+        	class Initial : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1;
+                		if (x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
+                    			values[0] = 10;
+            		}
+        	};
 
-        class Neumann : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 0;
-            }
-        };
+        	class DirichletBoundary : public dolfin::SubDomain {
+            		bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+            		{
+                		return false;
+            		}
+        	};
 
-        class Velocity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                for (int i = 0; i < values.size(); i++) {
-                    values[i] = 0;
-                }
-            }
+        	class Source : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+                		if (((x[0] > 0.4 && x[0] < 0.4 + DOLFIN_EPS) or
+				(x[0] > 0.6 - DOLFIN_EPS && x[0] < 0.6)) and
+                    		((x[1] > 0.4 && x[1] < 0.4 + DOLFIN_EPS) or
+                     		(x[1] > 0.6 - DOLFIN_EPS && x[1] < 0.6))) {
+                    			values[0] = -5;
+                		} else if (((x[0] > 0.4 - DOLFIN_EPS && x[0] < 0.4) or
+                           	(x[0] > 0.6 && x[0] < 0.6 + DOLFIN_EPS)) and
+                           	((x[1] > 0.4 - DOLFIN_EPS && x[1] < 0.4) or
+                            	(x[1] > 0.6 && x[1] < 0.6 + DOLFIN_EPS))) {
+                    			values[0] = 5;
+                		}
+            		}
+        	};
 
-           public:
-            Velocity(std::size_t dim) : dolfin::Expression(dim) {}
-        };
+        	class Neumann : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 0;
+            		}
+        	};
 
-        class Diffusivity : public dolfin::Expression {
-            void eval(dolfin::Array<double>& values,
-                      const dolfin::Array<double>& x) const
-            {
-                values[0] = 1;
-                if (x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
-                    values[0] = 0.5;
-            }
-        };
-    }
+        	class Velocity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		for (int i = 0; i < values.size(); i++) {
+                    		values[i] = 0;
+                		}
+            		}
+
+           		public:
+            		Velocity(std::size_t dim) : dolfin::Expression(dim) {}
+        	};
+
+        	class Diffusivity : public dolfin::Expression {
+            		void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
+            		{
+                		values[0] = 1;
+                		if (x[0] > 0.4 && x[0] < 0.6 && x[1] > 0.4 && x[1] < 0.6)
+                    			values[0] = 0.5;
+            		}
+        	};
+    	};
 }
+
 #endif  // DIFFUSION_FENICS_PDETESTEXAMPLES_H

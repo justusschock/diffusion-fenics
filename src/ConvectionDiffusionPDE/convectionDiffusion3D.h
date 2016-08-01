@@ -50,11 +50,7 @@ public:
   /// Return a string identifying the finite element
   virtual const char* signature() const
   {
-<<<<<<< HEAD
-    return "FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, None)";
-=======
     return "FiniteElement('Real', Domain(Cell('tetrahedron', 3)), 0, None)";
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
   /// Return the cell shape
@@ -83,8 +79,6 @@ public:
 
   /// Return the rank of the value space
   virtual std::size_t value_rank() const
-<<<<<<< HEAD
-=======
   {
     return 0;
   }
@@ -318,15 +312,10 @@ public:
 
   /// Return the number of sub elements (for a mixed element)
   virtual std::size_t num_sub_elements() const
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return 0;
   }
 
-<<<<<<< HEAD
-  /// Return the dimension of the value space for axis i
-  virtual std::size_t value_dimension(std::size_t i) const
-=======
   /// Create a new finite element for sub element i (for a mixed element)
   virtual ufc::finite_element* create_sub_element(std::size_t i) const
   {
@@ -335,7 +324,6 @@ public:
 
   /// Create a new class instance
   virtual ufc::finite_element* create() const
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return new convectiondiffusion3d_finite_element_0();
   }
@@ -354,8 +342,6 @@ public:
     // Do nothing
   }
 
-<<<<<<< HEAD
-=======
   /// Destructor
   virtual ~convectiondiffusion3d_finite_element_1()
   {
@@ -404,7 +390,6 @@ public:
     return 1;
   }
 
->>>>>>> remotes/origin/fenics_1.6.x
   /// Evaluate basis function i at given point x in cell (actual implementation)
   static void _evaluate_basis(std::size_t i,
                               double* values,
@@ -3403,21 +3388,13 @@ class convectiondiffusion3d_finite_element_2: public ufc::finite_element
 public:
 
   /// Constructor
-<<<<<<< HEAD
-  convectiondiffusion3d_finite_element_1() : ufc::finite_element()
-=======
   convectiondiffusion3d_finite_element_2() : ufc::finite_element()
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
-<<<<<<< HEAD
-  virtual ~convectiondiffusion3d_finite_element_1()
-=======
   virtual ~convectiondiffusion3d_finite_element_2()
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -11765,21 +11742,13 @@ class convectiondiffusion3d_finite_element_3: public ufc::finite_element
 public:
 
   /// Constructor
-<<<<<<< HEAD
-  convectiondiffusion3d_finite_element_2() : ufc::finite_element()
-=======
   convectiondiffusion3d_finite_element_3() : ufc::finite_element()
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   /// Destructor
-<<<<<<< HEAD
-  virtual ~convectiondiffusion3d_finite_element_2()
-=======
   virtual ~convectiondiffusion3d_finite_element_3()
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -12959,7 +12928,6 @@ public:
   virtual void map_from_reference_cell(double* x,
                                        const double* xhat,
                                        const ufc::cell& c) const
-<<<<<<< HEAD
   {
     throw std::runtime_error("map_from_reference_cell not yet implemented.");
   }
@@ -12975,23 +12943,6 @@ public:
   /// Return the number of sub elements (for a mixed element)
   virtual std::size_t num_sub_elements() const
   {
-=======
-  {
-    throw std::runtime_error("map_from_reference_cell not yet implemented.");
-  }
-
-  /// Map from coordinate x in cell to coordinate xhat in reference cell
-  virtual void map_to_reference_cell(double* xhat,
-                                     const double* x,
-                                     const ufc::cell& c) const
-  {
-    throw std::runtime_error("map_to_reference_cell not yet implemented.");
-  }
-
-  /// Return the number of sub elements (for a mixed element)
-  virtual std::size_t num_sub_elements() const
-  {
->>>>>>> remotes/origin/fenics_1.6.x
     return 0;
   }
 
@@ -13004,11 +12955,7 @@ public:
   /// Create a new class instance
   virtual ufc::finite_element* create() const
   {
-<<<<<<< HEAD
-    return new convectiondiffusion3d_finite_element_2();
-=======
     return new convectiondiffusion3d_finite_element_3();
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
@@ -13035,8 +12982,6 @@ public:
   /// Return a string identifying the dofmap
   virtual const char* signature() const
   {
-<<<<<<< HEAD
-=======
     return "FFC dofmap for FiniteElement('Real', Domain(Cell('tetrahedron', 3)), 0, None)";
   }
 
@@ -13260,7 +13205,6 @@ public:
   /// Return a string identifying the dofmap
   virtual const char* signature() const
   {
->>>>>>> remotes/origin/fenics_1.6.x
     return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, None)";
   }
 
@@ -13442,8 +13386,6 @@ public:
       {
       throw std::runtime_error("i is larger than number of entities (3)");
       }
-<<<<<<< HEAD
-=======
       
       switch (i)
       {
@@ -13742,559 +13684,6 @@ public:
     dofs[28] = offset + c.entity_indices[1][4];
     dofs[29] = offset + c.entity_indices[1][5];
     offset += num_global_entities[1];
-  }
-
-  /// Tabulate the local-to-local mapping from facet dofs to cell dofs
-  virtual void tabulate_facet_dofs(std::size_t* dofs,
-                                   std::size_t facet) const
-  {
-    switch (facet)
-    {
-    case 0:
-      {
-        dofs[0] = 1;
-      dofs[1] = 2;
-      dofs[2] = 3;
-      dofs[3] = 4;
-      dofs[4] = 5;
-      dofs[5] = 6;
-      dofs[6] = 11;
-      dofs[7] = 12;
-      dofs[8] = 13;
-      dofs[9] = 14;
-      dofs[10] = 15;
-      dofs[11] = 16;
-      dofs[12] = 21;
-      dofs[13] = 22;
-      dofs[14] = 23;
-      dofs[15] = 24;
-      dofs[16] = 25;
-      dofs[17] = 26;
-        break;
-      }
-    case 1:
-      {
-        dofs[0] = 0;
-      dofs[1] = 2;
-      dofs[2] = 3;
-      dofs[3] = 4;
-      dofs[4] = 7;
-      dofs[5] = 8;
-      dofs[6] = 10;
-      dofs[7] = 12;
-      dofs[8] = 13;
-      dofs[9] = 14;
-      dofs[10] = 17;
-      dofs[11] = 18;
-      dofs[12] = 20;
-      dofs[13] = 22;
-      dofs[14] = 23;
-      dofs[15] = 24;
-      dofs[16] = 27;
-      dofs[17] = 28;
-        break;
-      }
-    case 2:
-      {
-        dofs[0] = 0;
-      dofs[1] = 1;
-      dofs[2] = 3;
-      dofs[3] = 5;
-      dofs[4] = 7;
-      dofs[5] = 9;
-      dofs[6] = 10;
-      dofs[7] = 11;
-      dofs[8] = 13;
-      dofs[9] = 15;
-      dofs[10] = 17;
-      dofs[11] = 19;
-      dofs[12] = 20;
-      dofs[13] = 21;
-      dofs[14] = 23;
-      dofs[15] = 25;
-      dofs[16] = 27;
-      dofs[17] = 29;
-        break;
-      }
-    case 3:
-      {
-        dofs[0] = 0;
-      dofs[1] = 1;
-      dofs[2] = 2;
-      dofs[3] = 6;
-      dofs[4] = 8;
-      dofs[5] = 9;
-      dofs[6] = 10;
-      dofs[7] = 11;
-      dofs[8] = 12;
-      dofs[9] = 16;
-      dofs[10] = 18;
-      dofs[11] = 19;
-      dofs[12] = 20;
-      dofs[13] = 21;
-      dofs[14] = 22;
-      dofs[15] = 26;
-      dofs[16] = 28;
-      dofs[17] = 29;
-        break;
-      }
-    }
-    
-  }
-
-  /// Tabulate the local-to-local mapping of dofs on entity (d, i)
-  virtual void tabulate_entity_dofs(std::size_t* dofs,
-                                    std::size_t d, std::size_t i) const
-  {
-    if (d > 3)
-    {
-    throw std::runtime_error("d is larger than dimension (3)");
-    }
-    
-    switch (d)
-    {
-    case 0:
-      {
-        if (i > 3)
-      {
-      throw std::runtime_error("i is larger than number of entities (3)");
-      }
->>>>>>> remotes/origin/fenics_1.6.x
-      
-      switch (i)
-      {
-      case 0:
-        {
-          dofs[0] = 0;
-          break;
-        }
-      case 1:
-        {
-          dofs[0] = 1;
-          break;
-        }
-      case 2:
-        {
-          dofs[0] = 2;
-          break;
-        }
-      case 3:
-        {
-          dofs[0] = 3;
-          break;
-        }
-      }
-      
-        break;
-      }
-    case 1:
-      {
-        if (i > 5)
-      {
-      throw std::runtime_error("i is larger than number of entities (5)");
-      }
-      
-      switch (i)
-      {
-      case 0:
-        {
-          dofs[0] = 4;
-          break;
-        }
-      case 1:
-        {
-          dofs[0] = 5;
-          break;
-        }
-      case 2:
-        {
-          dofs[0] = 6;
-          break;
-        }
-      case 3:
-        {
-          dofs[0] = 7;
-          break;
-        }
-      case 4:
-        {
-          dofs[0] = 8;
-          break;
-        }
-      case 5:
-        {
-          dofs[0] = 9;
-          break;
-        }
-      }
-      
-        break;
-      }
-    case 2:
-      {
-        
-        break;
-      }
-    case 3:
-      {
-        
-        break;
-      }
-    }
-    
-  }
-
-  /// Tabulate the coordinates of all dofs on a cell
-  virtual void tabulate_coordinates(double* dof_coordinates,
-                                    const double* vertex_coordinates) const
-  {
-    dof_coordinates[0] = vertex_coordinates[0];
-    dof_coordinates[1] = vertex_coordinates[1];
-    dof_coordinates[2] = vertex_coordinates[2];
-    dof_coordinates[3] = vertex_coordinates[3];
-    dof_coordinates[4] = vertex_coordinates[4];
-    dof_coordinates[5] = vertex_coordinates[5];
-    dof_coordinates[6] = vertex_coordinates[6];
-    dof_coordinates[7] = vertex_coordinates[7];
-    dof_coordinates[8] = vertex_coordinates[8];
-    dof_coordinates[9] = vertex_coordinates[9];
-    dof_coordinates[10] = vertex_coordinates[10];
-    dof_coordinates[11] = vertex_coordinates[11];
-    dof_coordinates[12] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
-    dof_coordinates[13] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
-    dof_coordinates[14] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
-    dof_coordinates[15] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
-    dof_coordinates[16] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
-    dof_coordinates[17] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
-    dof_coordinates[18] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
-    dof_coordinates[19] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
-    dof_coordinates[20] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
-    dof_coordinates[21] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
-    dof_coordinates[22] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
-    dof_coordinates[23] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
-    dof_coordinates[24] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
-    dof_coordinates[25] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
-    dof_coordinates[26] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
-    dof_coordinates[27] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
-    dof_coordinates[28] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
-    dof_coordinates[29] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
-<<<<<<< HEAD
-=======
-    dof_coordinates[30] = vertex_coordinates[0];
-    dof_coordinates[31] = vertex_coordinates[1];
-    dof_coordinates[32] = vertex_coordinates[2];
-    dof_coordinates[33] = vertex_coordinates[3];
-    dof_coordinates[34] = vertex_coordinates[4];
-    dof_coordinates[35] = vertex_coordinates[5];
-    dof_coordinates[36] = vertex_coordinates[6];
-    dof_coordinates[37] = vertex_coordinates[7];
-    dof_coordinates[38] = vertex_coordinates[8];
-    dof_coordinates[39] = vertex_coordinates[9];
-    dof_coordinates[40] = vertex_coordinates[10];
-    dof_coordinates[41] = vertex_coordinates[11];
-    dof_coordinates[42] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
-    dof_coordinates[43] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
-    dof_coordinates[44] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
-    dof_coordinates[45] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
-    dof_coordinates[46] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
-    dof_coordinates[47] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
-    dof_coordinates[48] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
-    dof_coordinates[49] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
-    dof_coordinates[50] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
-    dof_coordinates[51] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
-    dof_coordinates[52] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
-    dof_coordinates[53] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
-    dof_coordinates[54] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
-    dof_coordinates[55] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
-    dof_coordinates[56] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
-    dof_coordinates[57] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
-    dof_coordinates[58] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
-    dof_coordinates[59] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
-    dof_coordinates[60] = vertex_coordinates[0];
-    dof_coordinates[61] = vertex_coordinates[1];
-    dof_coordinates[62] = vertex_coordinates[2];
-    dof_coordinates[63] = vertex_coordinates[3];
-    dof_coordinates[64] = vertex_coordinates[4];
-    dof_coordinates[65] = vertex_coordinates[5];
-    dof_coordinates[66] = vertex_coordinates[6];
-    dof_coordinates[67] = vertex_coordinates[7];
-    dof_coordinates[68] = vertex_coordinates[8];
-    dof_coordinates[69] = vertex_coordinates[9];
-    dof_coordinates[70] = vertex_coordinates[10];
-    dof_coordinates[71] = vertex_coordinates[11];
-    dof_coordinates[72] = 0.5*vertex_coordinates[6] + 0.5*vertex_coordinates[9];
-    dof_coordinates[73] = 0.5*vertex_coordinates[7] + 0.5*vertex_coordinates[10];
-    dof_coordinates[74] = 0.5*vertex_coordinates[8] + 0.5*vertex_coordinates[11];
-    dof_coordinates[75] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[9];
-    dof_coordinates[76] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[10];
-    dof_coordinates[77] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[11];
-    dof_coordinates[78] = 0.5*vertex_coordinates[3] + 0.5*vertex_coordinates[6];
-    dof_coordinates[79] = 0.5*vertex_coordinates[4] + 0.5*vertex_coordinates[7];
-    dof_coordinates[80] = 0.5*vertex_coordinates[5] + 0.5*vertex_coordinates[8];
-    dof_coordinates[81] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[9];
-    dof_coordinates[82] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[10];
-    dof_coordinates[83] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[11];
-    dof_coordinates[84] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[6];
-    dof_coordinates[85] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[7];
-    dof_coordinates[86] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[8];
-    dof_coordinates[87] = 0.5*vertex_coordinates[0] + 0.5*vertex_coordinates[3];
-    dof_coordinates[88] = 0.5*vertex_coordinates[1] + 0.5*vertex_coordinates[4];
-    dof_coordinates[89] = 0.5*vertex_coordinates[2] + 0.5*vertex_coordinates[5];
->>>>>>> remotes/origin/fenics_1.6.x
-  }
-
-  /// Return the number of sub dofmaps (for a mixed element)
-  virtual std::size_t num_sub_dofmaps() const
-  {
-    return 0;
-  }
-
-  /// Create a new dofmap for sub dofmap i (for a mixed element)
-  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
-  {
-<<<<<<< HEAD
-=======
-    switch (i)
-    {
-    case 0:
-      {
-        return new convectiondiffusion3d_dofmap_1();
-        break;
-      }
-    case 1:
-      {
-        return new convectiondiffusion3d_dofmap_1();
-        break;
-      }
-    case 2:
-      {
-        return new convectiondiffusion3d_dofmap_1();
-        break;
-      }
-    }
-    
->>>>>>> remotes/origin/fenics_1.6.x
-    return 0;
-  }
-
-  /// Create a new class instance
-  virtual ufc::dofmap* create() const
-  {
-<<<<<<< HEAD
-    return new convectiondiffusion3d_dofmap_0();
-=======
-    return new convectiondiffusion3d_dofmap_2();
->>>>>>> remotes/origin/fenics_1.6.x
-  }
-
-};
-
-/// This class defines the interface for a local-to-global mapping of
-/// degrees of freedom (dofs).
-
-<<<<<<< HEAD
-class convectiondiffusion3d_dofmap_1: public ufc::dofmap
-=======
-class convectiondiffusion3d_dofmap_3: public ufc::dofmap
->>>>>>> remotes/origin/fenics_1.6.x
-{
-public:
-
-  /// Constructor
-<<<<<<< HEAD
-  convectiondiffusion3d_dofmap_1() : ufc::dofmap()
-=======
-  convectiondiffusion3d_dofmap_3() : ufc::dofmap()
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    // Do nothing
-  }
-
-  /// Destructor
-<<<<<<< HEAD
-  virtual ~convectiondiffusion3d_dofmap_1()
-=======
-  virtual ~convectiondiffusion3d_dofmap_3()
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    // Do nothing
-  }
-
-  /// Return a string identifying the dofmap
-  virtual const char* signature() const
-  {
-<<<<<<< HEAD
-    return "FFC dofmap for VectorElement('Lagrange', Domain(Cell('tetrahedron', 3)), 2, 3, None)";
-=======
-    return "FFC dofmap for FiniteElement('Lagrange', Domain(Cell('tetrahedron', 3)), 1, None)";
->>>>>>> remotes/origin/fenics_1.6.x
-  }
-
-  /// Return true iff mesh entities of topological dimension d are needed
-  virtual bool needs_mesh_entities(std::size_t d) const
-  {
-    switch (d)
-    {
-    case 0:
-      {
-        return true;
-        break;
-      }
-    case 1:
-      {
-        return true;
-        break;
-      }
-    case 2:
-      {
-        return false;
-        break;
-      }
-    case 3:
-      {
-        return false;
-        break;
-      }
-    }
-    
-    return false;
-  }
-
-  /// Return the topological dimension of the associated cell shape
-  virtual std::size_t topological_dimension() const
-<<<<<<< HEAD
-=======
-  {
-    return 3;
-  }
-
-  /// Return the geometric dimension of the associated cell shape
-  virtual std::size_t geometric_dimension() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 3;
-  }
-
-<<<<<<< HEAD
-  /// Return the geometric dimension of the associated cell shape
-  virtual std::size_t geometric_dimension() const
-=======
-  /// Return the dimension of the global finite element function space
-  virtual std::size_t global_dimension(const std::vector<std::size_t>&
-                                       num_global_entities) const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 3;
-  }
-
-<<<<<<< HEAD
-  /// Return the dimension of the global finite element function space
-  virtual std::size_t global_dimension(const std::vector<std::size_t>&
-                                       num_global_entities) const
-=======
-  /// Return the dimension of the local finite element function space for a cell
-  virtual std::size_t num_element_dofs() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 3*num_global_entities[0] + 3*num_global_entities[1];
-  }
-
-<<<<<<< HEAD
-  /// Return the dimension of the local finite element function space for a cell
-  virtual std::size_t num_element_dofs() const
-=======
-  /// Return the number of dofs on each cell facet
-  virtual std::size_t num_facet_dofs() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 30;
-  }
-
-  /// Return the number of dofs on each cell facet
-  virtual std::size_t num_facet_dofs() const
-  {
-    return 18;
-  }
-
-  /// Return the number of dofs associated with each cell entity of dimension d
-  virtual std::size_t num_entity_dofs(std::size_t d) const
-  {
-    switch (d)
-    {
-    case 0:
-      {
-        return 3;
-        break;
-      }
-    case 1:
-      {
-        return 3;
-        break;
-      }
-    case 2:
-      {
-        return 0;
-        break;
-      }
-    case 3:
-      {
-        return 0;
-        break;
-      }
-    }
-    
-    return 0;
-  }
-
-  /// Tabulate the local-to-global mapping of dofs on a cell
-  virtual void tabulate_dofs(std::size_t* dofs,
-                             const std::vector<std::size_t>& num_global_entities,
-                             const ufc::cell& c) const
-  {
-<<<<<<< HEAD
-    unsigned int offset = 0;
-    dofs[0] = offset + c.entity_indices[0][0];
-    dofs[1] = offset + c.entity_indices[0][1];
-    dofs[2] = offset + c.entity_indices[0][2];
-    dofs[3] = offset + c.entity_indices[0][3];
-    offset += num_global_entities[0];
-    dofs[4] = offset + c.entity_indices[1][0];
-    dofs[5] = offset + c.entity_indices[1][1];
-    dofs[6] = offset + c.entity_indices[1][2];
-    dofs[7] = offset + c.entity_indices[1][3];
-    dofs[8] = offset + c.entity_indices[1][4];
-    dofs[9] = offset + c.entity_indices[1][5];
-    offset += num_global_entities[1];
-    dofs[10] = offset + c.entity_indices[0][0];
-    dofs[11] = offset + c.entity_indices[0][1];
-    dofs[12] = offset + c.entity_indices[0][2];
-    dofs[13] = offset + c.entity_indices[0][3];
-    offset += num_global_entities[0];
-    dofs[14] = offset + c.entity_indices[1][0];
-    dofs[15] = offset + c.entity_indices[1][1];
-    dofs[16] = offset + c.entity_indices[1][2];
-    dofs[17] = offset + c.entity_indices[1][3];
-    dofs[18] = offset + c.entity_indices[1][4];
-    dofs[19] = offset + c.entity_indices[1][5];
-    offset += num_global_entities[1];
-    dofs[20] = offset + c.entity_indices[0][0];
-    dofs[21] = offset + c.entity_indices[0][1];
-    dofs[22] = offset + c.entity_indices[0][2];
-    dofs[23] = offset + c.entity_indices[0][3];
-    offset += num_global_entities[0];
-    dofs[24] = offset + c.entity_indices[1][0];
-    dofs[25] = offset + c.entity_indices[1][1];
-    dofs[26] = offset + c.entity_indices[1][2];
-    dofs[27] = offset + c.entity_indices[1][3];
-    dofs[28] = offset + c.entity_indices[1][4];
-    dofs[29] = offset + c.entity_indices[1][5];
-    offset += num_global_entities[1];
-=======
-    dofs[0] = c.entity_indices[0][0];
-    dofs[1] = c.entity_indices[0][1];
-    dofs[2] = c.entity_indices[0][2];
-    dofs[3] = c.entity_indices[0][3];
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
   /// Tabulate the local-to-local mapping from facet dofs to cell dofs
@@ -14519,7 +13908,6 @@ public:
   /// Tabulate the coordinates of all dofs on a cell
   virtual void tabulate_coordinates(double* dof_coordinates,
                                     const double* vertex_coordinates) const
-<<<<<<< HEAD
   {
     dof_coordinates[0] = vertex_coordinates[0];
     dof_coordinates[1] = vertex_coordinates[1];
@@ -14626,17 +14014,17 @@ public:
     {
     case 0:
       {
-        return new convectiondiffusion3d_dofmap_0();
+        return new convectiondiffusion3d_dofmap_1();
         break;
       }
     case 1:
       {
-        return new convectiondiffusion3d_dofmap_0();
+        return new convectiondiffusion3d_dofmap_1();
         break;
       }
     case 2:
       {
-        return new convectiondiffusion3d_dofmap_0();
+        return new convectiondiffusion3d_dofmap_1();
         break;
       }
     }
@@ -14647,7 +14035,7 @@ public:
   /// Create a new class instance
   virtual ufc::dofmap* create() const
   {
-    return new convectiondiffusion3d_dofmap_1();
+    return new convectiondiffusion3d_dofmap_2();
   }
 
 };
@@ -14655,18 +14043,18 @@ public:
 /// This class defines the interface for a local-to-global mapping of
 /// degrees of freedom (dofs).
 
-class convectiondiffusion3d_dofmap_2: public ufc::dofmap
+class convectiondiffusion3d_dofmap_3: public ufc::dofmap
 {
 public:
 
   /// Constructor
-  convectiondiffusion3d_dofmap_2() : ufc::dofmap()
+  convectiondiffusion3d_dofmap_3() : ufc::dofmap()
   {
     // Do nothing
   }
 
   /// Destructor
-  virtual ~convectiondiffusion3d_dofmap_2()
+  virtual ~convectiondiffusion3d_dofmap_3()
   {
     // Do nothing
   }
@@ -14907,39 +14295,13 @@ public:
   /// Create a new dofmap for sub dofmap i (for a mixed element)
   virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
   {
-=======
-  {
-    dof_coordinates[0] = vertex_coordinates[0];
-    dof_coordinates[1] = vertex_coordinates[1];
-    dof_coordinates[2] = vertex_coordinates[2];
-    dof_coordinates[3] = vertex_coordinates[3];
-    dof_coordinates[4] = vertex_coordinates[4];
-    dof_coordinates[5] = vertex_coordinates[5];
-    dof_coordinates[6] = vertex_coordinates[6];
-    dof_coordinates[7] = vertex_coordinates[7];
-    dof_coordinates[8] = vertex_coordinates[8];
-    dof_coordinates[9] = vertex_coordinates[9];
-    dof_coordinates[10] = vertex_coordinates[10];
-    dof_coordinates[11] = vertex_coordinates[11];
-  }
-
-  /// Return the number of sub dofmaps (for a mixed element)
-  virtual std::size_t num_sub_dofmaps() const
-  {
-    return 0;
-  }
-
-  /// Create a new dofmap for sub dofmap i (for a mixed element)
-  virtual ufc::dofmap* create_sub_dofmap(std::size_t i) const
-  {
->>>>>>> remotes/origin/fenics_1.6.x
     return 0;
   }
 
   /// Create a new class instance
   virtual ufc::dofmap* create() const
   {
-    return new convectiondiffusion3d_dofmap_2();
+    return new convectiondiffusion3d_dofmap_3();
   }
 
 };
@@ -15430,11 +14792,7 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
-<<<<<<< HEAD
-    return "408c20f0574f9788da826efb73452cf40d24866d332fd648d3852038b9bebf70b0644b35990be57c55063ec72dc8146269a02d034474b8624f86b517ba2976f2";
-=======
     return "20580ba5ab4e11322289ef9020544e9354a580d9c74eb5876261e2f5801b15430fafb0f86059a207d8db7517925b14b1057a68504a822999dcb9d4a39b2404ae";
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -15568,50 +14926,28 @@ public:
 
   /// Return whether the form has any exterior facet integrals
   virtual bool has_exterior_facet_integrals() const
-<<<<<<< HEAD
   {
     return false;
   }
 
   /// Return whether the form has any interior facet integrals
   virtual bool has_interior_facet_integrals() const
-=======
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
-<<<<<<< HEAD
   /// Return whether the form has any vertex integrals
   virtual bool has_vertex_integrals() const
-=======
-  /// Return whether the form has any interior facet integrals
-  virtual bool has_interior_facet_integrals() const
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return false;
   }
 
-<<<<<<< HEAD
-  /// Return whether the form has any custom integrals
-  virtual bool has_custom_integrals() const
-=======
-  /// Return whether the form has any vertex integrals
-  virtual bool has_vertex_integrals() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return false;
-  }
-
-<<<<<<< HEAD
-=======
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
   {
     return false;
   }
 
->>>>>>> remotes/origin/fenics_1.6.x
 
   /// Create a new cell integral on sub domain subdomain_id
   virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
@@ -15710,11 +15046,7 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
-<<<<<<< HEAD
-    return "7049a1e8a8585d96c2c35b1e012aa728915771acd53445f62954b25ff2f11473996b5ef0d2fd5ec4a13620a0e8c2d2720fca7d1c7d0d1bdad96373da2bd838e6";
-=======
     return "51eb6ee84152c332707b571fe6eeb456e0be363620eccb75ac7e2230b2875053f91e8fd01270c55ec3624325d8392d28ee08a7991ef07a9a064760db48fcd56e";
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
 
@@ -15886,8 +15218,6 @@ public:
 
   /// Return whether the form has any custom integrals
   virtual bool has_custom_integrals() const
-<<<<<<< HEAD
-=======
   {
     return false;
   }
@@ -15913,76 +15243,23 @@ public:
 
   /// Create a new vertex integral on sub domain subdomain_id
   virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
->>>>>>> remotes/origin/fenics_1.6.x
   {
-    return false;
+    return 0;
   }
 
-<<<<<<< HEAD
-
-  /// Create a new cell integral on sub domain subdomain_id
-  virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
-=======
   /// Create a new custom integral on sub domain subdomain_id
   virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return 0;
   }
 
-<<<<<<< HEAD
-  /// Create a new exterior facet integral on sub domain subdomain_id
-  virtual ufc::exterior_facet_integral* create_exterior_facet_integral(std::size_t subdomain_id) const
-  {
-    return 0;
-  }
-
-  /// Create a new interior facet integral on sub domain subdomain_id
-  virtual ufc::interior_facet_integral* create_interior_facet_integral(std::size_t subdomain_id) const
-=======
 
   /// Create a new cell integral on everywhere else
   virtual ufc::cell_integral* create_default_cell_integral() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 0;
-  }
-
-<<<<<<< HEAD
-  /// Create a new vertex integral on sub domain subdomain_id
-  virtual ufc::vertex_integral* create_vertex_integral(std::size_t subdomain_id) const
-=======
-  /// Create a new exterior facet integral on everywhere else
-  virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 0;
-  }
-
-<<<<<<< HEAD
-  /// Create a new custom integral on sub domain subdomain_id
-  virtual ufc::custom_integral* create_custom_integral(std::size_t subdomain_id) const
-=======
-  /// Create a new interior facet integral on everywhere else
-  virtual ufc::interior_facet_integral* create_default_interior_facet_integral() const
->>>>>>> remotes/origin/fenics_1.6.x
-  {
-    return 0;
-  }
-
-<<<<<<< HEAD
-
-  /// Create a new cell integral on everywhere else
-  virtual ufc::cell_integral* create_default_cell_integral() const
-=======
-  /// Create a new vertex integral on everywhere else
-  virtual ufc::vertex_integral* create_default_vertex_integral() const
->>>>>>> remotes/origin/fenics_1.6.x
   {
     return new convectiondiffusion3d_cell_integral_1_otherwise();
   }
 
-<<<<<<< HEAD
   /// Create a new exterior facet integral on everywhere else
   virtual ufc::exterior_facet_integral* create_default_exterior_facet_integral() const
   {
@@ -16001,8 +15278,6 @@ public:
     return 0;
   }
 
-=======
->>>>>>> remotes/origin/fenics_1.6.x
   /// Create a new custom integral on everywhere else
   virtual ufc::custom_integral* create_default_custom_integral() const
   {
@@ -16039,13 +15314,8 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16053,13 +15323,8 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), *mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16069,10 +15334,6 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_b(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), mesh,
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
@@ -16122,24 +15383,16 @@ public:
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
->>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-<<<<<<< HEAD
-  CoefficientSpace_b(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_1()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_1()), *mesh, constrained_domain)))
-=======
   CoefficientSpace_c(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16155,13 +15408,8 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16169,13 +15417,8 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16185,13 +15428,8 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_f(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
->>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -16200,13 +15438,8 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_f(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16222,13 +15455,8 @@ public:
   // Create standard function space (reference version)
   CoefficientSpace_g(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16236,36 +15464,12 @@ public:
   // Create standard function space (shared pointer version)
   CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-  {
-    // Do nothing
-  }
-
-  //--- Constructors for constrained function space, 2 different versions ---
-
-  // Create standard function space (reference version)
-  CoefficientSpace_g(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
-<<<<<<< HEAD
-  // Create standard function space (shared pointer version)
-  CoefficientSpace_g(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-=======
   //--- Constructors for constrained function space, 2 different versions ---
 
   // Create standard function space (reference version)
@@ -16283,7 +15487,6 @@ public:
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16297,56 +15500,23 @@ public:
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
-<<<<<<< HEAD
-  CoefficientSpace_u0(const dolfin::Mesh& mesh):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
   CoefficientSpace_k(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-<<<<<<< HEAD
-  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-  {
-    // Do nothing
-  }
-
-  //--- Constructors for constrained function space, 2 different versions ---
-
-  // Create standard function space (reference version)
-  CoefficientSpace_u0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
-=======
   CoefficientSpace_k(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
-<<<<<<< HEAD
-  // Create standard function space (shared pointer version)
-  CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-=======
   //--- Constructors for constrained function space, 2 different versions ---
 
   // Create standard function space (reference version)
@@ -16364,7 +15534,6 @@ public:
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_0()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_0()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16378,56 +15547,23 @@ public:
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
-<<<<<<< HEAD
-  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
   CoefficientSpace_u0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-<<<<<<< HEAD
-  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-  {
-    // Do nothing
-  }
-
-  //--- Constructors for constrained function space, 2 different versions ---
-
-  // Create standard function space (reference version)
-  Form_a_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
-=======
   CoefficientSpace_u0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
-<<<<<<< HEAD
-  // Create standard function space (shared pointer version)
-  Form_a_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-=======
   //--- Constructors for constrained function space, 2 different versions ---
 
   // Create standard function space (reference version)
@@ -16445,7 +15581,6 @@ public:
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16459,12 +15594,6 @@ public:
   //--- Constructors for standard function space, 2 different versions ---
 
   // Create standard function space (reference version)
-<<<<<<< HEAD
-  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
   Form_a_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
@@ -16478,18 +15607,10 @@ public:
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
-<<<<<<< HEAD
-  // Create standard function space (shared pointer version)
-  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-=======
   //--- Constructors for constrained function space, 2 different versions ---
 
   // Create standard function space (reference version)
@@ -16507,21 +15628,10 @@ public:
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
-<<<<<<< HEAD
-  //--- Constructors for constrained function space, 2 different versions ---
-
-  // Create standard function space (reference version)
-  Form_a_FunctionSpace_1(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
-    dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-                              dolfin::reference_to_no_delete_pointer(constrained_domain))))
-=======
 };
 
 class Form_a_FunctionSpace_1: public dolfin::FunctionSpace
@@ -16535,20 +15645,11 @@ public:
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
 
   // Create standard function space (shared pointer version)
-<<<<<<< HEAD
-  Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
-    dolfin::FunctionSpace(mesh,
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-  {
-    // Do nothing
-=======
   Form_a_FunctionSpace_1(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
@@ -16576,7 +15677,6 @@ public:
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
   {
     // Do nothing
->>>>>>> remotes/origin/fenics_1.6.x
   }
 
 };
@@ -16593,11 +15693,7 @@ public:
 
   // Constructor
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0):
-<<<<<<< HEAD
-    dolfin::Form(2, 1), b(*this, 0)
-=======
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
@@ -16606,13 +15702,8 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b):
-    dolfin::Form(2, 1), b(*this, 0)
-=======
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
@@ -16625,34 +15716,22 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b):
-    dolfin::Form(2, 1), b(*this, 0)
-=======
   Form_a(const dolfin::FunctionSpace& V1, const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
     _function_spaces[1] = reference_to_no_delete_pointer(V1);
 
     this->b = *b;
-<<<<<<< HEAD
-=======
     this->c = *c;
     this->k = *k;
->>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
 
   // Constructor
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0):
-<<<<<<< HEAD
-    dolfin::Form(2, 1), b(*this, 0)
-=======
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
@@ -16661,45 +15740,29 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b):
-    dolfin::Form(2, 1), b(*this, 0)
-=======
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = b;
-<<<<<<< HEAD
-=======
     this->c = c;
     this->k = k;
->>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b):
-    dolfin::Form(2, 1), b(*this, 0)
-=======
   Form_a(std::shared_ptr<const dolfin::FunctionSpace> V1, std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
     dolfin::Form(2, 3), b(*this, 0), c(*this, 1), k(*this, 2)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
     _function_spaces[1] = V1;
 
     this->b = *b;
-<<<<<<< HEAD
-=======
     this->c = *c;
     this->k = *k;
->>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_0());
   }
@@ -16752,11 +15815,8 @@ public:
 
   // Coefficients
   dolfin::CoefficientAssigner b;
-<<<<<<< HEAD
-=======
   dolfin::CoefficientAssigner c;
   dolfin::CoefficientAssigner k;
->>>>>>> remotes/origin/fenics_1.6.x
 };
 
 class Form_L_FunctionSpace_0: public dolfin::FunctionSpace
@@ -16768,13 +15828,8 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16782,13 +15837,8 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16798,13 +15848,8 @@ public:
   // Create standard function space (reference version)
   Form_L_FunctionSpace_0(const dolfin::Mesh& mesh, const dolfin::SubDomain& constrained_domain):
     dolfin::FunctionSpace(dolfin::reference_to_no_delete_pointer(mesh),
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), mesh,
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), mesh,
->>>>>>> remotes/origin/fenics_1.6.x
                               dolfin::reference_to_no_delete_pointer(constrained_domain))))
   {
     // Do nothing
@@ -16813,13 +15858,8 @@ public:
   // Create standard function space (shared pointer version)
   Form_L_FunctionSpace_0(std::shared_ptr<const dolfin::Mesh> mesh, std::shared_ptr<const dolfin::SubDomain> constrained_domain):
     dolfin::FunctionSpace(mesh,
-<<<<<<< HEAD
-                          std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_2()))),
-                          std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_2()), *mesh, constrained_domain)))
-=======
                           std::shared_ptr<const dolfin::FiniteElement>(new dolfin::FiniteElement(std::shared_ptr<ufc::finite_element>(new convectiondiffusion3d_finite_element_3()))),
                           std::shared_ptr<const dolfin::DofMap>(new dolfin::DofMap(std::shared_ptr<ufc::dofmap>(new convectiondiffusion3d_dofmap_3()), *mesh, constrained_domain)))
->>>>>>> remotes/origin/fenics_1.6.x
   {
     // Do nothing
   }
@@ -16844,11 +15884,7 @@ public:
 
   // Constructor
   Form_L(const dolfin::FunctionSpace& V0):
-<<<<<<< HEAD
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-=======
     dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -16856,13 +15892,8 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-=======
   Form_L(const dolfin::FunctionSpace& V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
     dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -16877,13 +15908,8 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g):
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-=======
   Form_L(const dolfin::FunctionSpace& V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g, std::shared_ptr<const dolfin::GenericFunction> c, std::shared_ptr<const dolfin::GenericFunction> k):
     dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = reference_to_no_delete_pointer(V0);
 
@@ -16891,22 +15917,15 @@ public:
     this->b = *b;
     this->f = *f;
     this->g = *g;
-<<<<<<< HEAD
-=======
     this->c = *c;
     this->k = *k;
->>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
 
   // Constructor
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0):
-<<<<<<< HEAD
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-=======
     dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -16914,13 +15933,8 @@ public:
   }
 
   // Constructor
-<<<<<<< HEAD
-  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g):
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-=======
   Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, const dolfin::GenericFunction& u0, const dolfin::GenericFunction& b, const dolfin::GenericFunction& f, const dolfin::GenericFunction& g, const dolfin::GenericFunction& c, const dolfin::GenericFunction& k):
     dolfin::Form(1, 6), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3), c(*this, 4), k(*this, 5)
->>>>>>> remotes/origin/fenics_1.6.x
   {
     _function_spaces[0] = V0;
 
@@ -16940,27 +15954,12 @@ public:
   {
     _function_spaces[0] = V0;
 
-<<<<<<< HEAD
-    _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
-  }
-
-  // Constructor
-  Form_L(std::shared_ptr<const dolfin::FunctionSpace> V0, std::shared_ptr<const dolfin::GenericFunction> u0, std::shared_ptr<const dolfin::GenericFunction> b, std::shared_ptr<const dolfin::GenericFunction> f, std::shared_ptr<const dolfin::GenericFunction> g):
-    dolfin::Form(1, 4), u0(*this, 0), b(*this, 1), f(*this, 2), g(*this, 3)
-  {
-    _function_spaces[0] = V0;
-
-=======
->>>>>>> remotes/origin/fenics_1.6.x
     this->u0 = *u0;
     this->b = *b;
     this->f = *f;
     this->g = *g;
-<<<<<<< HEAD
-=======
     this->c = *c;
     this->k = *k;
->>>>>>> remotes/origin/fenics_1.6.x
 
     _ufc_form = std::shared_ptr<const ufc::form>(new convectiondiffusion3d_form_1());
   }
@@ -17030,11 +16029,8 @@ public:
   dolfin::CoefficientAssigner b;
   dolfin::CoefficientAssigner f;
   dolfin::CoefficientAssigner g;
-<<<<<<< HEAD
-=======
   dolfin::CoefficientAssigner c;
   dolfin::CoefficientAssigner k;
->>>>>>> remotes/origin/fenics_1.6.x
 };
 
 // Class typedefs
