@@ -552,16 +552,17 @@ namespace Current {
         	
 	};
 
-	class General {
+	class ConstVoltage {
+
+		public:
+		ConstVoltage(int voltage):phi3(voltage) { }
+
 		// sourceTerm (right-hand side)
 		class Source : public dolfin::Expression {
     			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
     			{
         			values[0] = 0;
-        			if (x[0] > 1 - (0.5 + DOLFIN_EPS) and x[0] < 1 - (0.5 - DOLFIN_EPS) and
-            			x[1] > 1 - (0.5 + DOLFIN_EPS) and x[1] < 1 - (0.5 - DOLFIN_EPS))
-            				values[0] = 20000;
-    			}
+        		}
 		};
 
 		// Normal derivative (used for Neumann boundary condition)
@@ -569,6 +570,27 @@ namespace Current {
     			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
     			{
         			values[0] = x[0];
+
+				nu2 = phi2 - phiE - 1.7;
+				nu3 = phiE - phi3 - 0.4;
+				
+				//first conductor
+				if(x[0]>0.1 && x[0]<0.13 && x[1]<0.9){
+
+				}
+				//first cathode
+				else if(x[0]>0.13-DOLFIN_EPS && x[0]<0.3+DOLFIN_EPS && x[1]>0.1+DOLFIN_EPS && x[1]<0.9-DOLFIN_EPS){
+
+				}
+				//second cathode
+				else if(x[0]>0.7-DOLFIN_EPS && x[0]<0.87+DOLFIN_EPS && x[1]>0.1+DOLFIN_EPS && x[1]<0.9-DOLFIN_EPS){
+
+				}
+				//second conductor
+				else if(x[0]>0.87 && x[0]<0.9 && x[1]<0.9){
+
+				}
+
  		   	}
 		};
 
@@ -581,7 +603,17 @@ namespace Current {
     			}
 		};
 
-	}
+		protected:
+		double sigma1 = 5.3e5;
+		double sigma2 = 1.34e4;
+		double sigma3 = 5.3e5;
+		double alpha = 0.3;
+		double n = 2.0;
+		double j2 = 0.005;
+		double phi1 = 0;
+		double phi3;
+
+	};
 
 }
 
