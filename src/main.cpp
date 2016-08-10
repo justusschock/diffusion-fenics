@@ -4,6 +4,7 @@
 //includes for PDEs:
 #include "PoissonPDE/poissonSolver.h"
 #include "ConvectionDiffusionPDE/convectionDiffusionSolver.h"
+#include "CurrentPDE/currentSolver.h"
 #include "pdeTestExamples.h"
 
 
@@ -12,7 +13,8 @@ int main(int argc, char* argv[]) {
 
         	enum{
             		poisson,
-            		diffusion
+            		diffusion,
+			current
         	};
 
         	enum{	
@@ -45,6 +47,8 @@ int main(int argc, char* argv[]) {
 
 		dolfin::Constant dt(1e-1);
         	double T = 5.0;
+
+		dirichlet.reset(new dolfin::Constant (0.9));
 
 		if(testCase == inOut && equation == diffusion){ 
 			ConvectionDiffusion::SetupCase<ConvectionDiffusion::InOut> setup(dim);

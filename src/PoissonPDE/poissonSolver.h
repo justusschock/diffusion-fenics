@@ -5,7 +5,6 @@
 #ifndef DIFFUSION_FENICS_POISSONSOLVER_H
 #define DIFFUSION_FENICS_POISSONSOLVER_H
 #include <dolfin.h>
-#include "../pdeTestExamples.h"
 
 //Include generated headers for solving the Poisson-PDE
 #include "poisson1D.h"

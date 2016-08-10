@@ -1,0 +1,14 @@
+cell = triangle
+
+scalar = FiniteElement("Langrange", cell, 1)
+
+j = TrialFunction(scalar)
+v = TestFunction(scalar)
+f = Coefficient(scalar)
+g = Coefficient(scalar)
+sigma = Coefficient(scalar)
+phi = Coefficient(scalar)
+
+j = sigma*(-grad(phi))
+
+a = div((inner(j,v))
