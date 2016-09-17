@@ -1,6 +1,6 @@
 cell = triangle
 
-scalar = FiniteElement("Langrange", cell, 1)
+scalar = FiniteElement("Lagrange", cell, 1)
 
 j = TrialFunction(scalar)
 v = TestFunction(scalar)
@@ -11,4 +11,5 @@ phi = Coefficient(scalar)
 
 j = sigma*(-grad(phi))
 
-a = div((inner(j,v))
+a = inner(div(j),v)*dx
+L = f*v*dx + g*v*ds

@@ -2,6 +2,26 @@ cell = tetrahedron
 
 scalar = FiniteElement("Lagrange", cell, 1)
 
+#Subdomain Beginnings and endings for Dynamic Subdomains
+D1_x_b = Constant(scalar)
+D1_x_e = Constant(scalar)
+D1_y_b = Constant(scalar)
+D1_y_e = Constant(scalar)
+D1_z_b = Constant(scalar)
+D1_z_e = Constant(scalar)
+
+D2_x_b = Constant(scalar)
+D2_x_e = Constant(scalar)
+D2_y_b = Constant(scalar)
+D2_y_e = Constant(scalar)
+D2_z_b = Constant(scalar)
+D2_z_e = Constant(scalar)
+
+#indicator functions for subdomains
+I1 = conditional(x[0]>D1_x_b && x[0]<D1_x_e && x[1]>D1_y_b && x[1]<D1_y_e && x[2]>D1_z_b && x[2]<D1_z_e, 1, 0)
+I2 = conditional(x[0]>D2_x_b && x[0]<D2_x_e && x[1]>D2_y_b && x[1]<D2_y_e && x[2]>D2_z_b && x[2]<D2_z_e, 1, 0)
+I0 = conditional(!(I1 || I2), 1, 0)
+
 phi = TrialFunction(scalar)
 v = TestFunction(scalar)
 f = Coefficient(scalar)

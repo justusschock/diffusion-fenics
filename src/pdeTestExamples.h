@@ -544,75 +544,49 @@ namespace Current {
             		}
         	}
 
-       		protected:
+
+		protected:
        		std::shared_ptr<dolfin::Mesh> mesh;
        	     	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
         	std::shared_ptr<dolfin::Expression> source;
         	std::shared_ptr<dolfin::Expression> neumann;
-        	
+		std::shared_ptr<dolfin::SubDomain> firstElectrode;
+		std::shared_ptr<dolfin::SubDomain> secondElectrode;
+		std::shared_ptr<dolfin::SubDomain> conductors;
+		std::shared_ptr<dolfin::SubDomain> elektrolyt;
 	};
 
 	class ConstVoltage {
 
 		public:
-		ConstVoltage(int voltage):phi3(voltage) { }
-
-		// sourceTerm (right-hand side)
-		class Source : public dolfin::Expression {
-    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
-    			{
-        			values[0] = 0;
-        		}
+		
+		class FirstElectrode : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+			{
+				return x[0]>0.125-DOLFIN_EPS && x[0]<0.3+DOLFIN_EPS && x[1]>0.1-DOLFIN_EPS && x[1]<0.9+DOLFIN_EPS && on_boundary;
+			}
 		};
 
-		// Normal derivative (used for Neumann boundary condition)
-		class Neumann : public dolfin::Expression {
-    			void eval(dolfin::Array<double>& values, const dolfin::Array<double>& x) const
-    			{
-        			values[0] = x[0];
-
-				nu2 = phi2 - phiE - 1.7;
-				nu3 = phiE - phi3 - 0.4;
-				
-				//first conductor
-				if(x[0]>0.1 && x[0]<0.13 && x[1]<0.9){
-
-				}
-				//first cathode
-				else if(x[0]>0.13-DOLFIN_EPS && x[0]<0.3+DOLFIN_EPS && x[1]>0.1+DOLFIN_EPS && x[1]<0.9-DOLFIN_EPS){
-
-				}
-				//second cathode
-				else if(x[0]>0.7-DOLFIN_EPS && x[0]<0.87+DOLFIN_EPS && x[1]>0.1+DOLFIN_EPS && x[1]<0.9-DOLFIN_EPS){
-
-				}
-				//second conductor
-				else if(x[0]>0.87 && x[0]<0.9 && x[1]<0.9){
-
-				}
-
- 		   	}
+		class SecondElectrode : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+			{
+				return x[0]>0.7-DOLFIN_EPS && x[0]<8.75+DOLFIN_EPS && x[1]>0.1-DOLFIN_EPS && x[1]<0.9+DOLFIN_EPS && on_boundary;
+			}
 		};
 
-		// Sub domain for Dirichlet boundary condition
-		class DirichletBoundary : public dolfin::SubDomain {
-    			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
-    			{
-        			return x[0] < DOLFIN_EPS or x[0] > 1.0 - DOLFIN_EPS or
-               			x[1] < DOLFIN_EPS or x[1] > 1.0 - DOLFIN_EPS;
-    			}
+		class Conductors : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+			{
+				return x[1]<0.9 && ((x[0]>0.1-DOLFIN_EPS && x[0]<0.125+DOLFIN_EPS) || (x[0]>0.875-DOLFIN_EPS && x[0]<0.9+DOLFIN_EPS)) && on_boundary;
+			}
+		};	
+
+		class Elektrolyt : public dolfin::SubDomain {
+			bool inside(const dolfin::Array<double>& x, bool on_boundary) const
+			{
+				return on_boundary && SecondElectrode::inside(x, on_boundary) && FirstElectrode::inside(x, on_boundary) && !Conductors::inside(x, on_boundary);
+			}
 		};
-
-		protected:
-		double sigma1 = 5.3e5;
-		double sigma2 = 1.34e4;
-		double sigma3 = 5.3e5;
-		double alpha = 0.3;
-		double n = 2.0;
-		double j2 = 0.005;
-		double phi1 = 0;
-		double phi3;
-
 	};
 
 }
