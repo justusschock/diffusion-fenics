@@ -2,16 +2,13 @@ cell = triangle
 
 CG = VectorElement("CG", cell, 1)
 
-x = SpatialCoordinate(CG)
-
 sigma = Coefficient(CG)
 w = TrialFunction(CG)
 q = TestFunction(CG)
 f = Coefficient(CG)
 g = Coefficient(CG)
 
-k = Constant(CG);
-
+#einzelne teilgebiete
 aCG = -sigma*inner(grad(w[0]), grad(q[0]))*dx(0)-w[0]*inner(grad(sigma), grad(q[0]))*dx(0) \
     -sigma*inner(grad(w[1]), grad(q[1]))*dx(1)-w[1]*inner(grad(sigma), grad(q[1]))*dx(1) \
     -sigma*inner(grad(w[2]), grad(q[2]))*dx(2)-w[2]*inner(grad(sigma), grad(q[2]))*dx(2) \
@@ -22,7 +19,9 @@ LCG = f*q[0]*dx(0) + f*q[1]*dx(1) + f*q[2]*dx(2) + f*q[3]*dx(3) + g*q*ds
 DG = FiniteElement("DG", cell, 0)
 u = TrialFunction(DG) 
 v = TestFunction(DG)
+k = Constant;
 
+#ueberlagern der Teilgebiete
 a = u*v*dx
 L = v*w[0]*dx(0)\
 	+v*w[1]*dx(1) \
