@@ -1,116 +1,46 @@
-#include <iostream>
 #include <dolfin.h>
+#include <iostream>
 
-//includes for PDEs:
-#include "PoissonPDE/poissonSolver.h"
-#include "ConvectionDiffusionPDE/convectionDiffusionSolver.h"
-#include "CurrentPDE/currentSolver.h"
+// includes for PDEs:
+#include "PoissonPDE_Mesh/poissonSolver.h"
 #include "pdeTestExamples.h"
 
+int main(int argc, char *argv[]) {
+  try {
 
-int main(int argc, char* argv[]) {
-	try {
+    dolfin::init(argc, argv);
 
-        	enum{
-            		poisson,
-            		diffusion,
-			current
-        	};
+    // dimension
+    const int dim = 3;
 
-        	enum{	
-            		general,
-            		inOut,
-            		constSides,
-            		randomSource,
-            		differentDiffusivities,
-            		transferFunction
-        	};
-        	int equation = diffusion;
-        	int testCase = differentDiffusivities;
+    // initial mesh and solution (used for overwriting it for each dimension)
+    std::shared_ptr<dolfin::Mesh> mesh =
+        std::make_shared<dolfin::Mesh>("../test_mesh/test_mesh.xml");
 
-        	dolfin::init(argc, argv);
+    dolfin::MeshFunction<size_t> subdomain_function(
+         mesh, "../test_mesh/test_mesh_physical_region.xml");
+    dolfin::MeshFunction<size_t> boundary_function(
+         mesh, "../test_mesh/test_mesh_facet_region.xml");
 
-        	//dimension
-        	const int dim = 2;
+    dolfin::Constant dt(1e-1);
+    double T = 5.0;
 
+    //dirichlet.reset(new dolfin::Constant(0.9));
 
-        	//initial mesh and solution (used for overwriting it for each dimension)
-        	std::shared_ptr<dolfin::Mesh> mesh;
-
-        	std::shared_ptr<dolfin::Expression> initial;
-        	std::shared_ptr<dolfin::Constant> dirichlet;
-        	std::shared_ptr<dolfin::Expression> neumann;
-        	std::shared_ptr<dolfin::Expression> source;       
-        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
-        	std::shared_ptr<dolfin::Expression> velocity;
-        	std::shared_ptr<dolfin::Expression> diffusivity;
-
-		dolfin::Constant dt(1e-1);
-        	double T = 5.0;
-
-		dirichlet.reset(new dolfin::Constant (0.9));
-
-		if(testCase == inOut && equation == diffusion){ 
-			ConvectionDiffusion::SetupCase<ConvectionDiffusion::InOut> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-		}
-       
-        	else if(testCase == constSides && equation == diffusion) {
-        	   	ConvectionDiffusion::SetupCase<ConvectionDiffusion::ConstSides> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-        	}
-        	else if(testCase == randomSource && equation == diffusion) {
-        	    	ConvectionDiffusion::SetupCase<ConvectionDiffusion::RandomSource> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-        	}
-        	else if(testCase == differentDiffusivities && equation == diffusion) {
-        	    	ConvectionDiffusion::SetupCase<ConvectionDiffusion::DifferentDiffusivities> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-        	}
-        	else if(testCase == transferFunction && equation == diffusion) {
-        	    	ConvectionDiffusion::SetupCase<ConvectionDiffusion::TransferFunction> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-        	}
-        	else if(testCase == general){
-        	    	ConvectionDiffusion::SetupCase<ConvectionDiffusion::General> setup(dim);
-			dolfin::Function u = ConvectionDiffusion::solvePDE<dim>(setup.getMesh(),dirichlet,setup.getInitial(),setup.getVelocity(),setup.getSource(),
-				    						setup.getNeumann(), setup.getDirichletBoundary(), setup.getDiffusivity(),
-										dt, T);
-        	}
-        	else if(equation == poisson) {
-		    	Poisson::SetupCase<Poisson::General> setup(dim);
-        	    	dolfin::Function u = Poisson::solvePDE<dim>(mesh, dirichlet, initial, source, neumann, dirichletBoundary);
-        	    	//dolfin::plot(u);
-        	    	//dolfin::interactive();
-        	}
-        	else
-        	    	throw std::string("Wrong equation selected");
-	
-	
-	
-	        return 0;
-
-	}
-	catch (std::exception &e) {
-        	std::cout << e.what() << std::endl;
-        	return 1;
-    	}
-    	catch (std::string &e) {
-		std::cout << e << std::endl;
-        	return 1;
-    	}
-    	catch (...) {
-        	std::cout << "An unknown error has occured" << std::endl;
-        	return 1;
-    	}
+    Poisson::SetupCase<Poisson::General> setup(dim);
+    std::shared_ptr<dolfin::Expression> neumann = setup.getNeumann();
+    std::shared_ptr<dolfin::Expression> source = setup.getSource();
+    dolfin::Function u = Poisson::solvePDE<dim>(mesh, source, neumann,subdomain_function);
+    // dolfin::plot(u);
+    // dolfin::interactive();
+  } catch (std::exception &e) {
+    std::cout << e.what() << std::endl;
+    return 1;
+  } catch (std::string &e) {
+    std::cout << e << std::endl;
+    return 1;
+  } catch (...) {
+    std::cout << "An unknown error has occured" << std::endl;
+    return 1;
+  }
 }

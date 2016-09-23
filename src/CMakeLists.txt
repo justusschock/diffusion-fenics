@@ -38,8 +38,7 @@ set(SOURCE_FILES main.cpp pdeTestExamples.h)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_subdirectory(PoissonPDE)
-add_subdirectory(ConvectionDiffusionPDE)
+add_subdirectory(PoissonPDE_Mesh)
 
 
 # Target libraries
