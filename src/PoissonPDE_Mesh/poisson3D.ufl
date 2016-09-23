@@ -7,5 +7,5 @@ v = TestFunction(element)
 f = Coefficient(element)
 g = Coefficient(element)
 
-a = inner(grad(u), grad(v))*dx(2)+inner(grad(u), grad(v))*dx(3)+inner(grad(u), grad(v))*dx(5)
-L = f*v*dx(2) +f*v*dx(3) +f*v*dx(5)+g*v*ds
+a = inner(grad(u), grad(v))*(dx(2)+dx(3)+dx(5))
+L = f*v*dx(2)-f*v*dx(3)+g*v*ds(6)

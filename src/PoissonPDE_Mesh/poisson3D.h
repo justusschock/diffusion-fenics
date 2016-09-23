@@ -5020,83 +5020,25 @@ public:
     const double G0_3 = det*w[0][3]*(1.0);
     
     // Compute element tensor
-    A[0] = 0.0166666666666666*G0_0 + 0.0083333333333333*G0_1 + 0.0083333333333333*G0_2 + 0.0083333333333333*G0_3;
-    A[1] = 0.0083333333333333*G0_0 + 0.0166666666666667*G0_1 + 0.00833333333333337*G0_2 + 0.00833333333333337*G0_3;
-    A[2] = 0.0083333333333333*G0_0 + 0.00833333333333337*G0_1 + 0.0166666666666667*G0_2 + 0.00833333333333337*G0_3;
-    A[3] = 0.0083333333333333*G0_0 + 0.00833333333333337*G0_1 + 0.00833333333333337*G0_2 + 0.0166666666666667*G0_3;
+    A[0] = -0.0166666666666666*G0_0 - 0.0083333333333333*G0_1 - 0.0083333333333333*G0_2 - 0.0083333333333333*G0_3;
+    A[1] = -0.0083333333333333*G0_0 - 0.0166666666666667*G0_1 - 0.00833333333333337*G0_2 - 0.00833333333333337*G0_3;
+    A[2] = -0.0083333333333333*G0_0 - 0.00833333333333337*G0_1 - 0.0166666666666667*G0_2 - 0.00833333333333337*G0_3;
+    A[3] = -0.0083333333333333*G0_0 - 0.00833333333333337*G0_1 - 0.00833333333333337*G0_2 - 0.0166666666666667*G0_3;
   }
 
 };
 
 
-class poisson3d_cell_integral_1_5: public ufc::cell_integral
+class poisson3d_exterior_facet_integral_1_6: public ufc::exterior_facet_integral
 {
 public:
 
-  poisson3d_cell_integral_1_5() : ufc::cell_integral()
+  poisson3d_exterior_facet_integral_1_6() : ufc::exterior_facet_integral()
   {
     
   }
 
-  ~poisson3d_cell_integral_1_5() override
-  {
-    
-  }
-
-  const std::vector<bool> & enabled_coefficients() const final override
-  {
-    static const std::vector<bool> enabled({true, false});
-    return enabled;
-  }
-
-  void tabulate_tensor(double * A,
-                       const double * const * w,
-                       const double * coordinate_dofs,
-                       int cell_orientation) const final override
-  {
-    // Number of operations (multiply-add pairs) for Jacobian data:      3
-    // Number of operations (multiply-add pairs) for geometry tensor:    4
-    // Number of operations (multiply-add pairs) for tensor contraction: 14
-    // Total number of operations (multiply-add pairs):                  21
-    
-    // Compute Jacobian
-    double J[9];
-    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
-    
-    // Compute Jacobian inverse and determinant
-    double K[9];
-    double detJ;
-    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
-    
-    // Set scale factor
-    const double det = std::abs(detJ);
-    
-    // Compute geometry tensor
-    const double G0_0 = det*w[0][0]*(1.0);
-    const double G0_1 = det*w[0][1]*(1.0);
-    const double G0_2 = det*w[0][2]*(1.0);
-    const double G0_3 = det*w[0][3]*(1.0);
-    
-    // Compute element tensor
-    A[0] = 0.0166666666666666*G0_0 + 0.0083333333333333*G0_1 + 0.0083333333333333*G0_2 + 0.0083333333333333*G0_3;
-    A[1] = 0.0083333333333333*G0_0 + 0.0166666666666667*G0_1 + 0.00833333333333337*G0_2 + 0.00833333333333337*G0_3;
-    A[2] = 0.0083333333333333*G0_0 + 0.00833333333333337*G0_1 + 0.0166666666666667*G0_2 + 0.00833333333333337*G0_3;
-    A[3] = 0.0083333333333333*G0_0 + 0.00833333333333337*G0_1 + 0.00833333333333337*G0_2 + 0.0166666666666667*G0_3;
-  }
-
-};
-
-
-class poisson3d_exterior_facet_integral_1_otherwise: public ufc::exterior_facet_integral
-{
-public:
-
-  poisson3d_exterior_facet_integral_1_otherwise() : ufc::exterior_facet_integral()
-  {
-    
-  }
-
-  ~poisson3d_exterior_facet_integral_1_otherwise() override
+  ~poisson3d_exterior_facet_integral_1_6() override
   {
     
   }
@@ -5477,7 +5419,7 @@ public:
 
   const char * signature() const final override
   {
-    return "2167c4f9f53aa874b4c28f3847ddc607fda83b572f0b83bb8fccfd4d8dc159025dedb2d551be904cba3a714146ed0d5c7988482ac2bf47aa854b2b716586b60c";
+    return "be738d168731930bfb7763e4a2e6bda0b1a90560099399b6660ad996fde0de67a68a68dc7637d9441cd4721598fe3d2c5a5079b4adabe4c27f964eb3d252dba1";
   }
 
   std::size_t rank() const final override
@@ -5561,12 +5503,12 @@ public:
 
   std::size_t max_cell_subdomain_id() const final override
   {
-    return 6;
+    return 4;
   }
 
   std::size_t max_exterior_facet_subdomain_id() const final override
   {
-    return 0;
+    return 7;
   }
 
   std::size_t max_interior_facet_subdomain_id() const final override
@@ -5653,11 +5595,6 @@ public:
         return new poisson3d_cell_integral_1_3();
         break;
       }
-    case 5:
-      {
-        return new poisson3d_cell_integral_1_5();
-        break;
-      }
     }
     
     return 0;
@@ -5665,6 +5602,15 @@ public:
 
   ufc::exterior_facet_integral * create_exterior_facet_integral(std::size_t subdomain_id) const final override
   {
+    switch (subdomain_id)
+    {
+    case 6:
+      {
+        return new poisson3d_exterior_facet_integral_1_6();
+        break;
+      }
+    }
+    
     return 0;
   }
 
@@ -5705,7 +5651,7 @@ public:
 
   ufc::exterior_facet_integral * create_default_exterior_facet_integral() const final override
   {
-    return new poisson3d_exterior_facet_integral_1_otherwise();
+    return 0;
   }
 
   ufc::interior_facet_integral * create_default_interior_facet_integral() const final override

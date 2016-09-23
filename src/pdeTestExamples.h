@@ -13,7 +13,6 @@
 namespace Poisson {
 template <class Case> class SetupCase {
 public:
-  std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
   /*    	std::shared_ptr<dolfin::Expression> getInitial()
               {
                       return this->initial;
@@ -28,19 +27,9 @@ public:
   SetupCase(std::size_t dim)
       : source(std::make_shared<typename Case::Source>()),
         neumann(std::make_shared<typename Case::Neumann>()) {
-    if (dim == 1) {
-      mesh = std::make_shared<dolfin::UnitIntervalMesh>(50);
-    } else if (dim == 2) {
-      mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
-    } else if (dim == 3) {
-      mesh = std::make_shared<dolfin::UnitCubeMesh>(50, 50, 50);
-    } else {
-      mesh = std::make_shared<dolfin::UnitSquareMesh>(50, 50);
-    }
   }
 
 protected:
-  std::shared_ptr<dolfin::Mesh> mesh;
   //      	std::shared_ptr<dolfin::Expression> initial;
   //        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
   std::shared_ptr<dolfin::Expression> source;
@@ -60,10 +49,7 @@ public:
   class Source : public dolfin::Expression {
     void eval(dolfin::Array<double> &values,
               const dolfin::Array<double> &x) const {
-      values[0] = 0;
-      if (x[0] > 1 - (0.5 + DOLFIN_EPS) and x[0] < 1 - (0.5 - DOLFIN_EPS) and
-          x[1] > 1 - (0.5 + DOLFIN_EPS) and x[1] < 1 - (0.5 - DOLFIN_EPS))
-        values[0] = 20000;
+        values[0] = 10000.0;
     }
   };
 

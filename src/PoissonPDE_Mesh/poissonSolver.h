@@ -79,7 +79,8 @@ template <const int dim>
 auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh,
               std::shared_ptr<dolfin::Expression> source,
               std::shared_ptr<dolfin::Expression> neumann,
-              dolfin::MeshFunction<size_t> dx) -> dolfin::Function {
+              std::shared_ptr<dolfin::MeshFunction<size_t>> dx,
+              std::shared_ptr<dolfin::MeshFunction<size_t>> ds) -> dolfin::Function {
 
   DimensionWrapper<dim> dimensionWrapper;
 
@@ -95,16 +96,18 @@ auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh,
   // Define boundary condition
 //  dolfin::DirichletBC bc(V, dirichletValue, dirichletBoundary);
 
-  // Set Boundary Condition for Problem
-  L.g = *neumann;
-  L.f = *source;
+  a.dx=dx;
+  L.g = neumann;
+  L.f = source;
   L.dx = dx;
+  L.ds=ds;
 
   // Compute solution
   dolfin::solve(a == L, u);
 
   dolfin::File file("../output/poisson.pvd", "compressed");
   file << u;
+
 
   return u;
 }
