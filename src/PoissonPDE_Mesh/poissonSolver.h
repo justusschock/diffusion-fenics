@@ -94,7 +94,7 @@ auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh,
   dolfin::Function u(V);
 
   // Define boundary condition
-//  dolfin::DirichletBC bc(V, dirichletValue, dirichletBoundary);
+  dolfin::DirichletBC bc(V,std::make_shared<dolfin::Constant>(0.0), ds,6);
 
   a.dx=dx;
   L.g = neumann;
@@ -103,7 +103,7 @@ auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh,
   L.ds=ds;
 
   // Compute solution
-  dolfin::solve(a == L, u);
+  dolfin::solve(a == L, u,bc);
 
   dolfin::File file("../output/poisson.pvd", "compressed");
   file << u;

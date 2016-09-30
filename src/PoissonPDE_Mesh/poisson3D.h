@@ -4688,6 +4688,81 @@ public:
 };
 
 
+class poisson3d_cell_integral_0_1: public ufc::cell_integral
+{
+public:
+
+  poisson3d_cell_integral_0_1() : ufc::cell_integral()
+  {
+    
+  }
+
+  ~poisson3d_cell_integral_0_1() override
+  {
+    
+  }
+
+  const std::vector<bool> & enabled_coefficients() const final override
+  {
+    static const std::vector<bool> enabled({});
+    return enabled;
+  }
+
+  void tabulate_tensor(double * A,
+                       const double * const * w,
+                       const double * coordinate_dofs,
+                       int cell_orientation) const final override
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      3
+    // Number of operations (multiply-add pairs) for geometry tensor:    27
+    // Number of operations (multiply-add pairs) for tensor contraction: 28
+    // Total number of operations (multiply-add pairs):                  58
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Set scale factor
+    const double det = std::abs(detJ);
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*(K[0]*K[0] + K[1]*K[1] + K[2]*K[2]);
+    const double G0_0_1 = det*(K[0]*K[3] + K[1]*K[4] + K[2]*K[5]);
+    const double G0_0_2 = det*(K[0]*K[6] + K[1]*K[7] + K[2]*K[8]);
+    const double G0_1_0 = det*(K[3]*K[0] + K[4]*K[1] + K[5]*K[2]);
+    const double G0_1_1 = det*(K[3]*K[3] + K[4]*K[4] + K[5]*K[5]);
+    const double G0_1_2 = det*(K[3]*K[6] + K[4]*K[7] + K[5]*K[8]);
+    const double G0_2_0 = det*(K[6]*K[0] + K[7]*K[1] + K[8]*K[2]);
+    const double G0_2_1 = det*(K[6]*K[3] + K[7]*K[4] + K[8]*K[5]);
+    const double G0_2_2 = det*(K[6]*K[6] + K[7]*K[7] + K[8]*K[8]);
+    
+    // Compute element tensor
+    A[0] = 0.166666666666667*G0_0_0 + 0.166666666666667*G0_0_1 + 0.166666666666667*G0_0_2 + 0.166666666666667*G0_1_0 + 0.166666666666667*G0_1_1 + 0.166666666666667*G0_1_2 + 0.166666666666667*G0_2_0 + 0.166666666666667*G0_2_1 + 0.166666666666667*G0_2_2;
+    A[1] = -0.166666666666667*G0_0_0 - 0.166666666666667*G0_1_0 - 0.166666666666667*G0_2_0;
+    A[2] = -0.166666666666667*G0_0_1 - 0.166666666666667*G0_1_1 - 0.166666666666667*G0_2_1;
+    A[3] = -0.166666666666667*G0_0_2 - 0.166666666666667*G0_1_2 - 0.166666666666667*G0_2_2;
+    A[4] = -0.166666666666667*G0_0_0 - 0.166666666666667*G0_0_1 - 0.166666666666667*G0_0_2;
+    A[5] = 0.166666666666667*G0_0_0;
+    A[6] = 0.166666666666667*G0_0_1;
+    A[7] = 0.166666666666667*G0_0_2;
+    A[8] = -0.166666666666667*G0_1_0 - 0.166666666666667*G0_1_1 - 0.166666666666667*G0_1_2;
+    A[9] = 0.166666666666667*G0_1_0;
+    A[10] = 0.166666666666667*G0_1_1;
+    A[11] = 0.166666666666667*G0_1_2;
+    A[12] = -0.166666666666667*G0_2_0 - 0.166666666666667*G0_2_1 - 0.166666666666667*G0_2_2;
+    A[13] = 0.166666666666667*G0_2_0;
+    A[14] = 0.166666666666667*G0_2_1;
+    A[15] = 0.166666666666667*G0_2_2;
+  }
+
+};
+
+
 class poisson3d_cell_integral_0_2: public ufc::cell_integral
 {
 public:
@@ -4773,6 +4848,81 @@ public:
   }
 
   ~poisson3d_cell_integral_0_3() override
+  {
+    
+  }
+
+  const std::vector<bool> & enabled_coefficients() const final override
+  {
+    static const std::vector<bool> enabled({});
+    return enabled;
+  }
+
+  void tabulate_tensor(double * A,
+                       const double * const * w,
+                       const double * coordinate_dofs,
+                       int cell_orientation) const final override
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      3
+    // Number of operations (multiply-add pairs) for geometry tensor:    27
+    // Number of operations (multiply-add pairs) for tensor contraction: 28
+    // Total number of operations (multiply-add pairs):                  58
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Set scale factor
+    const double det = std::abs(detJ);
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*(K[0]*K[0] + K[1]*K[1] + K[2]*K[2]);
+    const double G0_0_1 = det*(K[0]*K[3] + K[1]*K[4] + K[2]*K[5]);
+    const double G0_0_2 = det*(K[0]*K[6] + K[1]*K[7] + K[2]*K[8]);
+    const double G0_1_0 = det*(K[3]*K[0] + K[4]*K[1] + K[5]*K[2]);
+    const double G0_1_1 = det*(K[3]*K[3] + K[4]*K[4] + K[5]*K[5]);
+    const double G0_1_2 = det*(K[3]*K[6] + K[4]*K[7] + K[5]*K[8]);
+    const double G0_2_0 = det*(K[6]*K[0] + K[7]*K[1] + K[8]*K[2]);
+    const double G0_2_1 = det*(K[6]*K[3] + K[7]*K[4] + K[8]*K[5]);
+    const double G0_2_2 = det*(K[6]*K[6] + K[7]*K[7] + K[8]*K[8]);
+    
+    // Compute element tensor
+    A[0] = 0.166666666666667*G0_0_0 + 0.166666666666667*G0_0_1 + 0.166666666666667*G0_0_2 + 0.166666666666667*G0_1_0 + 0.166666666666667*G0_1_1 + 0.166666666666667*G0_1_2 + 0.166666666666667*G0_2_0 + 0.166666666666667*G0_2_1 + 0.166666666666667*G0_2_2;
+    A[1] = -0.166666666666667*G0_0_0 - 0.166666666666667*G0_1_0 - 0.166666666666667*G0_2_0;
+    A[2] = -0.166666666666667*G0_0_1 - 0.166666666666667*G0_1_1 - 0.166666666666667*G0_2_1;
+    A[3] = -0.166666666666667*G0_0_2 - 0.166666666666667*G0_1_2 - 0.166666666666667*G0_2_2;
+    A[4] = -0.166666666666667*G0_0_0 - 0.166666666666667*G0_0_1 - 0.166666666666667*G0_0_2;
+    A[5] = 0.166666666666667*G0_0_0;
+    A[6] = 0.166666666666667*G0_0_1;
+    A[7] = 0.166666666666667*G0_0_2;
+    A[8] = -0.166666666666667*G0_1_0 - 0.166666666666667*G0_1_1 - 0.166666666666667*G0_1_2;
+    A[9] = 0.166666666666667*G0_1_0;
+    A[10] = 0.166666666666667*G0_1_1;
+    A[11] = 0.166666666666667*G0_1_2;
+    A[12] = -0.166666666666667*G0_2_0 - 0.166666666666667*G0_2_1 - 0.166666666666667*G0_2_2;
+    A[13] = 0.166666666666667*G0_2_0;
+    A[14] = 0.166666666666667*G0_2_1;
+    A[15] = 0.166666666666667*G0_2_2;
+  }
+
+};
+
+
+class poisson3d_cell_integral_0_4: public ufc::cell_integral
+{
+public:
+
+  poisson3d_cell_integral_0_4() : ufc::cell_integral()
+  {
+    
+  }
+
+  ~poisson3d_cell_integral_0_4() override
   {
     
   }
@@ -5029,16 +5179,328 @@ public:
 };
 
 
-class poisson3d_exterior_facet_integral_1_6: public ufc::exterior_facet_integral
+class poisson3d_exterior_facet_integral_1_9: public ufc::exterior_facet_integral
 {
 public:
 
-  poisson3d_exterior_facet_integral_1_6() : ufc::exterior_facet_integral()
+  poisson3d_exterior_facet_integral_1_9() : ufc::exterior_facet_integral()
   {
     
   }
 
-  ~poisson3d_exterior_facet_integral_1_6() override
+  ~poisson3d_exterior_facet_integral_1_9() override
+  {
+    
+  }
+
+  const std::vector<bool> & enabled_coefficients() const final override
+  {
+    static const std::vector<bool> enabled({false, true});
+    return enabled;
+  }
+
+  void tabulate_tensor(double * A,
+                       const double * const * w,
+                       const double * coordinate_dofs,
+                       std::size_t facet,
+                       int cell_orientation) const final override
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    4
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  93
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v1 + 2]  + coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v2 + 1]  + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v2 + 2]) - (coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v1 + 2] + coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v0 + 1] + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v0 + 2]);
+    
+    const double a1 = (coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v2 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v2 + 0]) - (coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v0 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v0 + 0]);
+    
+    const double a2 = (coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v2 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v2 + 1]) - (coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v0 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0 = det*w[1][0]*(1.0);
+    const double G0_1 = det*w[1][1]*(1.0);
+    const double G0_2 = det*w[1][2]*(1.0);
+    const double G0_3 = det*w[1][3]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[2] = 0.0416666666666667*G0_1 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_3;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666667*G0_3;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666666*G0_2;
+      A[2] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_2;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+
+class poisson3d_exterior_facet_integral_1_10: public ufc::exterior_facet_integral
+{
+public:
+
+  poisson3d_exterior_facet_integral_1_10() : ufc::exterior_facet_integral()
+  {
+    
+  }
+
+  ~poisson3d_exterior_facet_integral_1_10() override
+  {
+    
+  }
+
+  const std::vector<bool> & enabled_coefficients() const final override
+  {
+    static const std::vector<bool> enabled({false, true});
+    return enabled;
+  }
+
+  void tabulate_tensor(double * A,
+                       const double * const * w,
+                       const double * coordinate_dofs,
+                       std::size_t facet,
+                       int cell_orientation) const final override
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    4
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  93
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v1 + 2]  + coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v2 + 1]  + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v2 + 2]) - (coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v1 + 2] + coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v0 + 1] + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v0 + 2]);
+    
+    const double a1 = (coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v2 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v2 + 0]) - (coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v0 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v0 + 0]);
+    
+    const double a2 = (coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v2 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v2 + 1]) - (coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v0 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0 = det*w[1][0]*(1.0);
+    const double G0_1 = det*w[1][1]*(1.0);
+    const double G0_2 = det*w[1][2]*(1.0);
+    const double G0_3 = det*w[1][3]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[2] = 0.0416666666666667*G0_1 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_3;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666667*G0_3;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666666*G0_2;
+      A[2] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_2;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+
+class poisson3d_exterior_facet_integral_1_11: public ufc::exterior_facet_integral
+{
+public:
+
+  poisson3d_exterior_facet_integral_1_11() : ufc::exterior_facet_integral()
+  {
+    
+  }
+
+  ~poisson3d_exterior_facet_integral_1_11() override
+  {
+    
+  }
+
+  const std::vector<bool> & enabled_coefficients() const final override
+  {
+    static const std::vector<bool> enabled({false, true});
+    return enabled;
+  }
+
+  void tabulate_tensor(double * A,
+                       const double * const * w,
+                       const double * coordinate_dofs,
+                       std::size_t facet,
+                       int cell_orientation) const final override
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    4
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  93
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, coordinate_dofs);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v1 + 2]  + coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v2 + 1]  + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v2 + 2]) - (coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v1 + 2] + coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v0 + 1] + coordinate_dofs[3*v1 + 1]*coordinate_dofs[3*v0 + 2]);
+    
+    const double a1 = (coordinate_dofs[3*v0 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v2 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v2 + 0]) - (coordinate_dofs[3*v2 + 2]*coordinate_dofs[3*v1 + 0]  + coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v0 + 2] + coordinate_dofs[3*v1 + 2]*coordinate_dofs[3*v0 + 0]);
+    
+    const double a2 = (coordinate_dofs[3*v0 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v0 + 1]*coordinate_dofs[3*v2 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v2 + 1]) - (coordinate_dofs[3*v2 + 0]*coordinate_dofs[3*v1 + 1]  + coordinate_dofs[3*v2 + 1]*coordinate_dofs[3*v0 + 0]  + coordinate_dofs[3*v1 + 0]*coordinate_dofs[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0 = det*w[1][0]*(1.0);
+    const double G0_1 = det*w[1][1]*(1.0);
+    const double G0_2 = det*w[1][2]*(1.0);
+    const double G0_3 = det*w[1][3]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[2] = 0.0416666666666667*G0_1 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_2 + 0.0416666666666667*G0_3;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_2 + 0.0416666666666667*G0_3;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666667*G0_2 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_3;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666667*G0_3;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_3;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0 + 0.0416666666666667*G0_1 + 0.0416666666666667*G0_2;
+      A[1] = 0.0416666666666667*G0_0 + 0.0833333333333333*G0_1 + 0.0416666666666666*G0_2;
+      A[2] = 0.0416666666666667*G0_0 + 0.0416666666666666*G0_1 + 0.0833333333333333*G0_2;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+
+class poisson3d_exterior_facet_integral_1_12: public ufc::exterior_facet_integral
+{
+public:
+
+  poisson3d_exterior_facet_integral_1_12() : ufc::exterior_facet_integral()
+  {
+    
+  }
+
+  ~poisson3d_exterior_facet_integral_1_12() override
   {
     
   }
@@ -5149,7 +5611,7 @@ public:
 
   const char * signature() const final override
   {
-    return "e66c6f9ba2917dbdb80cf794ec3849adad3aaec1738354509e4d94e7b2b0dd44d1bf340a5cb064f921f586856733500c4c226b26c4423da5d3ad44fd4a08fb83";
+    return "12e09b8acb3bcd1ac341e58afadacd10f3929ffb9087c36174fe72d1f61badcbc6fdd1da4dcd9e60b7bdf52f917651d8ddab2779199bc0ceb8d075bffdf24984";
   }
 
   std::size_t rank() const final override
@@ -5305,6 +5767,11 @@ public:
   {
     switch (subdomain_id)
     {
+    case 1:
+      {
+        return new poisson3d_cell_integral_0_1();
+        break;
+      }
     case 2:
       {
         return new poisson3d_cell_integral_0_2();
@@ -5313,6 +5780,11 @@ public:
     case 3:
       {
         return new poisson3d_cell_integral_0_3();
+        break;
+      }
+    case 4:
+      {
+        return new poisson3d_cell_integral_0_4();
         break;
       }
     case 5:
@@ -5419,7 +5891,7 @@ public:
 
   const char * signature() const final override
   {
-    return "be738d168731930bfb7763e4a2e6bda0b1a90560099399b6660ad996fde0de67a68a68dc7637d9441cd4721598fe3d2c5a5079b4adabe4c27f964eb3d252dba1";
+    return "4b1c1c23dddaf0ab9c628502a2de9d2473dce89e6be13b22955b143b70cbcc96fedffda80cc0caeaa98aafab4e9e07afdfa30b58a778d8c36e5636b1a30b2aa1";
   }
 
   std::size_t rank() const final override
@@ -5508,7 +5980,7 @@ public:
 
   std::size_t max_exterior_facet_subdomain_id() const final override
   {
-    return 7;
+    return 13;
   }
 
   std::size_t max_interior_facet_subdomain_id() const final override
@@ -5604,9 +6076,24 @@ public:
   {
     switch (subdomain_id)
     {
-    case 6:
+    case 9:
       {
-        return new poisson3d_exterior_facet_integral_1_6();
+        return new poisson3d_exterior_facet_integral_1_9();
+        break;
+      }
+    case 10:
+      {
+        return new poisson3d_exterior_facet_integral_1_10();
+        break;
+      }
+    case 11:
+      {
+        return new poisson3d_exterior_facet_integral_1_11();
+        break;
+      }
+    case 12:
+      {
+        return new poisson3d_exterior_facet_integral_1_12();
         break;
       }
     }

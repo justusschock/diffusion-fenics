@@ -49,7 +49,7 @@ public:
   class Source : public dolfin::Expression {
     void eval(dolfin::Array<double> &values,
               const dolfin::Array<double> &x) const {
-        values[0] = 10000.0;
+        values[0] = 1.0;
     }
   };
 
