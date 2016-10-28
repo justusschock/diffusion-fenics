@@ -14310,18 +14310,18 @@ public:
 /// tensor corresponding to the local contribution to a form from
 /// the integral over a cell.
 
-class convectiondiffusion3d_cell_integral_0_otherwise: public ufc::cell_integral
+class convectiondiffusion3d_cell_integral_0_2: public ufc::cell_integral
 {
 public:
 
   /// Constructor
-  convectiondiffusion3d_cell_integral_0_otherwise() : ufc::cell_integral()
+  convectiondiffusion3d_cell_integral_0_2() : ufc::cell_integral()
   {
     // Do nothing
   }
 
   /// Destructor
-  virtual ~convectiondiffusion3d_cell_integral_0_otherwise()
+  virtual ~convectiondiffusion3d_cell_integral_0_2()
   {
     // Do nothing
   }
@@ -14428,7 +14428,7 @@ public:
     // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
     
     // Loop quadrature points for integral.
-    // Number of operations to compute element tensor for following IP loop = 6470
+    // Number of operations to compute element tensor for following IP loop = 6310
     for (unsigned int ip = 0; ip < 5; ip++)
     {
       
@@ -14442,30 +14442,364 @@ public:
       // Total number of operations to compute function values = 2
       for (unsigned int r = 0; r < 1; r++)
       {
-        F0 += FE3[ip][0]*w[2][0];
+        F4 += FE3[ip][0]*w[2][0];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 8
       for (unsigned int r = 0; r < 4; r++)
       {
-        F1 += FE0[ip][r]*w[1][r];
+        F0 += FE0[ip][r]*w[1][r];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 180
       for (unsigned int r = 0; r < 30; r++)
       {
-        F2 += FE2_C0[ip][r]*w[0][r];
-        F3 += FE2_C1[ip][r]*w[0][r];
-        F4 += FE2_C2[ip][r]*w[0][r];
+        F1 += FE2_C0[ip][r]*w[0][r];
+        F2 += FE2_C1[ip][r]*w[0][r];
+        F3 += FE2_C2[ip][r]*w[0][r];
       } // end loop over 'r'
       
-      // Number of operations for primary indices: 1104
+      // Number of operations for primary indices: 1072
       for (unsigned int j = 0; j < 4; j++)
       {
         for (unsigned int k = 0; k < 4; k++)
         {
-          // Number of operations to compute entry: 69
-          A[j*4 + k] += (((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k])) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k])) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))))*F1)*0.5*F0 + FE0[ip][j]*FE0[ip][k]) + (((((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k]))*FE0[ip][j])*F2 + (((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k]))*FE0[ip][j])*F3 + (((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))*FE0[ip][j])*F4))*0.5*F0)*W5[ip]*det;
+          // Number of operations to compute entry: 67
+          A[j*4 + k] += (((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k])) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k])) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))))*F0 + ((((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k]))*FE0[ip][j])*F1 + (((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k]))*FE0[ip][j])*F2 + (((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))*FE0[ip][j])*F3)))*0.5*F4 + FE0[ip][j]*FE0[ip][k])*W5[ip]*det;
+        } // end loop over 'k'
+      } // end loop over 'j'
+    } // end loop over 'ip'
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the cell
+/// tensor corresponding to the local contribution to a form from
+/// the integral over a cell.
+
+class convectiondiffusion3d_cell_integral_0_3: public ufc::cell_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_cell_integral_0_3() : ufc::cell_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_cell_integral_0_3()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({true, true, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local cell
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               int cell_orientation) const
+  {
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Set scale factor
+    const double det = std::abs(detJ);
+    
+    // Compute cell volume
+    
+    
+    // Compute circumradius
+    
+    
+    // Array of quadrature weights.
+    static const double W5[5] = {-0.133333333333333, 0.075, 0.075, 0.075, 0.075};
+    // Quadrature points on the UFC reference element: (0.25, 0.25, 0.25), (0.5, 0.166666666666667, 0.166666666666667), (0.166666666666667, 0.5, 0.166666666666667), (0.166666666666667, 0.166666666666667, 0.5), (0.166666666666667, 0.166666666666667, 0.166666666666667)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[5][4] = \
+    {{0.25, 0.25, 0.25, 0.25},
+    {0.166666666666667, 0.5, 0.166666666666667, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.5, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.166666666666667, 0.5},
+    {0.5, 0.166666666666667, 0.166666666666667, 0.166666666666667}};
+    
+    static const double FE0_D001[5][4] = \
+    {{-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0}};
+    
+    static const double FE0_D010[5][4] = \
+    {{-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0}};
+    
+    static const double FE0_D100[5][4] = \
+    {{-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0}};
+    
+    static const double FE2_C0[5][30] = \
+    {{-0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C2[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333}};
+    
+    static const double FE3[5][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 16; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 6310
+    for (unsigned int ip = 0; ip < 5; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      double F4 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F4 += FE3[ip][0]*w[2][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 8
+      for (unsigned int r = 0; r < 4; r++)
+      {
+        F0 += FE0[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 180
+      for (unsigned int r = 0; r < 30; r++)
+      {
+        F1 += FE2_C0[ip][r]*w[0][r];
+        F2 += FE2_C1[ip][r]*w[0][r];
+        F3 += FE2_C2[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 1072
+      for (unsigned int j = 0; j < 4; j++)
+      {
+        for (unsigned int k = 0; k < 4; k++)
+        {
+          // Number of operations to compute entry: 67
+          A[j*4 + k] += (((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k])) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k])) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))))*F0 + ((((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k]))*FE0[ip][j])*F1 + (((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k]))*FE0[ip][j])*F2 + (((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))*FE0[ip][j])*F3)))*0.5*F4 + FE0[ip][j]*FE0[ip][k])*W5[ip]*det;
+        } // end loop over 'k'
+      } // end loop over 'j'
+    } // end loop over 'ip'
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the cell
+/// tensor corresponding to the local contribution to a form from
+/// the integral over a cell.
+
+class convectiondiffusion3d_cell_integral_0_5: public ufc::cell_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_cell_integral_0_5() : ufc::cell_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_cell_integral_0_5()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({true, true, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local cell
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               int cell_orientation) const
+  {
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Set scale factor
+    const double det = std::abs(detJ);
+    
+    // Compute cell volume
+    
+    
+    // Compute circumradius
+    
+    
+    // Array of quadrature weights.
+    static const double W5[5] = {-0.133333333333333, 0.075, 0.075, 0.075, 0.075};
+    // Quadrature points on the UFC reference element: (0.25, 0.25, 0.25), (0.5, 0.166666666666667, 0.166666666666667), (0.166666666666667, 0.5, 0.166666666666667), (0.166666666666667, 0.166666666666667, 0.5), (0.166666666666667, 0.166666666666667, 0.166666666666667)
+    
+    // Values of basis functions at quadrature points.
+    static const double FE0[5][4] = \
+    {{0.25, 0.25, 0.25, 0.25},
+    {0.166666666666667, 0.5, 0.166666666666667, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.5, 0.166666666666667},
+    {0.166666666666667, 0.166666666666667, 0.166666666666667, 0.5},
+    {0.5, 0.166666666666667, 0.166666666666667, 0.166666666666667}};
+    
+    static const double FE0_D001[5][4] = \
+    {{-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0},
+    {-1.0, 0.0, 0.0, 1.0}};
+    
+    static const double FE0_D010[5][4] = \
+    {{-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0},
+    {-1.0, 0.0, 1.0, 0.0}};
+    
+    static const double FE0_D100[5][4] = \
+    {{-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0},
+    {-1.0, 1.0, 0.0, 0.0}};
+    
+    static const double FE2_C0[5][30] = \
+    {{-0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {-0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C1[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    
+    static const double FE2_C2[5][30] = \
+    {{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.125, -0.125, -0.125, -0.125, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, 0.0, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.111111111111111, 0.333333333333333},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, 0.0, -0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.0, 0.333333333333333, 0.333333333333333, 0.111111111111111, 0.333333333333333, 0.111111111111111, 0.111111111111111},
+    {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -0.111111111111111, -0.111111111111111, -0.111111111111111, 0.111111111111111, 0.111111111111111, 0.111111111111111, 0.333333333333333, 0.333333333333333, 0.333333333333333}};
+    
+    static const double FE3[5][1] = \
+    {{1.0},
+    {1.0},
+    {1.0},
+    {1.0},
+    {1.0}};
+    
+    // Reset values in the element tensor.
+    for (unsigned int r = 0; r < 16; r++)
+    {
+      A[r] = 0.0;
+    } // end loop over 'r'
+    
+    // Compute element tensor using UFL quadrature representation
+    // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
+    
+    // Loop quadrature points for integral.
+    // Number of operations to compute element tensor for following IP loop = 6310
+    for (unsigned int ip = 0; ip < 5; ip++)
+    {
+      
+      // Coefficient declarations.
+      double F0 = 0.0;
+      double F1 = 0.0;
+      double F2 = 0.0;
+      double F3 = 0.0;
+      double F4 = 0.0;
+      
+      // Total number of operations to compute function values = 2
+      for (unsigned int r = 0; r < 1; r++)
+      {
+        F4 += FE3[ip][0]*w[2][0];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 8
+      for (unsigned int r = 0; r < 4; r++)
+      {
+        F0 += FE0[ip][r]*w[1][r];
+      } // end loop over 'r'
+      
+      // Total number of operations to compute function values = 180
+      for (unsigned int r = 0; r < 30; r++)
+      {
+        F1 += FE2_C0[ip][r]*w[0][r];
+        F2 += FE2_C1[ip][r]*w[0][r];
+        F3 += FE2_C2[ip][r]*w[0][r];
+      } // end loop over 'r'
+      
+      // Number of operations for primary indices: 1072
+      for (unsigned int j = 0; j < 4; j++)
+      {
+        for (unsigned int k = 0; k < 4; k++)
+        {
+          // Number of operations to compute entry: 67
+          A[j*4 + k] += (((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k])) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k])) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))))*F0 + ((((K[0]*FE0_D100[ip][k] + K[3]*FE0_D010[ip][k] + K[6]*FE0_D001[ip][k]))*FE0[ip][j])*F1 + (((K[1]*FE0_D100[ip][k] + K[4]*FE0_D010[ip][k] + K[7]*FE0_D001[ip][k]))*FE0[ip][j])*F2 + (((K[2]*FE0_D100[ip][k] + K[5]*FE0_D010[ip][k] + K[8]*FE0_D001[ip][k]))*FE0[ip][j])*F3)))*0.5*F4 + FE0[ip][j]*FE0[ip][k])*W5[ip]*det;
         } // end loop over 'k'
       } // end loop over 'j'
     } // end loop over 'ip'
@@ -14595,7 +14929,7 @@ public:
     // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
     
     // Loop quadrature points for integral.
-    // Number of operations to compute element tensor for following IP loop = 2630
+    // Number of operations to compute element tensor for following IP loop = 2570
     for (unsigned int ip = 0; ip < 5; ip++)
     {
       
@@ -14614,33 +14948,33 @@ public:
       // Total number of operations to compute function values = 2
       for (unsigned int r = 0; r < 1; r++)
       {
-        F2 += FE3[ip][0]*w[5][0];
+        F8 += FE3[ip][0]*w[5][0];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 48
       for (unsigned int r = 0; r < 4; r++)
       {
         F0 += FE0[ip][r]*w[0][r];
-        F1 += FE0[ip][r]*w[2][r];
-        F3 += FE0[ip][r]*w[4][r];
-        F4 += FE0_D100[ip][r]*w[0][r];
-        F5 += FE0_D010[ip][r]*w[0][r];
-        F6 += FE0_D001[ip][r]*w[0][r];
+        F1 += FE0[ip][r]*w[4][r];
+        F2 += FE0_D100[ip][r]*w[0][r];
+        F3 += FE0_D010[ip][r]*w[0][r];
+        F4 += FE0_D001[ip][r]*w[0][r];
+        F9 += FE0[ip][r]*w[2][r];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 180
       for (unsigned int r = 0; r < 30; r++)
       {
-        F7 += FE2_C0[ip][r]*w[1][r];
-        F8 += FE2_C1[ip][r]*w[1][r];
-        F9 += FE2_C2[ip][r]*w[1][r];
+        F5 += FE2_C0[ip][r]*w[1][r];
+        F6 += FE2_C1[ip][r]*w[1][r];
+        F7 += FE2_C2[ip][r]*w[1][r];
       } // end loop over 'r'
       
-      // Number of operations for primary indices: 296
+      // Number of operations for primary indices: 284
       for (unsigned int j = 0; j < 4; j++)
       {
-        // Number of operations to compute entry: 74
-        A[j] += ((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F4 + K[3]*F5 + K[6]*F6)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F4 + K[4]*F5 + K[7]*F6)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F4 + K[5]*F5 + K[8]*F6))))*F3)*0.5*F2)*(-1.0) + (FE0[ip][j]*F0 + FE0[ip][j]*F1*F2)) + ((((FE0[ip][j]*((K[0]*F4 + K[3]*F5 + K[6]*F6)))*F7 + (FE0[ip][j]*((K[1]*F4 + K[4]*F5 + K[7]*F6)))*F8 + (FE0[ip][j]*((K[2]*F4 + K[5]*F5 + K[8]*F6)))*F9))*0.5*F2)*(-1.0))*W5[ip]*det;
+        // Number of operations to compute entry: 71
+        A[j] += (((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F2 + K[3]*F3 + K[6]*F4)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F2 + K[4]*F3 + K[7]*F4)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F2 + K[5]*F3 + K[8]*F4))))*F1 + ((FE0[ip][j]*((K[0]*F2 + K[3]*F3 + K[6]*F4)))*F5 + (FE0[ip][j]*((K[1]*F2 + K[4]*F3 + K[7]*F4)))*F6 + (FE0[ip][j]*((K[2]*F2 + K[5]*F3 + K[8]*F4)))*F7)))*0.5*F8)*(-1.0) + FE0[ip][j]*F0) + FE0[ip][j]*F9*F8)*W5[ip]*det;
       } // end loop over 'j'
     } // end loop over 'ip'
   }
@@ -14769,7 +15103,7 @@ public:
     // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
     
     // Loop quadrature points for integral.
-    // Number of operations to compute element tensor for following IP loop = 2630
+    // Number of operations to compute element tensor for following IP loop = 2570
     for (unsigned int ip = 0; ip < 5; ip++)
     {
       
@@ -14788,33 +15122,33 @@ public:
       // Total number of operations to compute function values = 2
       for (unsigned int r = 0; r < 1; r++)
       {
-        F2 += FE3[ip][0]*w[5][0];
+        F8 += FE3[ip][0]*w[5][0];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 48
       for (unsigned int r = 0; r < 4; r++)
       {
         F0 += FE0[ip][r]*w[0][r];
-        F1 += FE0[ip][r]*w[2][r];
-        F3 += FE0[ip][r]*w[4][r];
-        F4 += FE0_D100[ip][r]*w[0][r];
-        F5 += FE0_D010[ip][r]*w[0][r];
-        F6 += FE0_D001[ip][r]*w[0][r];
+        F1 += FE0[ip][r]*w[4][r];
+        F2 += FE0_D100[ip][r]*w[0][r];
+        F3 += FE0_D010[ip][r]*w[0][r];
+        F4 += FE0_D001[ip][r]*w[0][r];
+        F9 += FE0[ip][r]*w[2][r];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 180
       for (unsigned int r = 0; r < 30; r++)
       {
-        F7 += FE2_C0[ip][r]*w[1][r];
-        F8 += FE2_C1[ip][r]*w[1][r];
-        F9 += FE2_C2[ip][r]*w[1][r];
+        F5 += FE2_C0[ip][r]*w[1][r];
+        F6 += FE2_C1[ip][r]*w[1][r];
+        F7 += FE2_C2[ip][r]*w[1][r];
       } // end loop over 'r'
       
-      // Number of operations for primary indices: 296
+      // Number of operations for primary indices: 284
       for (unsigned int j = 0; j < 4; j++)
       {
-        // Number of operations to compute entry: 74
-        A[j] += ((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F4 + K[3]*F5 + K[6]*F6)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F4 + K[4]*F5 + K[7]*F6)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F4 + K[5]*F5 + K[8]*F6))))*F3)*0.5*F2)*(-1.0) + (FE0[ip][j]*F0 + FE0[ip][j]*F1*F2)) + ((((FE0[ip][j]*((K[0]*F4 + K[3]*F5 + K[6]*F6)))*F7 + (FE0[ip][j]*((K[1]*F4 + K[4]*F5 + K[7]*F6)))*F8 + (FE0[ip][j]*((K[2]*F4 + K[5]*F5 + K[8]*F6)))*F9))*0.5*F2)*(-1.0))*W5[ip]*det;
+        // Number of operations to compute entry: 71
+        A[j] += (((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F2 + K[3]*F3 + K[6]*F4)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F2 + K[4]*F3 + K[7]*F4)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F2 + K[5]*F3 + K[8]*F4))))*F1 + ((FE0[ip][j]*((K[0]*F2 + K[3]*F3 + K[6]*F4)))*F5 + (FE0[ip][j]*((K[1]*F2 + K[4]*F3 + K[7]*F4)))*F6 + (FE0[ip][j]*((K[2]*F2 + K[5]*F3 + K[8]*F4)))*F7)))*0.5*F8)*(-1.0) + FE0[ip][j]*F0) + FE0[ip][j]*F9*F8)*W5[ip]*det;
       } // end loop over 'j'
     } // end loop over 'ip'
   }
@@ -14825,18 +15159,18 @@ public:
 /// tensor corresponding to the local contribution to a form from
 /// the integral over a cell.
 
-class convectiondiffusion3d_cell_integral_1_otherwise: public ufc::cell_integral
+class convectiondiffusion3d_cell_integral_1_5: public ufc::cell_integral
 {
 public:
 
   /// Constructor
-  convectiondiffusion3d_cell_integral_1_otherwise() : ufc::cell_integral()
+  convectiondiffusion3d_cell_integral_1_5() : ufc::cell_integral()
   {
     // Do nothing
   }
 
   /// Destructor
-  virtual ~convectiondiffusion3d_cell_integral_1_otherwise()
+  virtual ~convectiondiffusion3d_cell_integral_1_5()
   {
     // Do nothing
   }
@@ -14943,7 +15277,7 @@ public:
     // Optimisations: ('eliminate zeros', False), ('ignore ones', False), ('ignore zero tables', False), ('optimisation', False), ('remove zero terms', False)
     
     // Loop quadrature points for integral.
-    // Number of operations to compute element tensor for following IP loop = 2530
+    // Number of operations to compute element tensor for following IP loop = 2470
     for (unsigned int ip = 0; ip < 5; ip++)
     {
       
@@ -14961,32 +15295,32 @@ public:
       // Total number of operations to compute function values = 2
       for (unsigned int r = 0; r < 1; r++)
       {
-        F1 += FE3[ip][0]*w[5][0];
+        F8 += FE3[ip][0]*w[5][0];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 40
       for (unsigned int r = 0; r < 4; r++)
       {
         F0 += FE0[ip][r]*w[0][r];
-        F2 += FE0[ip][r]*w[4][r];
-        F3 += FE0_D100[ip][r]*w[0][r];
-        F4 += FE0_D010[ip][r]*w[0][r];
-        F5 += FE0_D001[ip][r]*w[0][r];
+        F1 += FE0[ip][r]*w[4][r];
+        F2 += FE0_D100[ip][r]*w[0][r];
+        F3 += FE0_D010[ip][r]*w[0][r];
+        F4 += FE0_D001[ip][r]*w[0][r];
       } // end loop over 'r'
       
       // Total number of operations to compute function values = 180
       for (unsigned int r = 0; r < 30; r++)
       {
-        F6 += FE2_C0[ip][r]*w[1][r];
-        F7 += FE2_C1[ip][r]*w[1][r];
-        F8 += FE2_C2[ip][r]*w[1][r];
+        F5 += FE2_C0[ip][r]*w[1][r];
+        F6 += FE2_C1[ip][r]*w[1][r];
+        F7 += FE2_C2[ip][r]*w[1][r];
       } // end loop over 'r'
       
-      // Number of operations for primary indices: 284
+      // Number of operations for primary indices: 272
       for (unsigned int j = 0; j < 4; j++)
       {
-        // Number of operations to compute entry: 71
-        A[j] += ((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F3 + K[3]*F4 + K[6]*F5)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F3 + K[4]*F4 + K[7]*F5)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F3 + K[5]*F4 + K[8]*F5))))*F2)*0.5*F1)*(-1.0) + FE0[ip][j]*F0) + ((((FE0[ip][j]*((K[0]*F3 + K[3]*F4 + K[6]*F5)))*F6 + (FE0[ip][j]*((K[1]*F3 + K[4]*F4 + K[7]*F5)))*F7 + (FE0[ip][j]*((K[2]*F3 + K[5]*F4 + K[8]*F5)))*F8))*0.5*F1)*(-1.0))*W5[ip]*det;
+        // Number of operations to compute entry: 68
+        A[j] += ((((((((K[0]*FE0_D100[ip][j] + K[3]*FE0_D010[ip][j] + K[6]*FE0_D001[ip][j]))*((K[0]*F2 + K[3]*F3 + K[6]*F4)) + ((K[1]*FE0_D100[ip][j] + K[4]*FE0_D010[ip][j] + K[7]*FE0_D001[ip][j]))*((K[1]*F2 + K[4]*F3 + K[7]*F4)) + ((K[2]*FE0_D100[ip][j] + K[5]*FE0_D010[ip][j] + K[8]*FE0_D001[ip][j]))*((K[2]*F2 + K[5]*F3 + K[8]*F4))))*F1 + ((FE0[ip][j]*((K[0]*F2 + K[3]*F3 + K[6]*F4)))*F5 + (FE0[ip][j]*((K[1]*F2 + K[4]*F3 + K[7]*F4)))*F6 + (FE0[ip][j]*((K[2]*F2 + K[5]*F3 + K[8]*F4)))*F7)))*0.5*F8)*(-1.0) + FE0[ip][j]*F0)*W5[ip]*det;
       } // end loop over 'j'
     } // end loop over 'ip'
   }
@@ -15009,6 +15343,450 @@ public:
 
   /// Destructor
   virtual ~convectiondiffusion3d_exterior_facet_integral_1_6()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local exterior facet
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               std::size_t facet,
+                               int cell_orientation) const
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    6
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  95
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v1 + 2]  + vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v2 + 1]  + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v2 + 2]) - (vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v1 + 2] + vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v0 + 1] + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v0 + 2]);
+    
+    const double a1 = (vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v2 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v2 + 0]) - (vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v0 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v0 + 0]);
+    
+    const double a2 = (vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v2 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v2 + 1]) - (vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v0 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
+    const double G0_3_0 = det*w[3][3]*w[5][0]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[2] = 0.0416666666666667*G0_1_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_1_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_3_0;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_2_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_2_0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_2_0;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the
+/// exterior facet tensor corresponding to the local contribution to
+/// a form from the integral over an exterior facet.
+
+class convectiondiffusion3d_exterior_facet_integral_1_9: public ufc::exterior_facet_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_exterior_facet_integral_1_9() : ufc::exterior_facet_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_exterior_facet_integral_1_9()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local exterior facet
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               std::size_t facet,
+                               int cell_orientation) const
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    6
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  95
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v1 + 2]  + vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v2 + 1]  + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v2 + 2]) - (vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v1 + 2] + vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v0 + 1] + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v0 + 2]);
+    
+    const double a1 = (vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v2 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v2 + 0]) - (vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v0 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v0 + 0]);
+    
+    const double a2 = (vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v2 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v2 + 1]) - (vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v0 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
+    const double G0_3_0 = det*w[3][3]*w[5][0]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[2] = 0.0416666666666667*G0_1_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_1_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_3_0;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_2_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_2_0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_2_0;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the
+/// exterior facet tensor corresponding to the local contribution to
+/// a form from the integral over an exterior facet.
+
+class convectiondiffusion3d_exterior_facet_integral_1_10: public ufc::exterior_facet_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_exterior_facet_integral_1_10() : ufc::exterior_facet_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_exterior_facet_integral_1_10()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local exterior facet
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               std::size_t facet,
+                               int cell_orientation) const
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    6
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  95
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v1 + 2]  + vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v2 + 1]  + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v2 + 2]) - (vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v1 + 2] + vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v0 + 1] + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v0 + 2]);
+    
+    const double a1 = (vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v2 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v2 + 0]) - (vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v0 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v0 + 0]);
+    
+    const double a2 = (vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v2 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v2 + 1]) - (vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v0 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
+    const double G0_3_0 = det*w[3][3]*w[5][0]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[2] = 0.0416666666666667*G0_1_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_1_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_3_0;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_2_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_2_0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_2_0;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the
+/// exterior facet tensor corresponding to the local contribution to
+/// a form from the integral over an exterior facet.
+
+class convectiondiffusion3d_exterior_facet_integral_1_11: public ufc::exterior_facet_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_exterior_facet_integral_1_11() : ufc::exterior_facet_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_exterior_facet_integral_1_11()
+  {
+    // Do nothing
+  }
+
+  /// Tabulate which form coefficients are used by this integral
+  virtual const std::vector<bool> & enabled_coefficients() const
+  {
+    static const std::vector<bool> enabled({false, false, false, true, false, true});
+    return enabled;
+  }
+
+  /// Tabulate the tensor for the contribution from a local exterior facet
+  virtual void tabulate_tensor(double*  A,
+                               const double * const *  w,
+                               const double*  vertex_coordinates,
+                               std::size_t facet,
+                               int cell_orientation) const
+  {
+    // Number of operations (multiply-add pairs) for Jacobian data:      59
+    // Number of operations (multiply-add pairs) for geometry tensor:    6
+    // Number of operations (multiply-add pairs) for tensor contraction: 30
+    // Total number of operations (multiply-add pairs):                  95
+    
+    // Compute Jacobian
+    double J[9];
+    compute_jacobian_tetrahedron_3d(J, vertex_coordinates);
+    
+    // Compute Jacobian inverse and determinant
+    double K[9];
+    double detJ;
+    compute_jacobian_inverse_tetrahedron_3d(K, detJ, J);
+    
+    // Get vertices on face
+    static unsigned int face_vertices[4][3] = {{1, 2, 3}, {0, 2, 3}, {0, 1, 3}, {0, 1, 2}};
+    const unsigned int v0 = face_vertices[facet][0];
+    const unsigned int v1 = face_vertices[facet][1];
+    const unsigned int v2 = face_vertices[facet][2];
+    
+    // Compute scale factor (area of face scaled by area of reference triangle)
+    const double a0 = (vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v1 + 2]  + vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v2 + 1]  + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v2 + 2]) - (vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v1 + 2] + vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v0 + 1] + vertex_coordinates[3*v1 + 1]*vertex_coordinates[3*v0 + 2]);
+    
+    const double a1 = (vertex_coordinates[3*v0 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v2 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v2 + 0]) - (vertex_coordinates[3*v2 + 2]*vertex_coordinates[3*v1 + 0]  + vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v0 + 2] + vertex_coordinates[3*v1 + 2]*vertex_coordinates[3*v0 + 0]);
+    
+    const double a2 = (vertex_coordinates[3*v0 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v0 + 1]*vertex_coordinates[3*v2 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v2 + 1]) - (vertex_coordinates[3*v2 + 0]*vertex_coordinates[3*v1 + 1]  + vertex_coordinates[3*v2 + 1]*vertex_coordinates[3*v0 + 0]  + vertex_coordinates[3*v1 + 0]*vertex_coordinates[3*v0 + 1]);
+    
+    const double det = std::sqrt(a0*a0 + a1*a1 + a2*a2);
+    
+    
+    // Compute geometry tensor
+    const double G0_0_0 = det*w[3][0]*w[5][0]*(1.0);
+    const double G0_1_0 = det*w[3][1]*w[5][0]*(1.0);
+    const double G0_2_0 = det*w[3][2]*w[5][0]*(1.0);
+    const double G0_3_0 = det*w[3][3]*w[5][0]*(1.0);
+    
+    // Compute element tensor
+    switch (facet)
+    {
+    case 0:
+      {
+        A[0] = 0.0;
+      A[1] = 0.0833333333333333*G0_1_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[2] = 0.0416666666666667*G0_1_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_1_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 1:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_2_0 + 0.0416666666666667*G0_3_0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_2_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 2:
+      {
+        A[0] = 0.0833333333333333*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_3_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_3_0;
+      A[2] = 0.0;
+      A[3] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_3_0;
+        break;
+      }
+    case 3:
+      {
+        A[0] = 0.0833333333333334*G0_0_0 + 0.0416666666666667*G0_1_0 + 0.0416666666666667*G0_2_0;
+      A[1] = 0.0416666666666667*G0_0_0 + 0.0833333333333333*G0_1_0 + 0.0416666666666666*G0_2_0;
+      A[2] = 0.0416666666666667*G0_0_0 + 0.0416666666666666*G0_1_0 + 0.0833333333333333*G0_2_0;
+      A[3] = 0.0;
+        break;
+      }
+    }
+    
+  }
+
+};
+
+/// This class defines the interface for the tabulation of the
+/// exterior facet tensor corresponding to the local contribution to
+/// a form from the integral over an exterior facet.
+
+class convectiondiffusion3d_exterior_facet_integral_1_12: public ufc::exterior_facet_integral
+{
+public:
+
+  /// Constructor
+  convectiondiffusion3d_exterior_facet_integral_1_12() : ufc::exterior_facet_integral()
+  {
+    // Do nothing
+  }
+
+  /// Destructor
+  virtual ~convectiondiffusion3d_exterior_facet_integral_1_12()
   {
     // Do nothing
   }
@@ -15138,7 +15916,7 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
-    return "20580ba5ab4e11322289ef9020544e9354a580d9c74eb5876261e2f5801b15430fafb0f86059a207d8db7517925b14b1057a68504a822999dcb9d4a39b2404ae";
+    return "15ea92546bce1892c6f513c81ad2fb960d0e11392ff0f5a11a012f82d96035cc632a58400f2e3ebe850b3b36e90fc4261a93821be5efac0309d2e20295d8d469";
   }
 
 
@@ -15236,7 +16014,7 @@ public:
   /// Return the number of cell domains
   virtual std::size_t max_cell_subdomain_id() const
   {
-    return 0;
+    return 6;
   }
 
   /// Return the number of exterior facet domains
@@ -15298,6 +16076,25 @@ public:
   /// Create a new cell integral on sub domain subdomain_id
   virtual ufc::cell_integral* create_cell_integral(std::size_t subdomain_id) const
   {
+    switch (subdomain_id)
+    {
+    case 2:
+      {
+        return new convectiondiffusion3d_cell_integral_0_2();
+        break;
+      }
+    case 3:
+      {
+        return new convectiondiffusion3d_cell_integral_0_3();
+        break;
+      }
+    case 5:
+      {
+        return new convectiondiffusion3d_cell_integral_0_5();
+        break;
+      }
+    }
+    
     return 0;
   }
 
@@ -15329,7 +16126,7 @@ public:
   /// Create a new cell integral on everywhere else
   virtual ufc::cell_integral* create_default_cell_integral() const
   {
-    return new convectiondiffusion3d_cell_integral_0_otherwise();
+    return 0;
   }
 
   /// Create a new exterior facet integral on everywhere else
@@ -15392,7 +16189,7 @@ public:
   /// Return a string identifying the form
   virtual const char* signature() const
   {
-    return "280c335274083a48ecb0d79d3fe2ff23278dc2e0ec0aa50bb9711da71d379359205e4f52590c2c35ee94359ded1d684c3741ac904f650760e7513bf3ccf66ffe";
+    return "c8551d6da5afa4d630c319952baca986ed8ccf7e5db4b2a51b7f6056f00a4296583cba9dde6328adf3c3af12189b707b05cb964abefd9ca6658ace1d19bba14d";
   }
 
 
@@ -15510,13 +16307,13 @@ public:
   /// Return the number of cell domains
   virtual std::size_t max_cell_subdomain_id() const
   {
-    return 4;
+    return 6;
   }
 
   /// Return the number of exterior facet domains
   virtual std::size_t max_exterior_facet_subdomain_id() const
   {
-    return 7;
+    return 13;
   }
 
   /// Return the number of interior facet domains
@@ -15584,6 +16381,11 @@ public:
         return new convectiondiffusion3d_cell_integral_1_3();
         break;
       }
+    case 5:
+      {
+        return new convectiondiffusion3d_cell_integral_1_5();
+        break;
+      }
     }
     
     return 0;
@@ -15597,6 +16399,26 @@ public:
     case 6:
       {
         return new convectiondiffusion3d_exterior_facet_integral_1_6();
+        break;
+      }
+    case 9:
+      {
+        return new convectiondiffusion3d_exterior_facet_integral_1_9();
+        break;
+      }
+    case 10:
+      {
+        return new convectiondiffusion3d_exterior_facet_integral_1_10();
+        break;
+      }
+    case 11:
+      {
+        return new convectiondiffusion3d_exterior_facet_integral_1_11();
+        break;
+      }
+    case 12:
+      {
+        return new convectiondiffusion3d_exterior_facet_integral_1_12();
         break;
       }
     }
@@ -15626,7 +16448,7 @@ public:
   /// Create a new cell integral on everywhere else
   virtual ufc::cell_integral* create_default_cell_integral() const
   {
-    return new convectiondiffusion3d_cell_integral_1_otherwise();
+    return 0;
   }
 
   /// Create a new exterior facet integral on everywhere else

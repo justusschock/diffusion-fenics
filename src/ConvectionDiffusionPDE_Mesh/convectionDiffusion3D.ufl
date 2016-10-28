@@ -15,6 +15,6 @@ g = Coefficient(scalar)
 c = Coefficient(scalar)
 k = Constant(cell)
 
-a = u*v*dx + 0.5*k*(dot(b, grad(u)*v)*dx + c*dot(grad(u), grad(v))*dx)
-L = u0*v*dx - 0.5*k*(dot(b, grad(u0)*v)*dx + c*dot( grad(u0), grad(v))*dx) \
-    + k*f*v*(dx(2)+dx(3)) + k*g*v*ds(6)
+a = (u*v + 0.5*k*(dot(b, grad(u)*v) + c*dot(grad(u), grad(v))))*(dx(2)+dx(3)+dx(5))
+L = (u0*v - 0.5*k*(dot(b, grad(u0)*v) + c*dot( grad(u0), grad(v))))*(dx(2)+dx(3)+dx(5)) \
+    + k*f*v*(dx(2)+dx(3)) + k*g*v*(ds(6)+ds(9)+ds(10)+ds(11)+ds(12))

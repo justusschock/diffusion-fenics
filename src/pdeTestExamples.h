@@ -115,7 +115,7 @@ namespace ConvectionDiffusion {
         // sourceTerm (right-hand side)
         class Source : public dolfin::Expression {
             void eval(dolfin::Array<double> &values, const dolfin::Array<double> &x) const {
-                values[0] = 5;
+                values[0] = 10;
             }
         };
 
@@ -140,7 +140,7 @@ namespace ConvectionDiffusion {
 
         class Diffusivity : public dolfin::Expression {
             void eval(dolfin::Array<double> &values, const dolfin::Array<double> &x) const {
-                values[0] = 0.05;
+                values[0] = 5;
             }
         };
     };

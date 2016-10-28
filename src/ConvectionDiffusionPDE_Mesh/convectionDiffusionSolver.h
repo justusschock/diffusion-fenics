@@ -75,7 +75,7 @@ namespace ConvectionDiffusion{
                   std::shared_ptr<dolfin::MeshFunction<size_t>> dx,
                   std::shared_ptr<dolfin::MeshFunction<size_t>> ds, std::shared_ptr<dolfin::Expression> initial,
                   std::shared_ptr<dolfin::Expression> velocity, std::shared_ptr<dolfin::Expression> diffusivity,
-                  dolfin::Constant k = dolfin::Constant(0.01), const double T = 0.5, double t = 0.00) ->dolfin::Function
+                  dolfin::Constant k = dolfin::Constant(0.01), const double T = 2, double t = 0.00) ->dolfin::Function
     {
         DimensionWrapper<dim> dimensionwrapper;
 
@@ -97,7 +97,7 @@ namespace ConvectionDiffusion{
         a.c = *diffusivity;
         a.k = k;
         a.dx = dx;
-        a.ds = ds;
+       // a.ds = ds;
 
         //Set velocityfunction, initial values and source term
         auto L = dimensionwrapper.LinearForm(V);
@@ -119,7 +119,7 @@ namespace ConvectionDiffusion{
 
         // Assemble matrix
         assemble(*A, a);
-        bc.apply(*A);
+//        bc.apply(*A);
 
         // LU solver
         dolfin::LUSolver lu(A);
@@ -138,7 +138,7 @@ namespace ConvectionDiffusion{
         {
             // Assemble vector and apply boundary conditions
             assemble(b, L);
-            bc.apply(b);
+   //         bc.apply(b);
 
             // Solve the linear system (re-use the already factorized matrix A)
             lu.solve(*(u.vector()), b);
