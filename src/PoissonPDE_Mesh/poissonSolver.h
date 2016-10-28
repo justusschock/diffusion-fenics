@@ -94,13 +94,13 @@ auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh,
   dolfin::Function u(V);
 
   // Define boundary condition
-  dolfin::DirichletBC bc(V,std::make_shared<dolfin::Constant>(0.0), ds,6);
+  dolfin::DirichletBC bc(V,std::make_shared<dolfin::Constant>(5.0), ds,6);
 
-  a.dx=dx;
-  L.g = neumann;
-  L.f = source;
+  a.dx = dx;
+  L.g = *neumann;
+  L.f = *source;
   L.dx = dx;
-  L.ds=ds;
+  L.ds = ds;
 
   // Compute solution
   dolfin::solve(a == L, u,bc);
