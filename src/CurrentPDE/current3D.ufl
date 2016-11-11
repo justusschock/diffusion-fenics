@@ -11,11 +11,15 @@ q2 = TestFunction(CG)
 f = Coefficient(CG)
 
 
+# Solid
 a1 = (-sigma1*inner(grad(w1), grad(q1))-w1*inner(grad(sigma1), grad(q1)))*(dx(1)+dx(2)+dx(3)+dx(4))
-a2 = (-sigma2*inner(grad(w2), grad(q2))-w2*inner(grad(sigma2), grad(q2)))*(dx(2)+dx(3)+dx(5))
+#L1 = f*q1*(dx(1)+dx(2)+dx(3)+dx(4))
+L1 = f*q1*(dx(2)+dx(3))#die Butler-Volmer Gleichung tritt nur im Aktivmassen Gebiet als Quelle auf
 
-L1 = f*q1*(dx(1)+dx(2)+dx(3)+dx(4))
-L2 = f*q2*(dx(2)+dx(3)+dx(5))
+# Liquid
+a2 = (-sigma2*inner(grad(w2), grad(q2))-w2*inner(grad(sigma2), grad(q2)))*(dx(2)+dx(3)+dx(5))
+#L2 = f*q2*(dx(2)+dx(3)+dx(5))
+L2 = -f*q2*(dx(2)+dx(3)) #die Butler-Volmer Gleichung tritt nur im Aktivmassen Gebiet als Quelle auf
 #########################################################################Bis hier kompiliert alles, ab hier: error
 
 DG = FiniteElement("DG", cell, 0)
@@ -31,5 +35,5 @@ u2 = Coefficient(DG)
 
 #superponate Subdomainsfunctions 2.versuch
 a = u*v*(dx(1)+dx(2)+dx(3)+dx(4)+dx(5))
-L = v*u1*(dx(1)+(1-k)*(dx(2)+dx(3))+dx(4)) + v*u2*(k*(dx(2)+dx(3))+dx(5)) + g*v*(ds(2)-ds(3))
+L = u1*v*(dx(1)+dx(4))+(1-k)*u1*v*(dx(2)+dx(3)) + k*u2*v*(dx(2)+dx(3))+u2*v*dx(5) + g*v*ds(2)-g*v*ds(3)
 
