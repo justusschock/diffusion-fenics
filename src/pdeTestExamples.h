@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <dolfin.h>
+#include <algorithm>
 
 namespace Poisson {
     template <class Case> class SetupCase {
@@ -146,4 +147,76 @@ namespace ConvectionDiffusion {
     };
 }
 
+namespace Current{
+    template <class Case> class SetupCase {
+    public:
+
+        std::shared_ptr<dolfin::Expression> getSource() { return this->source; }
+        std::shared_ptr<dolfin::Expression> getNeumann() { return this->neumann; }
+        std::shared_ptr<dolfin::Constant> getSigma1() { return this->sigma1; }
+        std::shared_ptr<dolfin::Constant> getSigma2() { return this->sigma2; }
+
+        SetupCase(std::size_t dim)
+                : source(std::make_shared<typename Case::Source>()),
+                  neumann(std::make_shared<typename Case::Neumann>()),
+                  sigma1(std::make_shared<typename Case::sigma1>()),
+                  sigma2(std::make_shared<typename Case::sigam2())
+        {
+        }
+
+    protected:
+        std::shared_ptr<dolfin::Expression> source;
+        std::shared_ptr<dolfin::Expression> neumann;
+        std::shared_ptr<dolfin::Constant> sigma1;
+        std::shared_ptr<dolfin::Constant> sigma2;
+    };
+
+    class General {
+    public:
+
+        // sourceTerm (right-hand side)
+        class Source : public dolfin::Expression {
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &x) const {
+                values[0] = 0.0;
+            }
+        };
+
+        dolfin::Constant sigma1 = 84.935;
+        dolfin::Constant sigma2 = 5.3e5;
+
+        // Normal derivative (used for Neumann boundary condition)
+        class Neumann : public dolfin::Expression {
+        public:
+            void setFunctions(dolfin::Function& u1, dolfin::Function& u2) {
+                this->u1 = u1;
+                this->u2 = u2;
+            }
+
+        private:
+            dolfin::Function u1;
+            dolfin::Function u2;
+            double alpha = 0.3;
+            double n = 2.0;
+            double j = 0.005;
+            double R = 8.3144598; //allgemeine Gaskonstante
+            double T = 293.15; //20°C in Kelvin
+            double F = 96485.309; //Farady-Konstante
+
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &x) const {
+                dolfin::Array<double> values1;
+                dolfin::Array<double> values2;
+                u1.eval(values,x);
+                u2.eval(values,x);
+                dolfin::Array<double> diff;
+
+                for(int i = 0; i < std::max(values1.size(), values2.size()); i++){
+                    diff[i] = values2[i]-values1[i];
+                    values[i] = j*(std::exp(alpha*n*F*(diff[i]-1.7)/(R*T)) - std::exp(-(1.0-alpha)*n*F*diff[i]-1.7/(R*T)));
+                }
+            }
+        };
+    };
+}
 #endif // DIFFUSION_FENICS_PDETESTEXAMPLES_H
