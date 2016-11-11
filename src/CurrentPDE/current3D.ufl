@@ -35,5 +35,5 @@ L2 = -f*q2*(dx(2)+dx(3)) #die Butler-Volmer Gleichung tritt nur im Aktivmassen G
 
 #superponate Subdomainsfunctions 2.versuch
 #a = u*v*(dx(1)+dx(2)+dx(3)+dx(4)+dx(5))
-#L = u1*v*(dx(1)+dx(4))+(1-k)*u1*v*(dx(2)+dx(3)) + k*u2*v*(dx(2)+dx(3))+u2*v*dx(5) + g*v*ds(2)-g*v*ds(3)
+##L = u1*v*(dx(1)+dx(4))+(1-k)*u1*v*(dx(2)+dx(3)) + k*u2*v*(dx(2)+dx(3))+u2*v*dx(5) + g*v*ds(2)-g*v*ds(3)
 

@@ -194,8 +194,8 @@ namespace Current{
             }
 
         private:
-            const dolfin::Function& u1;
-            dolfin::Function u2; // würde ich als const Referenz realisieren
+            dolfin::Function u1;
+            dolfin::Function u2; // würde ich als const Referenz/ Pointer/ Pointer realisieren
             double alpha = 0.3;
             double n = 2.0;
             double j = 0.005;
@@ -210,8 +210,10 @@ namespace Current{
                 u1.eval(values,x);
                 u2.eval(values,x);
                 dolfin::Array<double> diff;
-
+#ifndef NDEBUG
                 assert(values1.size()== values2.size());
+                assert(values1.size()== 1);
+#endif
                 for(int i = 0; i < values1.size(); i++){
                     diff[i] = values2[i]-values1[i]-1.7;
                     values[i] = j*(std::exp(alpha*n*F*(diff[i])/(R*T)) - std::exp(-(1.0-alpha)*n*F*(diff[i])/(R*T)));
