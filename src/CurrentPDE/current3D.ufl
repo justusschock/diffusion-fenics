@@ -22,18 +22,18 @@ a2 = (-sigma2*inner(grad(w2), grad(q2))-w2*inner(grad(sigma2), grad(q2)))*(dx(2)
 L2 = -f*q2*(dx(2)+dx(3)) #die Butler-Volmer Gleichung tritt nur im Aktivmassen Gebiet als Quelle auf
 #########################################################################Bis hier kompiliert alles, ab hier: error
 
-DG = FiniteElement("DG", cell, 0)
-u = TrialFunction(DG)
-v = TestFunction(DG)
-k = 0.5 #Constant(cell) #How many % of the grid Active mass volume ist covered by electrolyte
-g = Coefficient(DG)
-u1 = Coefficient(DG)
-u2 = Coefficient(DG)
+#DG = FiniteElement("DG", cell, 0)
+#u = TrialFunction(DG)
+#v = TestFunction(DG)
+#k = 0.5 #Constant(cell) #How many % of the grid Active mass volume ist covered by electrolyte
+#g = Coefficient(DG)
+#u1 = Coefficient(DG)
+#u2 = Coefficient(DG)
 #superponate Subdomains 1. Versuch
 #a = u*v*(dx(1)+dx(2)+dx(3)+dx(4)+dx(5))
 #L = v*q1*(dx(1)+(1-k)*(dx(2)+dx(3))+dx(4)) + v*q2*(k*(dx(2)+dx(3))+dx(5)) + g*v*(ds(2)-ds(3))
 
 #superponate Subdomainsfunctions 2.versuch
-a = u*v*(dx(1)+dx(2)+dx(3)+dx(4)+dx(5))
-L = u1*v*(dx(1)+dx(4))+(1-k)*u1*v*(dx(2)+dx(3)) + k*u2*v*(dx(2)+dx(3))+u2*v*dx(5) + g*v*ds(2)-g*v*ds(3)
+#a = u*v*(dx(1)+dx(2)+dx(3)+dx(4)+dx(5))
+#L = u1*v*(dx(1)+dx(4))+(1-k)*u1*v*(dx(2)+dx(3)) + k*u2*v*(dx(2)+dx(3))+u2*v*dx(5) + g*v*ds(2)-g*v*ds(3)
 

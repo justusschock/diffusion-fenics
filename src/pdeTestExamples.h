@@ -159,8 +159,8 @@ namespace Current{
         SetupCase(std::size_t dim)
                 : source(std::make_shared<typename Case::Source>()),
                   neumann(std::make_shared<typename Case::Neumann>()),
-                  sigma1(std::make_shared<typename Case::sigma1>()),
-                  sigma2(std::make_shared<typename Case::sigam2())
+                  sigma1(std::make_shared<dolfin::Constant>(Case::sigma1)),
+                  sigma2(std::make_shared<dolfin::Constan>(Case::sigma2))
         {
         }
 
@@ -174,8 +174,8 @@ namespace Current{
     class General {
     public:
 
-        // sourceTerm (right-hand side)
-        class Source : public dolfin::Expression {
+        // Normal derivative (used for Neumann boundary condition)
+        class Neumann : public dolfin::Expression {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &x) const {
                 values[0] = 0.0;
@@ -185,8 +185,8 @@ namespace Current{
         dolfin::Constant sigma1 = 84.935;
         dolfin::Constant sigma2 = 5.3e5;
 
-        // Normal derivative (used for Neumann boundary condition)
-        class Neumann : public dolfin::Expression {
+        // sourceTerm (right-hand side)
+        class Source : public dolfin::Expression {
         public:
             void setFunctions(dolfin::Function& u1, dolfin::Function& u2) {
                 this->u1 = u1;
@@ -194,8 +194,8 @@ namespace Current{
             }
 
         private:
-            dolfin::Function u1;
-            dolfin::Function u2;
+            const dolfin::Function& u1;
+            dolfin::Function u2; // würde ich als const Referenz realisieren
             double alpha = 0.3;
             double n = 2.0;
             double j = 0.005;
@@ -211,9 +211,10 @@ namespace Current{
                 u2.eval(values,x);
                 dolfin::Array<double> diff;
 
-                for(int i = 0; i < std::max(values1.size(), values2.size()); i++){
-                    diff[i] = values2[i]-values1[i];
-                    values[i] = j*(std::exp(alpha*n*F*(diff[i]-1.7)/(R*T)) - std::exp(-(1.0-alpha)*n*F*(diff[i]-1.7)/(R*T)));
+                assert(values1.size()== values2.size());
+                for(int i = 0; i < values1.size(); i++){
+                    diff[i] = values2[i]-values1[i]-1.7;
+                    values[i] = j*(std::exp(alpha*n*F*(diff[i])/(R*T)) - std::exp(-(1.0-alpha)*n*F*(diff[i])/(R*T)));
                 }
             }
         };
