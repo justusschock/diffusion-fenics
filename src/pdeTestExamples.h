@@ -213,7 +213,7 @@ namespace Current{
 
                 for(int i = 0; i < std::max(values1.size(), values2.size()); i++){
                     diff[i] = values2[i]-values1[i];
-                    values[i] = j*(std::exp(alpha*n*F*(diff[i]-1.7)/(R*T)) - std::exp(-(1.0-alpha)*n*F*diff[i]-1.7/(R*T)));
+                    values[i] = j*(std::exp(alpha*n*F*(diff[i]-1.7)/(R*T)) - std::exp(-(1.0-alpha)*n*F*(diff[i]-1.7)/(R*T)));
                 }
             }
         };
