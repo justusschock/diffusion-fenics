@@ -1,1 +1,0 @@
-element = VectorElement("Lagrange", triangle, 2)

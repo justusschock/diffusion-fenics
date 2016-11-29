@@ -10,8 +10,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0a604b3-21a8-4654-a138-1451435bbe39" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Solver/CMakeLists.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Solver/convectionDiffusionSolver.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Solver/currentSolver.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/UFL/CMakeLists.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/UFL/current3D.ufl" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/UFL/velocity3D.ufl" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity1D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity2D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity3D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/CurrentPDE/.gitignore" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/CurrentPDE/current3D.ufl" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PoissonPDE_Mesh/.poissonSolver.h.swp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PoissonPDE_Mesh/CMakeLists.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/PoissonPDE_Mesh/poisson3D.h" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/.gitignore" afterPath="$PROJECT_DIR$/src/UFL/.gitignore" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl" afterPath="$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/PoissonPDE_Mesh/poisson3D.ufl" afterPath="$PROJECT_DIR$/src/UFL/poisson3D.ufl" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/PoissonPDE_Mesh/poissonSolver.h" afterPath="$PROJECT_DIR$/src/Solver/poissonSolver.h" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/pdeTestExamples.h" afterPath="$PROJECT_DIR$/src/pdeSetupClasses.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/pdeTestExamples.h" afterPath="$PROJECT_DIR$/src/pdeTestExamples.h" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CMakeLists.txt" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="$PROJECT_DIR$/src/main.cpp" />
     </list>
     <ignored path="diffusion-fenics.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -31,21 +54,21 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="convectionDiffusionSolver.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
+      <file leaf-file-name="poissonSolver.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Solver/poissonSolver.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2308">
-              <caret line="40" column="21" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
+            <state relative-caret-position="600">
+              <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="poissonSolver.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PoissonPDE_Mesh/poissonSolver.h">
+      <file leaf-file-name="current3D.h" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/UFL/current3D.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1925">
-              <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="112" selection-end-column="1" />
+            <state relative-caret-position="431">
+              <caret line="3026" column="6" selection-start-line="3026" selection-start-column="6" selection-end-line="3026" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -54,48 +77,84 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1400">
-              <caret line="56" column="36" selection-start-line="56" selection-start-column="36" selection-end-line="56" selection-end-column="36" />
+            <state relative-caret-position="550">
+              <caret line="25" column="67" selection-start-line="25" selection-start-column="67" selection-end-line="25" selection-end-column="67" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="convectionDiffusionSolver.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Solver/convectionDiffusionSolver.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="400">
+              <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+              <folding>
+                <element signature="e#402#432#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="current3D.ufl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D.ufl">
+        <entry file="file://$PROJECT_DIR$/src/UFL/current3D.ufl">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="692">
-              <caret line="34" column="0" selection-start-line="31" selection-start-column="42" selection-end-line="33" selection-end-column="93" />
+            <state relative-caret-position="550">
+              <caret line="22" column="12" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="12" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pdeSetupClasses.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/pdeSetupClasses.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="317">
+              <caret line="159" column="65" selection-start-line="159" selection-start-column="65" selection-end-line="159" selection-end-column="65" />
+              <folding>
+                <element signature="e#9645#9797#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="currentSolver.h" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/CurrentPDE/currentSolver.h">
+        <entry file="file://$PROJECT_DIR$/src/Solver/currentSolver.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="517">
-              <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+            <state relative-caret-position="875">
+              <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+              <folding>
+                <element signature="e#2367#2399#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Solver/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="200">
+              <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pdeTestExamples.h" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/UFL/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="267">
-              <caret line="186" column="0" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
+            <state relative-caret-position="875">
+              <caret line="35" column="12" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="12" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="poisson3D.ufl" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/PoissonPDE_Mesh/poisson3D.ufl">
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+            <state relative-caret-position="642">
+              <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -116,11 +175,25 @@
         <option value="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
         <option value="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl" />
         <option value="$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/CurrentPDE/current3D_debug.py" />
         <option value="$PROJECT_DIR$/src/CurrentPDE/current3D.ufl" />
         <option value="$PROJECT_DIR$/src/CurrentPDE/currentSolver.h" />
         <option value="$PROJECT_DIR$/src/pdeTestExamples.h" />
+        <option value="$PROJECT_DIR$/src/CurrentPDE_Mesh/current3D.ufl" />
+        <option value="$PROJECT_DIR$/src/PoissonPDE_Mesh/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/CurrentPDE_Mesh/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/CurrentPDE_Mesh/currentSolver.h" />
+        <option value="$PROJECT_DIR$/src/UFL/CurrentPDE_Mesh/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/UFL/velocity3D.ufl" />
+        <option value="$PROJECT_DIR$/src/Solver/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/Solver/poissonSolver.h" />
+        <option value="$PROJECT_DIR$/src/Solver/convectionDiffusionSolver.h" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/src/pdeSetupClasses.h" />
+        <option value="$PROJECT_DIR$/src/UFL/current3D.ufl" />
+        <option value="$PROJECT_DIR$/src/UFL/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/Solver/currentSolver.h" />
       </list>
     </option>
   </component>
@@ -131,10 +204,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-11" />
+    <option name="x" value="3229" />
     <option name="y" value="-11" />
-    <option name="width" value="2182" />
-    <option name="height" value="1402" />
+    <option name="width" value="1942" />
+    <option name="height" value="1498" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -207,7 +280,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="PoissonPDE_Mesh" />
+              <option name="myItemId" value="UFL" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -220,6 +293,16 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="C:/Program Files/Python35/python.exe" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\justu\RWTH\ISEA\Diffusion-Fenics\diffusion-fenics\src\UFL\PoissonPDE_Mesh" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\justu\RWTH\ISEA\Diffusion-Fenics\diffusion-fenics\src\UFL" />
+      <recent name="C:\Users\justu\RWTH\ISEA\Diffusion-Fenics\diffusion-fenics\src\Solver" />
+      <recent name="C:\Users\justu\RWTH\ISEA\Diffusion-Fenics\diffusion-fenics\src" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" PASS_PARENT_ENVS_2="true" TEST_MODE="SUITE_TEST">
@@ -405,36 +488,63 @@
       <workItem from="1478609572361" duration="1355000" />
       <workItem from="1478721684648" duration="2052000" />
       <workItem from="1478855520384" duration="2272000" />
+      <workItem from="1479051747896" duration="1601000" />
+      <workItem from="1479422049537" duration="2000" />
+      <workItem from="1479807772134" duration="3325000" />
+      <workItem from="1480098510799" duration="5168000" />
+      <workItem from="1480327666648" duration="2048000" />
+      <workItem from="1480430226329" duration="4257000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19012000" />
+    <option name="totallyTimeSpent" value="35413000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="2182" height="1402" extended-state="6" />
-    <editor active="false" />
+    <frame x="3229" y="-11" width="1942" height="1498" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.225" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32928804" sideWeight="0.49814814" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928804" sideWeight="0.50185186" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2837838" sideWeight="0.49814814" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928804" sideWeight="0.50185186" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2837838" sideWeight="0.49814814" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32928804" sideWeight="0.50185186" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.225" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -448,160 +558,22 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D_debug.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2950">
-          <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="54" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1400">
-          <caret line="56" column="36" selection-start-line="56" selection-start-column="36" selection-end-line="56" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2950">
-          <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="54" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1400">
-          <caret line="56" column="36" selection-start-line="56" selection-start-column="36" selection-end-line="56" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2950">
-          <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="54" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h" />
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -610,43 +582,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
+    <entry file="file://$PROJECT_DIR$/src/pdeSetupClasses.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2950">
           <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="e#9645#9797#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="54" column="27" selection-start-line="0" selection-start-column="0" selection-end-line="158" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h" />
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -655,43 +610,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
+    <entry file="file://$PROJECT_DIR$/src/pdeSetupClasses.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2950">
           <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="e#9645#9797#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2475">
-          <caret line="99" column="18" selection-start-line="99" selection-start-column="18" selection-end-line="99" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h" />
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -700,136 +638,157 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
+    <entry file="file://$PROJECT_DIR$/src/pdeSetupClasses.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2950">
           <caret line="118" column="13" selection-start-line="118" selection-start-column="13" selection-end-line="118" selection-end-column="13" />
-          <folding />
+          <folding>
+            <element signature="e#9645#9797#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="18" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="500">
           <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="25">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="48" selection-start-line="0" selection-start-column="48" selection-end-line="0" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/velocity3D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="47" selection-start-line="0" selection-start-column="47" selection-end-line="0" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1400">
-          <caret line="56" column="36" selection-start-line="56" selection-start-column="36" selection-end-line="56" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D_debug.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="21" selection-start-line="10" selection-start-column="21" selection-end-line="10" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/velocity1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/velocity2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/velocity3D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion1D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/ConvectionDiffusionPDE_Mesh/convectionDiffusion2D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D_debug.py" />
+    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D.ufl" />
+    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/currentSolver.h" />
+    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h" />
+    <entry file="file://$PROJECT_DIR$/src/CurrentPDE_Mesh/current3D.h" />
+    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusion3D.h" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/convectionDiffusion3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PoissonPDE_Mesh/poisson3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/UFL/PoissonPDE_Mesh/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/CurrentPDE_Mesh/.gitignore" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/PoissonPDE_Mesh/.gitignore" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/CurrentPDE_Mesh/CMakeLists.txt" />
+    <entry file="file://$PROJECT_DIR$/src/UFL/poisson3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="26" selection-start-line="0" selection-start-column="26" selection-end-line="0" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/velocity3D.ufl">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/poisson3D.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Solver/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ConvectionDiffusionPDE_Mesh/convectionDiffusionSolver.h">
+    <entry file="file://$PROJECT_DIR$/src/Solver/poissonSolver.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2308">
-          <caret line="40" column="21" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
+        <state relative-caret-position="600">
+          <caret line="24" column="0" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PoissonPDE_Mesh/poissonSolver.h">
+    <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1925">
-          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="112" selection-end-column="1" />
+        <state relative-caret-position="642">
+          <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/current3D.ufl">
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="692">
-          <caret line="34" column="0" selection-start-line="31" selection-start-column="42" selection-end-line="33" selection-end-column="93" />
+        <state relative-caret-position="550">
+          <caret line="25" column="67" selection-start-line="25" selection-start-column="67" selection-end-line="25" selection-end-column="67" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CurrentPDE/currentSolver.h">
+    <entry file="file://$PROJECT_DIR$/src/pdeSetupClasses.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="517">
-          <caret line="41" column="0" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="0" />
+        <state relative-caret-position="317">
+          <caret line="159" column="65" selection-start-line="159" selection-start-column="65" selection-end-line="159" selection-end-column="65" />
+          <folding>
+            <element signature="e#9645#9797#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="875">
+          <caret line="35" column="12" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/pdeTestExamples.h">
+    <entry file="file://$PROJECT_DIR$/src/UFL/current3D.ufl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="267">
-          <caret line="186" column="0" selection-start-line="186" selection-start-column="0" selection-end-line="186" selection-end-column="0" />
+        <state relative-caret-position="550">
+          <caret line="22" column="12" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Solver/currentSolver.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="875">
+          <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+          <folding>
+            <element signature="e#2367#2399#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Solver/convectionDiffusionSolver.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="16" column="31" selection-start-line="16" selection-start-column="31" selection-end-line="16" selection-end-column="31" />
+          <folding>
+            <element signature="e#402#432#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UFL/current3D.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="3026" column="6" selection-start-line="3026" selection-start-column="6" selection-end-line="3026" selection-end-column="6" />
           <folding />
         </state>
       </provider>

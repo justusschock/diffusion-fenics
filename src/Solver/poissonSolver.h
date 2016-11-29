@@ -9,7 +9,7 @@
 // Include generated headers for solving the Poisson-PDE
 //#include "poisson1D.h"
 //#include "poisson2D.h"
-#include "poisson3D.h"
+#include "../UFL/poisson3D.h"
 
 namespace Poisson {
 

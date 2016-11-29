@@ -34,11 +34,12 @@ set(CMAKE_CXX_FLAGS "${DOLFIN_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
 include_directories(${DOLFIN_INCLUDE_DIRS})
 include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
 
-set(SOURCE_FILES main.cpp pdeTestExamples.h)
+set(SOURCE_FILES main.cpp pdeSetupClasses.h)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-add_subdirectory(PoissonPDE_Mesh)
+add_subdirectory(UFL)
+add_subdirectory(Solver)
 
 
 # Target libraries

@@ -1,0 +1,24 @@
+
+cell = tetrahedron
+
+scalar = FiniteElement("Lagrange", cell, 1)
+
+sigmaSolid = Coefficient(scalar)
+sigmaLiquid = Coefficient(scalar)
+wSolid = TrialFunction(scalar)
+qSolid = TestFunction(scalar)
+wLiquid = TrialFunction(scalar)
+qLiquid = TestFunction(scalar)
+fSolid = Coefficient(scalar)
+fLiquid = Coefficient(scalar)
+
+
+# Solid
+a = (-sigmaSolid*inner(grad(wSolid), grad(qSolid))-wSolid*inner(grad(sigmaSolid), grad(qSolid)))*(dx(1)+dx(2)+dx(3)+dx(4))
+L = fSolid*qSolid*(dx(2)+dx(3))
+#die Butler-Volmer Gleichung tritt nur im Aktivmassen Gebiet als Quelle auf
+
+# Liquid
+b = (-sigmaLiquid*inner(grad(wLiquid), grad(qLiquid))-wLiquid*inner(grad(sigmaLiquid), grad(qLiquid)))*(dx(2)+dx(3)+dx(5))
+K = -fLiquid*qLiquid*(dx(2)+dx(3))
+#die Butler-Volmer Gleichung tritt nur im Aktivmassen Gebiet als Quelle auf
