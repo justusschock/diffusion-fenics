@@ -33,14 +33,17 @@ set(CMAKE_CXX_FLAGS "${DOLFIN_CXX_FLAGS} ${CMAKE_CXX_FLAGS}")
 # Include directories
 include_directories(${DOLFIN_INCLUDE_DIRS})
 include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-set(SOURCE_FILES main.cpp pdeSetupClasses.h)
+set(SOURCE_FILES main.cpp)# pdeSetupClasses.h)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_dependencies(${PROJECT_NAME} generate_ufl)
+#add_subdirectory(Solver)
 add_subdirectory(UFL)
-add_subdirectory(Solver)
 
 
 # Target libraries
+target_compile_options(${PROJECT_NAME} PUBLIC ${_flags_all})
 target_link_libraries(${PROJECT_NAME} ${DOLFIN_LIBRARIES} ${DOLFIN_3RD_PARTY_LIBRARIES})
