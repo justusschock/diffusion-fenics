@@ -10,10 +10,10 @@
 //Include generated headers for solving the Convection-Diffusion-PDE
 //#include "convectionDiffusion1D.h"
 //#include "convectionDiffusion2D.h"
-#include "UFL/convectionDiffusion3D.h"
+#include "convectionDiffusion3D.h"
 //#include "velocity1D.h"
 //#include "velocity2D.h"
-#include "UFL/velocity3D.h"
+#include "velocity3D.h"
 #include "pdeSetupClasses.h"
 
 namespace ConvectionDiffusion{
