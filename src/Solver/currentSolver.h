@@ -3,7 +3,7 @@
 #ifndef DIFFUSION_FENICS_CURRENTSOLVER_H
 #define DIFFUSION_FENICS_CURRENTSOLVER_H
 
-#include "../UFL/current3D.h"
+#include "UFL/current3D.h"
 
 namespace Current {
 
