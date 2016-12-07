@@ -3,7 +3,8 @@
 #ifndef DIFFUSION_FENICS_CURRENTSOLVER_H
 #define DIFFUSION_FENICS_CURRENTSOLVER_H
 
-#include "current3D.h"
+#include "current3DSolid.h"
+#include "current3DLiquid.h"
 
 namespace Current {
 
@@ -52,20 +53,36 @@ namespace Current {
 // Provide FunctionSpace, Linear and Bilinear Form in 3D
     template <> class DimensionWrapper<3> {
     public:
-        auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh)
-        -> current3D::FunctionSpace {
-            return current3D::FunctionSpace(mesh);
+        auto FunctionSpaceLiquid(std::shared_ptr<dolfin::Mesh> mesh)
+        -> current3DLiquid::FunctionSpace {
+            return current3DLiquid::FunctionSpace(mesh);
         }
 
-        auto LinearForm(std::shared_ptr<current3D::FunctionSpace> FunctionSpace)
-        -> current3D::LinearForm {
-            return current3D::LinearForm(FunctionSpace);
+        auto FunctionSpaceSolid(std::shared_ptr<dolfin::Mesh> mesh)
+                ->current3DSolid::FunctionSpace{
+            return current3DSolid::FunctionSpace(mesh);
         }
 
-        auto BilinearForm(std::shared_ptr<current3D::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<current3D::FunctionSpace> FunctionSpace2)
-        -> current3D::BilinearForm {
-            return current3D::BilinearForm(FunctionSpace1, FunctionSpace2);
+        auto LinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace)
+        -> current3DSolid::LinearForm {
+            return current3DSolid::LinearForm(FunctionSpace);
+        }
+
+        auto LinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace)
+                -> current3DLiquid::LinearForm {
+            return current3DLiquid::LinearForm(FunctionSpace);
+        }
+
+        auto BilinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace1,
+                          std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace2)
+        -> current3DSolid::BilinearForm {
+            return current3DSolid::BilinearForm(FunctionSpace1, FunctionSpace2);
+        }
+
+        auto BilinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace1,
+                          std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace2)
+        -> current3DLiquid::BilinearForm {
+            return current3DLiquid::BilinearForm(FunctionSpace1, FunctionSpace2);
         }
     };
 
@@ -75,15 +92,21 @@ namespace Current {
         DimensionWrapper<dim> dimensionWrapper;
 
         // Setup FunctionSpace, Linear and BilinearForm (based on dim)
-        auto V = std::make_shared<decltype(dimensionWrapper.FunctionSpace(setup.getMesh()))>(
-                dimensionWrapper.FunctionSpace(setup.getMesh()));
-        auto a = dimensionWrapper.BilinearForm(V, V);
-        auto L = dimensionWrapper.LinearForm(V);
-        auto b = dimensionWrapper.BilinearForm(V, V);
-        auto K = dimensionWrapper.LinearForm(V);
+        auto V_l = std::make_shared<decltype(dimensionWrapper.FunctionSpaceLiquid(setup.getMesh()))>(
+                dimensionWrapper.FunctionSpaceLiquid(setup.getMesh()));
+        auto V_s = std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>(
+                dimensionWrapper.FunctionSpaceSolid((setup.getMesh())));
 
-        setup.setU1(new dolfin::Function(V));
-        setup.setU2(new dolfin::Function(V));
+        auto a = dimensionWrapper.BilinearFormSolid(V_s, V_s);
+        auto L = dimensionWrapper.LinearFormSolid(V_s);
+        auto b = dimensionWrapper.BilinearFormLiquid(V_l, V_l);
+        auto K = dimensionWrapper.LinearFormLiquid(V_l);
+
+        setup.setUL(new dolfin::Function(V_s));
+        setup.setUS(new dolfin::Function(V_l));
+
+        //auto ul = dolfin::Function(V_l);
+        //auto us = dolfin::Function(V_s);
 
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
@@ -98,19 +121,18 @@ namespace Current {
         b.ds = *ds;
         K.ds = *ds;
 
-        a.sigmaSolid = *setup.getSigma1();
-        b.sigmaLiquid = *setup.getSigma2();
-        L.fSolid = *setup.getSource1();
-        K.fLiquid = *setup.getSource2();
-
+        a.sigmaSolid = *setup.getSigmaS();
+        b.sigmaLiquid = *setup.getSigmaL();
+        L.fSolid = *setup.getSourceS();
+        K.fLiquid = *setup.getSourceL();
 
         // Compute solutions
-        dolfin::solve(a == L, *setup.getU1());
-        dolfin::solve(b == K, *setup.getU2());
+        dolfin::solve(a == L, *setup.getUS());
+        dolfin::solve(b == K, *setup.getUL());
 
         dolfin::File file("../output/current.pvd", "compressed");
-        file << *setup.getU1();
-        file << *setup.getU2();
+        file << *setup.getUS();
+        file << *setup.getUL();
 
 
     }

@@ -74,40 +74,48 @@ namespace ConvectionDiffusion{
         {return velocity3D::FunctionSpace(mesh);}
     };
 
-    template <const int dim>
-    auto solvePDE(std::shared_ptr<dolfin::Mesh> mesh, std::shared_ptr<dolfin::Constant> dirichletValue, std::shared_ptr<dolfin::Expression> initial,
-                  std::shared_ptr<dolfin::Expression> velocity, std::shared_ptr<dolfin::Expression> source, std::shared_ptr<dolfin::Expression> neumann,
-                  std::shared_ptr<dolfin::SubDomain> dirichletBoundary, std::shared_ptr<dolfin::Expression> diffusivity,
-                  dolfin::Constant k = dolfin::Constant(0.0), const double T = 2.0, double t = 0.00) ->dolfin::Function
+    template <const int dim, class SetupCase>
+    void solvePDE(SetupCase& setup, dolfin::Constant k = dolfin::Constant(0.01), const double T = 2.0, double t = 0.00)
     {
         DimensionWrapper<dim> dimensionwrapper;
 
         // Create velocity FunctionSpace and velocity function
-        auto V_u = std::make_shared<decltype(dimensionwrapper.VelocityFunctionSpace(mesh))>(dimensionwrapper.VelocityFunctionSpace(mesh));
+        auto V_u = std::make_shared<decltype(dimensionwrapper.VelocityFunctionSpace(setup.getMesh()))>
+                (dimensionwrapper.VelocityFunctionSpace(setup.getMesh()));
         //    auto velocity = std::make_shared<dolfin::Function>(V_u);
         //   *velocity = velocityFunction;
 
         // Create function space and function (to store solution)
-        auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(mesh))>(dimensionwrapper.FunctionSpace(mesh));
-        auto u = dolfin::Function(V);
+        auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(setup.getMesh()))>
+                (dimensionwrapper.FunctionSpace(setup.getMesh()));
+
+        setup.setU(new dolfin::Function(V));
 
         // Set up forms
         auto a = dimensionwrapper.BilinearForm(V, V);
-        a.b = *velocity;
-        a.c = *diffusivity;
+        a.b = *setup.getVelocity();
+        a.c = *setup.getDiffusivity();
         a.k = k;
 
         //Set velocityfunction, initial values and source term
         auto L = dimensionwrapper.LinearForm(V);
-        L.u0 = *initial;
-        L.b = *velocity;
-        L.f = *source;
-        L.g = *neumann;
+
+        auto ds = *setup.getFacetFunction();
+        auto dx = *setup.getSubDomainFunction();
+        L.u0 = *setup.getInitial();
+        L.b = *setup.getVelocity();
+        L.f = *setup.getSource();
+        L.g = *setup.getNeumann();
         L.k = k;
-        L.c = *diffusivity;
+        L.c = *setup.getDiffusivity();
+
+        a.ds = ds;
+        L.ds = ds;
+        a.dx = dx;
+        L.dx = dx;
 
         // Set up boundary condition
-        dolfin::DirichletBC bc(V, dirichletValue, dirichletBoundary);
+        //dolfin::DirichletBC bc(*V, *setup.getDirichletValue(), ds,6); // works only without bc
 
         // Linear system
         std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);
@@ -115,34 +123,34 @@ namespace ConvectionDiffusion{
 
         // Assemble matrix
         assemble(*A, a);
-        bc.apply(*A);
+        //bc.apply(*A);
 
         // LU solver
         dolfin::LUSolver lu(A);
         lu.parameters["reuse_factorization"] = true;
 
         double dt = k;
-        dolfin::File file ("../convection_diffusion.pvd","compressed");
+        dolfin::File file ("../output/convection_diffusion.pvd","compressed");
 
         // Time-stepping
         dolfin::Progress p("Time-stepping");
         while (t < T)
         {
+            std::cout<<"Simulating time: " << t << " of " << T << std::endl;
             // Assemble vector and apply boundary conditions
             assemble(b, L);
-            bc.apply(b);
+            //bc.apply(b);
 
             // Solve the linear system (re-use the already factorized matrix A)
-            lu.solve(*(u.vector()), b);
+            lu.solve(*(setup.getU()->vector()), b);
 
-            file << std::pair<dolfin::Function*,double>(&u,t);
+            file << std::pair<dolfin::Function*,double>(&(*setup.getU()),t);
 
             // Move to next interval
             p = t/T;
             t += dt;
         }
 
-        return u;
     }
 
 }
