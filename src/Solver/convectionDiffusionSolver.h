@@ -66,16 +66,17 @@ namespace ConvectionDiffusion{
         auto LinearForm(std::shared_ptr<convectionDiffusion3D::FunctionSpace> FunctionSpace) -> convectionDiffusion3D::LinearForm
         { return convectionDiffusion3D::LinearForm(FunctionSpace);}
 
+        //::FIXME:: FunctionSpace1 wurde nicht verwendet
         auto BilinearForm(std::shared_ptr<convectionDiffusion3D::FunctionSpace> FunctionSpace1,
                           std::shared_ptr<convectionDiffusion3D::FunctionSpace> FunctionSpace2) -> convectionDiffusion3D::BilinearForm
-        {return convectionDiffusion3D::BilinearForm(FunctionSpace2, FunctionSpace2);}
+        {return convectionDiffusion3D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
         auto VelocityFunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) -> velocity3D::FunctionSpace
         {return velocity3D::FunctionSpace(mesh);}
     };
 
     template <const int dim, class SetupCase>
-    void solvePDE(SetupCase& setup, dolfin::Constant k = dolfin::Constant(0.01), const double T = 2.0, double t = 0.00)
+    void solvePDE(SetupCase& setup, dolfin::Constant _k = dolfin::Constant(0.01), const double T = 2.0, double t = 0.00)
     {
         DimensionWrapper<dim> dimensionwrapper;
 
@@ -91,23 +92,24 @@ namespace ConvectionDiffusion{
 
         setup.setU(new dolfin::Function(V));
 
+        auto k =std::make_shared<dolfin::Constant>(_k);
         // Set up forms
         auto a = dimensionwrapper.BilinearForm(V, V);
-        a.b = *setup.getVelocity();
-        a.c = *setup.getDiffusivity();
+        a.b = setup.getVelocity();
+        a.c = setup.getDiffusivity();
         a.k = k;
 
         //Set velocityfunction, initial values and source term
         auto L = dimensionwrapper.LinearForm(V);
 
-        auto ds = *setup.getFacetFunction();
-        auto dx = *setup.getSubDomainFunction();
-        L.u0 = *setup.getInitial();
-        L.b = *setup.getVelocity();
-        L.f = *setup.getSource();
-        L.g = *setup.getNeumann();
+        auto ds = setup.getFacetFunction();
+        auto dx = setup.getSubDomainFunction();
+        L.u0 = setup.getInitial();
+        L.b = setup.getVelocity();
+        L.f = setup.getSource();
+        L.g = setup.getNeumann();
         L.k = k;
-        L.c = *setup.getDiffusivity();
+        L.c = setup.getDiffusivity();
 
         a.ds = ds;
         L.ds = ds;
@@ -129,7 +131,7 @@ namespace ConvectionDiffusion{
         dolfin::LUSolver lu(A);
         lu.parameters["reuse_factorization"] = true;
 
-        double dt = k;
+        double dt = _k;
         dolfin::File file ("../output/convection_diffusion.pvd","compressed");
 
         // Time-stepping
@@ -145,6 +147,7 @@ namespace ConvectionDiffusion{
             lu.solve(*(setup.getU()->vector()), b);
 
             file << std::pair<dolfin::Function*,double>(&(*setup.getU()),t);
+            L.u0=setup.getU();
 
             // Move to next interval
             p = t/T;
