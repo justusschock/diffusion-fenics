@@ -22,7 +22,7 @@ add_custom_command(
         VERBATIM
 )
 endforeach(ufl_loop)
-MESSAGE(${UFL})
-MESSAGE(${h_list})
+#MESSAGE(${UFL})
+#MESSAGE(${h_list})
 
 add_custom_target(generate_ufl DEPENDS ${h_list})
