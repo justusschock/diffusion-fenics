@@ -102,8 +102,8 @@ namespace Current {
         auto b = dimensionWrapper.BilinearFormLiquid(V_l, V_l);
         auto K = dimensionWrapper.LinearFormLiquid(V_l);
 
-        setup.setUL(new dolfin::Function(V_s));
-        setup.setUS(new dolfin::Function(V_l));
+        setup.setUL(std::make_shared<dolfin::Function>(V_l));
+        setup.setUS(std::make_shared<dolfin::Function>(V_s));
 
         //auto ul = dolfin::Function(V_l);
         //auto us = dolfin::Function(V_s);
@@ -111,28 +111,30 @@ namespace Current {
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
 
-        a.dx = *dx;
-        L.dx = *dx;
-        b.dx = *dx;
-        K.dx = *dx;
+        a.dx = dx;
+        L.dx = dx;
+        b.dx = dx;
+        K.dx = dx;
 
-        a.ds = *ds;
-        L.ds = *ds;
-        b.ds = *ds;
-        K.ds = *ds;
+        a.ds = ds;
+        L.ds = ds;
+        b.ds = ds;
+        K.ds = ds;
 
-        a.sigmaSolid = *setup.getSigmaS();
-        b.sigmaLiquid = *setup.getSigmaL();
-        L.fSolid = *setup.getSourceS();
-        K.fLiquid = *setup.getSourceL();
+        a.sigmaSolid = setup.getSigmaS();
+        b.sigmaLiquid = setup.getSigmaL();
+        L.fSolid = setup.getSourceS();
+        K.fLiquid =setup.getSourceL();
 
         // Compute solutions
         dolfin::solve(a == L, *setup.getUS());
         dolfin::solve(b == K, *setup.getUL());
 
-        dolfin::File file("../output/current.pvd", "compressed");
-        file << *setup.getUS();
+        dolfin::File file("../output/current_liquid.pvd", "compressed");
         file << *setup.getUL();
+
+        dolfin::File file_s("../output/current_solve.pvd", "compressed");
+        file_s << *setup.getUS();
 
 
     }

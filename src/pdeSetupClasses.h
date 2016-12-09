@@ -233,7 +233,7 @@ namespace Current {
     template <class Case>
     class SetupCase {
        public:
-        SetupCase(std::size_t dim,
+        SetupCase(std::size_t,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile)
@@ -290,28 +290,29 @@ namespace Current {
         }
         std::shared_ptr<dolfin::Function> getUL() { return this->u_L; }
         std::shared_ptr<dolfin::Function> getUS() { return this->u_S; }
-        void setUS(dolfin::Function *u)
+        void setUS(std::shared_ptr<dolfin::Function> u)
         {
-            u_S.reset(u);
+            u_S = u;
             source_s->setUS(u_S);
+            source_l->setUS(u_S);
         }
-        void setUL(dolfin::Function *u)
+        void setUL(std::shared_ptr<dolfin::Function> u)
         {
-            u_L.reset(u);
+            u_L = u;
             source_l->setUL(u_L);
+            source_s->setUL(u_L);
         }
 
        protected:
+        std::shared_ptr<dolfin::Mesh> mesh;
+        std::shared_ptr<dolfin::MeshFunction<size_t>> subdomain_function;
+        std::shared_ptr<dolfin::MeshFunction<size_t>> facet_function;
+        std::shared_ptr<dolfin::Function> u_L;
+        std::shared_ptr<dolfin::Function> u_S;
         std::shared_ptr<typename Case::Source_L> source_l;
         std::shared_ptr<typename Case::Source_S> source_s;
         std::shared_ptr<typename Case::Sigma_L> sigma_l;
         std::shared_ptr<typename Case::Sigma_S> sigma_s;
-        std::shared_ptr<dolfin::Mesh> mesh;
-        std::shared_ptr<dolfin::MeshFunction<size_t>> subdomain_function;
-        std::shared_ptr<dolfin::MeshFunction<size_t>> facet_function;
-
-        std::shared_ptr<dolfin::Function> u_L;
-        std::shared_ptr<dolfin::Function> u_S;
     };
 
     class General {
@@ -364,11 +365,11 @@ namespace Current {
                 dolfin::Array<double> diff(values.size());
 
                 for (std::size_t i = 0; i < values.size(); i++) {
-                    diff[i] = values_L[i] - values_S[i] - 1.7;
+                    diff[i] = values_S[i] - values_L[i] - 1.7;
                     values[i] =
-                        j * (std::exp(alpha * n * F * (diff[i]) / (R * T)) -
-                             std::exp(-(1.0 - alpha) * n * F * (diff[i]) /
-                                      (R * T)));
+                        -j * (std::exp(alpha * n * F * (diff[i]) / (R * T)) -
+                              std::exp(-(1.0 - alpha) * n * F * (diff[i]) /
+                                       (R * T)));
                 }
             }
         };
@@ -416,7 +417,7 @@ namespace Current {
                 dolfin::Array<double> diff(values.size());
 
                 for (std::size_t i = 0; i < values.size(); i++) {
-                    diff[i] = values_S[i] - values_L[i] - 0.4;
+                    diff[i] = values_S[i] - values_L[i] - 1.7;
                     values[i] =
                         j * (std::exp(alpha * n * F * (diff[i]) / (R * T)) -
                              std::exp(-(1.0 - alpha) * n * F * (diff[i]) /

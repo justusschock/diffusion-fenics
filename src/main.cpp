@@ -21,9 +21,9 @@ int main(int argc, char *argv[]) {
         std::string facetFile = "../test_mesh/test_mesh_facet_region.xml";
 
         std::cout<<"Simulation running"<<std::endl;
-        ConvectionDiffusion::SetupCase<ConvectionDiffusion::General> setup(dim,meshFile,subdomainFile,facetFile);
+        Current::SetupCase<Current::General> setup(dim,meshFile,subdomainFile,facetFile);
 
-        ConvectionDiffusion::solvePDE<dim, ConvectionDiffusion::SetupCase<ConvectionDiffusion::General>>(setup);
+        Current::solvePDE<dim, Current::SetupCase<Current::General>>(setup);
         // dolfin::plot(u);
         // dolfin::interactive();
     } catch (std::exception &e) {
