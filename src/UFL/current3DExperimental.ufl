@@ -1,0 +1,21 @@
+cell = tetrahedron
+
+scalar = FiniteElement("DG", cell, 1)
+
+scalarMixed = scalar * scalar
+
+sigma = Coefficient(scalarMixed)
+u = TrialFunction(scalarMixed)
+v = TestFunction(scalarMixed)
+f = Coefficient(scalarMixed)
+
+sigmaLiquid, sigmaSolid = split(sigma)
+uLiquid, uSolid = split(u)
+vLiquid, vSolid = split(v)
+fLiquid, fSolid = split(f)
+
+aLiquid = (-sigmaLiquid*inner(grad(uLiquid), grad(vLiquid))-uLiquid*inner(grad(sigmaLiquid), grad(vLiquid)))*(dx(2)+dx(3)+dx(5))
+aSolid = (-sigmaSolid*inner(grad(uSolid), grad(vSolid))-uSolid*inner(grad(sigmaSolid), grad(vSolid)))*(dx(1)+dx(2)+dx(3)+dx(4))
+
+a = aLiquid+aSolid
+L = fSolid*vSolid*(dx(2)+dx(3))+ fLiquid*vLiquid*(dx(2)+dx(3))

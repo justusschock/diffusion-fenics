@@ -5,6 +5,7 @@
 
 #include "current3DSolid.h"
 #include "current3DLiquid.h"
+#include "current3DExperimental.h"
 
 namespace Current {
 
@@ -50,6 +51,7 @@ namespace Current {
   };
 
 */
+    /*
 // Provide FunctionSpace, Linear and Bilinear Form in 3D
     template <> class DimensionWrapper<3> {
     public:
@@ -121,10 +123,10 @@ namespace Current {
         b.ds = ds;
         K.ds = ds;
 
-        a.sigmaSolid = setup.getSigmaS();
-        b.sigmaLiquid = setup.getSigmaL();
-        L.fSolid = setup.getSourceS();
-        K.fLiquid =setup.getSourceL();
+        a.sigmaSolid = *setup.getSigmaS();
+        b.sigmaLiquid = *setup.getSigmaL();
+        L.fSolid = *setup.getSourceS();
+        K.fLiquid = *setup.getSourceL();
 
         // Compute solutions
         dolfin::solve(a == L, *setup.getUS());
@@ -138,6 +140,67 @@ namespace Current {
 
 
     }
+    */
+
+    template <> class DimensionWrapper<3> {
+    public:
+        auto FunctionSpaceExperimental(std::shared_ptr<dolfin::Mesh> mesh)
+        -> current3DExperimental::FunctionSpace {
+            return current3DExperimental::FunctionSpace(mesh);
+        }
+
+        auto LinearFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace)
+        -> current3DExperimental::LinearForm {
+            return current3DExperimental::LinearForm(FunctionSpace);
+        }
+
+        auto BilinearFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace1,
+                               std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
+        -> current3DExperimental::BilinearForm {
+            return current3DExperimental::BilinearForm(FunctionSpace1, FunctionSpace2);
+        }
+
+    };
+
+    template <const int dim, class SetupCase>
+    auto solvePDE(SetupCase& setup) -> void {
+
+        DimensionWrapper<dim> dimensionWrapper;
+
+        // Setup FunctionSpace, Linear and BilinearForm (based on dim)
+        auto V = std::make_shared<decltype(dimensionWrapper.FunctionSpaceExperimental(setup.getMesh()))>(
+                dimensionWrapper.FunctionSpaceExperimental((setup.getMesh())));
+
+        auto a = dimensionWrapper.BilinearFormExperimental(V, V);
+        auto L = dimensionWrapper.LinearFormExperimental(V);
+
+        setup.setU(std::make_shared<dolfin::Function>(V));
+
+        //auto ul = dolfin::Function(V_l);
+        //auto us = dolfin::Function(V_s);
+
+        auto dx = setup.getSubdomainFunction();
+        auto ds = setup.getFacetFunction();
+
+        a.dx = dx;
+        L.dx = dx;
+
+        a.ds = ds;
+        L.ds = ds;
+
+        a.sigma = *setup.getSigma();
+        L.f = *setup.getSource();
+
+        // Compute solutions
+        dolfin::solve(a == L, *setup.getU());
+
+        dolfin::File file("../output/current.pvd", "compressed");
+        file << *setup.getU();
+
+
+    }
 }
 
 #endif //DIFFUSION_FENICS_CURRENTSOLVER_H
+
+

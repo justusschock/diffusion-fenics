@@ -242,42 +242,29 @@ namespace Current {
                   mesh, subdomainFile)),
               facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
                   mesh, facetFile)),
-              source_l(std::make_shared<typename Case::Source_L>(u_L, u_S)),
-              source_s(std::make_shared<typename Case::Source_S>(u_L, u_S)),
-              sigma_l(std::make_shared<typename Case::Sigma_L>()),
-              sigma_s(std::make_shared<typename Case::Sigma_S>())
-
+              source_(std::make_shared<typename Case::Source>(u_)),
+              sigma_(std::make_shared<typename Case::Sigma>())
         {
         }
 
         virtual ~SetupCase()
         {
-            source_l.reset();
-            source_s.reset();
-            sigma_l.reset();
-            sigma_s.reset();
+            source_.reset();
+            sigma_.reset();
             mesh.reset();
             subdomain_function.reset();
             facet_function.reset();
-            u_L.reset();
-            u_S.reset();
+            u_.reset();
         }
 
-        std::shared_ptr<typename Case::Source_L> getSourceL()
+        std::shared_ptr<typename Case::Source> getSource()
         {
-            return this->source_l;
+            return this->source_;
         }
-        std::shared_ptr<typename Case::Source_S> getSourceS()
+
+        std::shared_ptr<typename Case::Sigma> getSigma()
         {
-            return this->source_s;
-        }
-        std::shared_ptr<typename Case::Sigma_L> getSigmaL()
-        {
-            return this->sigma_l;
-        }
-        std::shared_ptr<typename Case::Sigma_S> getSigmaS()
-        {
-            return this->sigma_s;
+            return this->sigma_;
         }
         std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
         std::shared_ptr<dolfin::MeshFunction<size_t>> getSubdomainFunction()
@@ -288,31 +275,22 @@ namespace Current {
         {
             return this->facet_function;
         }
-        std::shared_ptr<dolfin::Function> getUL() { return this->u_L; }
-        std::shared_ptr<dolfin::Function> getUS() { return this->u_S; }
-        void setUS(std::shared_ptr<dolfin::Function> u)
+        std::shared_ptr<dolfin::Function> getU() { return this->u_; }
+
+        void setU(std::shared_ptr<dolfin::Function> u)
         {
-            u_S = u;
-            source_s->setUS(u_S);
-            source_l->setUS(u_S);
-        }
-        void setUL(std::shared_ptr<dolfin::Function> u)
-        {
-            u_L = u;
-            source_l->setUL(u_L);
-            source_s->setUL(u_L);
+            u_.reset();
+            u_ = u;
+            source_->setU(u_);
         }
 
        protected:
         std::shared_ptr<dolfin::Mesh> mesh;
         std::shared_ptr<dolfin::MeshFunction<size_t>> subdomain_function;
         std::shared_ptr<dolfin::MeshFunction<size_t>> facet_function;
-        std::shared_ptr<dolfin::Function> u_L;
-        std::shared_ptr<dolfin::Function> u_S;
-        std::shared_ptr<typename Case::Source_L> source_l;
-        std::shared_ptr<typename Case::Source_S> source_s;
-        std::shared_ptr<typename Case::Sigma_L> sigma_l;
-        std::shared_ptr<typename Case::Sigma_S> sigma_s;
+        std::shared_ptr<dolfin::Function> u_;
+        std::shared_ptr<typename Case::Source> source_;
+        std::shared_ptr<typename Case::Sigma> sigma_;
     };
 
     class General {
@@ -322,7 +300,7 @@ namespace Current {
         static constexpr double F = 96485.309;  // Farady-Konstante
 
         // sourceTerms (right-hand side)
-        class Source_L : public dolfin::Expression {
+        /*class Source_L : public dolfin::Expression {
            public:
             Source_L(std::shared_ptr<dolfin::Function> u_L,
                      std::shared_ptr<dolfin::Function> u_S)
@@ -424,9 +402,51 @@ namespace Current {
                                       (R * T)));
                 }
             }
+        };*/
+
+        class Source : public dolfin::Expression {
+        public:
+            Source(std::shared_ptr<dolfin::Function> u)
+                    : dolfin::Expression(), u_(u)
+            {
+            }
+
+            virtual ~Source()
+            {
+                u_.reset();
+            }
+
+            void setU(std::shared_ptr<dolfin::Function> U_)
+            {
+                u_.reset();
+                u_ = U_;
+            }
+
+
+        private:
+            double alpha = 0.3;
+            double n = 2.0;
+            double j = 0.005;
+            std::shared_ptr<dolfin::Function> u_;
+
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &x) const
+            {
+                dolfin::Array<double> values_(values.size());
+                u_->eval(values_, x);
+                dolfin::Array<double> diff(values.size());
+
+
+                    diff[0] = values_[0] - values_[1] - 1.7;
+                    values[0] = -j * (std::exp(alpha * n * F * (diff[0]) / (R * T)) -
+                                 std::exp(-(1.0 - alpha) * n * F * (diff[0]) /
+                                          (R * T)));
+                    values[1] = -values[0];
+
+            }
         };
 
-        class Sigma_L : public dolfin::Expression {
+        /*class Sigma_L : public dolfin::Expression {
            private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
@@ -441,6 +461,15 @@ namespace Current {
                       const dolfin::Array<double> &) const
             {
                 values[0] = 5.3e5;
+            }
+        }; */
+        class Sigma : public dolfin::Expression {
+        private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = 84.935; //Liquid
+                values[1] = 5.3e5; //Solid
             }
         };
     };
