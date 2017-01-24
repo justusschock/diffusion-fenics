@@ -11,7 +11,8 @@ project(${PROJECT_NAME})
 cmake_policy(SET CMP0004 OLD)
 
 # Get DOLFIN configuration data (DOLFINConfig.cmake must be in DOLFIN_CMAKE_CONFIG_PATH)
-find_package(DOLFIN)
+find_package(DOLFIN REQUIRED)
+include(${DOLFIN_USE_FILE})
 
 #Get VTK configuration data
 find_package(VTK REQUIRED NO_MODULE)

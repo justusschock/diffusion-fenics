@@ -407,7 +407,7 @@ namespace Current {
         class Source : public dolfin::Expression {
         public:
             Source(std::shared_ptr<dolfin::Function> u)
-                    : dolfin::Expression(), u_(u)
+                    : dolfin::Expression(2), u_(u)
             {
             }
 
@@ -464,6 +464,8 @@ namespace Current {
             }
         }; */
         class Sigma : public dolfin::Expression {
+        public:
+            Sigma(): dolfin::Expression(2) { }
         private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const

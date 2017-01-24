@@ -179,6 +179,8 @@ namespace Current {
         //auto ul = dolfin::Function(V_l);
         //auto us = dolfin::Function(V_s);
 
+
+
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
 
@@ -188,11 +190,13 @@ namespace Current {
         a.ds = ds;
         L.ds = ds;
 
-        a.sigma = *setup.getSigma();
-        L.f = *setup.getSource();
+        dolfin::DirichletBC bc(V, std::make_shared<dolfin::Constant>(0.0, 0.0), ds, 6);
+
+        a.sigma = setup.getSigma();
+        L.f = setup.getSource();
 
         // Compute solutions
-        dolfin::solve(a == L, *setup.getU());
+        dolfin::solve(a == L, *setup.getU(), bc);
 
         dolfin::File file("../output/current.pvd", "compressed");
         file << *setup.getU();
