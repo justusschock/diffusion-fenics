@@ -38,6 +38,7 @@ include_directories(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/UFL)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 set(SOURCE_FILES main.cpp)# pdeSetupClasses.h)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${build_dir}/bin)
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

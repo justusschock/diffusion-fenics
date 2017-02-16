@@ -106,7 +106,7 @@ namespace Poisson {
         // Compute solution
         dolfin::solve(a == L, *setup.getU(),bc);
 
-        dolfin::File file("../output/poisson.pvd", "compressed");
+        dolfin::File file("../../output/poisson.pvd", "compressed");
         file << *setup.getU();
 
     }

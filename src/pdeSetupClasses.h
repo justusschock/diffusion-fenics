@@ -14,19 +14,19 @@
 namespace Poisson {
     template <class Case>
     class SetupCase {
-       public:
+    public:
         SetupCase(std::size_t dim,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile)
-            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, subdomainFile)),
-              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, facetFile)),
-              source(std::make_shared<typename Case::Source>()),
-              neumann(std::make_shared<typename Case::Neumann>()),
-              initial(std::make_shared<typename Case::Initial>())
+                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, subdomainFile)),
+                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, facetFile)),
+                  source(std::make_shared<typename Case::Source>()),
+                  neumann(std::make_shared<typename Case::Neumann>()),
+                  initial(std::make_shared<typename Case::Initial>())
         {
         }
 
@@ -55,7 +55,7 @@ namespace Poisson {
         }
         std::shared_ptr<dolfin::Function> getU() { return u; }
         void setU(dolfin::Function *u_) { u.reset(u_); }
-       protected:
+    protected:
         //      	std::shared_ptr<dolfin::Expression> initial;
         //        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
         std::shared_ptr<typename Case::Source> source;
@@ -69,7 +69,7 @@ namespace Poisson {
     };
 
     class General {
-       public:
+    public:
         class Initial : public dolfin::Expression {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
@@ -103,24 +103,24 @@ namespace ConvectionDiffusion {
 
     template <class Case>
     class SetupCase {
-       public:
+    public:
         SetupCase(std::size_t dim,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile,
                   dolfin::Constant dirichletValue = dolfin::Constant(0.0))
-            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-              dirichletValue(
-                  std::make_shared<dolfin::Constant>(dirichletValue)),
-              initial(std::make_shared<typename Case::Initial>()),
-              velocity(std::make_shared<typename Case::Velocity>(dim)),
-              source(std::make_shared<typename Case::Source>()),
-              neumann(std::make_shared<typename Case::Neumann>()),
-              diffusivity(std::make_shared<typename Case::Diffusivity>()),
-              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, subdomainFile)),
-              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, facetFile))
+                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+                  dirichletValue(
+                          std::make_shared<dolfin::Constant>(dirichletValue)),
+                  initial(std::make_shared<typename Case::Initial>()),
+                  velocity(std::make_shared<typename Case::Velocity>(dim)),
+                  source(std::make_shared<typename Case::Source>()),
+                  neumann(std::make_shared<typename Case::Neumann>()),
+                  diffusivity(std::make_shared<typename Case::Diffusivity>()),
+                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, subdomainFile)),
+                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, facetFile))
         {
         }
 
@@ -164,7 +164,7 @@ namespace ConvectionDiffusion {
         }
         std::shared_ptr<dolfin::Function> getU() { return u; }
         void setU(dolfin::Function *u_) { u.reset(u_); }
-       protected:
+    protected:
         std::shared_ptr<dolfin::Mesh> mesh;
         std::shared_ptr<dolfin::Constant> dirichletValue;
         std::shared_ptr<typename Case::Initial> initial;
@@ -179,7 +179,7 @@ namespace ConvectionDiffusion {
     };
 
     class General {
-       public:
+    public:
         class Initial : public dolfin::Expression {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
@@ -215,7 +215,7 @@ namespace ConvectionDiffusion {
                 }
             }
 
-           public:
+        public:
             Velocity(std::size_t dim) : dolfin::Expression(dim){};
         };
 
@@ -232,18 +232,19 @@ namespace ConvectionDiffusion {
 namespace Current {
     template <class Case>
     class SetupCase {
-       public:
+    public:
         SetupCase(std::size_t,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile)
-            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, subdomainFile)),
-              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                  mesh, facetFile)),
-              source_(std::make_shared<typename Case::Source>(u_)),
-              sigma_(std::make_shared<typename Case::Sigma>())
+                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, subdomainFile)),
+                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                          mesh, facetFile)),
+                  source_(std::make_shared<typename Case::Source>(u_)),
+                  sigma_(std::make_shared<typename Case::Sigma>()),
+                  neumann_(std::make_shared<typename Case::Neumann>())
         {
         }
 
@@ -255,6 +256,7 @@ namespace Current {
             subdomain_function.reset();
             facet_function.reset();
             u_.reset();
+            neumann_.reset();
         }
 
         std::shared_ptr<typename Case::Source> getSource()
@@ -277,6 +279,11 @@ namespace Current {
         }
         std::shared_ptr<dolfin::Function> getU() { return this->u_; }
 
+        std::shared_ptr<typename Case::Neumann> getNeumann()
+        {
+            return this->neumann_;
+        }
+
         void setU(std::shared_ptr<dolfin::Function> u)
         {
             u_.reset();
@@ -284,17 +291,18 @@ namespace Current {
             source_->setU(u_);
         }
 
-       protected:
+    protected:
         std::shared_ptr<dolfin::Mesh> mesh;
         std::shared_ptr<dolfin::MeshFunction<size_t>> subdomain_function;
         std::shared_ptr<dolfin::MeshFunction<size_t>> facet_function;
         std::shared_ptr<dolfin::Function> u_;
         std::shared_ptr<typename Case::Source> source_;
         std::shared_ptr<typename Case::Sigma> sigma_;
+        std::shared_ptr<typename Case::Neumann> neumann_;
     };
 
     class General {
-       public:
+    public:
         static constexpr double R = 8.3144598;  // allgemeine Gaskonstante
         static constexpr double T = 293.15;     // 20°C in Kelvin
         static constexpr double F = 96485.309;  // Farady-Konstante
@@ -437,12 +445,16 @@ namespace Current {
                 dolfin::Array<double> diff(values.size());
 
 
-                    diff[0] = values_[0] - values_[1] - 1.7;
-                    values[0] = -j * (std::exp(alpha * n * F * (diff[0]) / (R * T)) -
-                                 std::exp(-(1.0 - alpha) * n * F * (diff[0]) /
-                                          (R * T)));
-                    values[1] = -values[0];
+                diff[0] = values_[0] - values_[1];
+                values[0] = -j * (std::exp(alpha * n * F * (diff[0]-1.7) / (R * T)) -
+                                  std::exp(-(1.0 - alpha) * n * F * (diff[0]-1.7) /
+                                           (R * T)));
+                values[1] = j * (std::exp(alpha * n * F * (diff[0]-0.4) / (R * T)) -
+                                 std::exp(-(1.0 - alpha) * n * F * (diff[0]-0.4) /
+                                          (R * T)));;
 
+                //values[0] = 0.2*diff[0];
+                //values[1] = -0.2*diff[0];
             }
         };
 
@@ -473,6 +485,21 @@ namespace Current {
                 values[0] = 84.935; //Liquid
                 values[1] = 5.3e5; //Solid
             }
+        };
+
+        class Neumann : public dolfin::Expression {
+        public:
+            Neumann(): dolfin::Expression(2) { }
+
+        private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = 0;
+                values[1] = 0;
+            }
+
+
         };
     };
 }

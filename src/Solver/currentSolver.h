@@ -155,9 +155,15 @@ namespace Current {
         }
 
         auto BilinearFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace1,
-                               std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
+                                      std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
         -> current3DExperimental::BilinearForm {
             return current3DExperimental::BilinearForm(FunctionSpace1, FunctionSpace2);
+        }
+
+        auto JacobianFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace1,
+                                      std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
+        -> current3DExperimental::JacobianForm {
+            return current3DExperimental::JacobianForm(FunctionSpace1,FunctionSpace2);
         }
 
     };
@@ -171,8 +177,9 @@ namespace Current {
         auto V = std::make_shared<decltype(dimensionWrapper.FunctionSpaceExperimental(setup.getMesh()))>(
                 dimensionWrapper.FunctionSpaceExperimental((setup.getMesh())));
 
-        auto a = dimensionWrapper.BilinearFormExperimental(V, V);
+        //auto a = dimensionWrapper.BilinearFormExperimental(V, V);
         auto L = dimensionWrapper.LinearFormExperimental(V);
+        auto J = dimensionWrapper.JacobianFormExperimental(V,V);
 
         setup.setU(std::make_shared<dolfin::Function>(V));
 
@@ -184,23 +191,70 @@ namespace Current {
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
 
-        a.dx = dx;
+        //a.dx = dx;
         L.dx = dx;
+        J.dx = dx;
 
-        a.ds = ds;
+        //a.ds = ds;
         L.ds = ds;
+        J.ds = ds;
 
-        dolfin::DirichletBC bc(V, std::make_shared<dolfin::Constant>(0.0, 0.0), ds, 6);
+        dolfin::DirichletBC bc0(V, std::make_shared<dolfin::Constant>(0.0, 0.0), ds, 11);
+        dolfin::DirichletBC bc1(V, std::make_shared<dolfin::Constant>(6.0, 6.0), ds, 12);
+        std::vector<const dolfin::DirichletBC*> bcs{&bc0, &bc1};
 
-        a.sigma = setup.getSigma();
+        //a.sigma = setup.getSigma();
         L.f = setup.getSource();
+        L.g = setup.getNeumann();
+        J.sigma = setup.getSigma();
+
+        dolfin::Parameters params("nonlinear_variational_solver");
+        dolfin::Parameters newton_params("newton_solver");
+        newton_params.add("relative_tolerance", 1e-6);
+        params.add(newton_params);
+
+        /*dolfin::NewtonSolver newtonSolver;
+        newtonSolver.parameters = params;
+
+        // Linear system
+        std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);
+        dolfin::Vector b;
+
+        // Assemble matrix
+        assemble(*A, a);
+        assemble(b, L);
+        bc0.apply(*A);
+        bc0.apply(b);
+
+        dolfin::NonlinearProblem;
+        newtonSolver.solve(A,setup.getU()->vector(),b);
+        */
 
         // Compute solutions
-        dolfin::solve(a == L, *setup.getU(), bc);
+        dolfin::solve(L==0, *setup.getU(), bc, J, params);
 
-        dolfin::File file("../output/current.pvd", "compressed");
-        file << *setup.getU();
+        //auto u = dolfin::Function(V);
+        //dolfin::solve(a==L,u,bc);
 
+
+        dolfin::File file("../../output/current.pvd");
+        file << (*(setup.getU().get()));
+        dolfin::File fileXML("../../output/currrent.xml");
+        fileXML << (*(setup.getU().get()));
+        std::cout<<(*setup.getU()).value_rank()<<std::endl;
+        dolfin::File fileSolid("../../output/currentSolid.pvd", "compressed");
+        dolfin::File fileLiquid("../../output/currentLiquid.pvd", "compressed");
+        fileSolid << (*(setup.getU().get()))[1];
+        fileLiquid << (*(setup.getU().get()))[0];
+
+
+        /*
+        dolfin::Function uSolid = u[1];
+        dolfin::Function uLiquid = u[0];
+
+        fileSolid<<uSolid;
+        fileLiquid << uLiquid;
+        */
 
     }
 }

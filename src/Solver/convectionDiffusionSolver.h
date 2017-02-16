@@ -166,7 +166,7 @@ namespace ConvectionDiffusion {
         lu.parameters["reuse_factorization"] = true;
 
         double dt = _k;
-        dolfin::File file("../output/convection_diffusion.pvd", "compressed");
+        dolfin::File file("../../output/convection_diffusion.pvd", "compressed");
 
         // Time-stepping
         dolfin::Progress p("Time-stepping");

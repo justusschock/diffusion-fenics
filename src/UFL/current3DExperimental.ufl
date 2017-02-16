@@ -5,11 +5,13 @@ scalar = FiniteElement("DG", cell, 1)
 scalarMixed = scalar * scalar
 
 sigma = Coefficient(scalarMixed)
+g = Coefficient(scalarMixed)
 u = TrialFunction(scalarMixed)
 v = TestFunction(scalarMixed)
 f = Coefficient(scalarMixed)
 
 sigmaLiquid, sigmaSolid = split(sigma)
+gLiquid, gSolid = split(g)
 uLiquid, uSolid = split(u)
 vLiquid, vSolid = split(v)
 fLiquid, fSolid = split(f)
@@ -18,4 +20,9 @@ aLiquid = (-sigmaLiquid*inner(grad(uLiquid), grad(vLiquid))-uLiquid*inner(grad(s
 aSolid = (-sigmaSolid*inner(grad(uSolid), grad(vSolid))-uSolid*inner(grad(sigmaSolid), grad(vSolid)))*(dx(1)+dx(2)+dx(3)+dx(4))
 
 a = aLiquid+aSolid
-L = fSolid*vSolid*(dx(2)+dx(3))+ fLiquid*vLiquid*(dx(2)+dx(3))
+L = fSolid*vSolid*(dx(2)+dx(3))+ fLiquid*vLiquid*(dx(2)+dx(3)) + gSolid*vSolid*ds(11) + gLiquid*vLiquid*ds(11)
+F = a - L
+
+#du = TrialFunction(scalarMixed)
+
+J  = Jacobian(F)
