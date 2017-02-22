@@ -1,9 +1,10 @@
 #include <dolfin.h>
 #include <iostream>
+#include </usr/include/dolfin/la/solve.h>
 
 // includes for PDEs:
-#include "Solver/poissonSolver.h"
-#include "Solver/convectionDiffusionSolver.h"
+//#include "Solver/poissonSolver.h"
+//#include "Solver/convectionDiffusionSolver.h"
 #include "pdeSetupClasses.h"
 #include "Solver/currentSolver.h"
 
@@ -11,6 +12,9 @@ int main(int argc, char *argv[]) {
     try {
 
         dolfin::init(argc, argv);
+/*        dolfin::list_linear_solver_methods();
+        dolfin::list_lu_solver_methods();
+        dolfin::list_krylov_solver_preconditioners();*/
 
         // dimension
         const int dim = 3;

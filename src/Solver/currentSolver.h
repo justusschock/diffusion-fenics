@@ -3,54 +3,57 @@
 #ifndef DIFFUSION_FENICS_CURRENTSOLVER_H
 #define DIFFUSION_FENICS_CURRENTSOLVER_H
 
-#include "current3DSolid.h"
-#include "current3DLiquid.h"
 #include "current3DExperimental.h"
+#include "current3DLiquid.h"
+#include "current3DSolid.h"
 
 namespace Current {
 
-// Wrapper class for changing Dimensions
-    template <int> class DimensionWrapper;
+    // Wrapper class for changing Dimensions
+    template <int>
+    class DimensionWrapper;
 
-/*  //Provide FunctionSpace, Linear and Bilinear Form in 1D
-  template <> class DimensionWrapper<1> {
-  public:
-      auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) ->
-  current1D::FunctionSpace
-      {return current1D::FunctionSpace(mesh);}
+    /*  //Provide FunctionSpace, Linear and Bilinear Form in 1D
+      template <> class DimensionWrapper<1> {
+      public:
+          auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) ->
+      current1D::FunctionSpace
+          {return current1D::FunctionSpace(mesh);}
 
-      auto LinearForm(std::shared_ptr<current1D::FunctionSpace> FunctionSpace)
-  -> current1D::LinearForm
-      { return current1D::LinearForm(FunctionSpace);}
+          auto LinearForm(std::shared_ptr<current1D::FunctionSpace>
+      FunctionSpace)
+      -> current1D::LinearForm
+          { return current1D::LinearForm(FunctionSpace);}
 
-      auto BilinearForm(std::shared_ptr<current1D::FunctionSpace>
-  FunctionSpace1,
-                        std::shared_ptr<current1D::FunctionSpace>
-  FunctionSpace2) -> current1D::BilinearForm
-      {return current1D::BilinearForm(FunctionSpace1, FunctionSpace2);}
+          auto BilinearForm(std::shared_ptr<current1D::FunctionSpace>
+      FunctionSpace1,
+                            std::shared_ptr<current1D::FunctionSpace>
+      FunctionSpace2) -> current1D::BilinearForm
+          {return current1D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
-  };
+      };
 
-  //Provide FunctionSpace, Linear and Bilinear Form in 2D
-  template <> class DimensionWrapper<2> {
-  public:
-      auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) ->
-  current2D::FunctionSpace
-      {return current2D::FunctionSpace(mesh);}
+      //Provide FunctionSpace, Linear and Bilinear Form in 2D
+      template <> class DimensionWrapper<2> {
+      public:
+          auto FunctionSpace(std::shared_ptr<dolfin::Mesh> mesh) ->
+      current2D::FunctionSpace
+          {return current2D::FunctionSpace(mesh);}
 
-      auto LinearForm(std::shared_ptr<current2D::FunctionSpace> FunctionSpace)
-  -> current2D::LinearForm
-      { return current2D::LinearForm(FunctionSpace);}
+          auto LinearForm(std::shared_ptr<current2D::FunctionSpace>
+      FunctionSpace)
+      -> current2D::LinearForm
+          { return current2D::LinearForm(FunctionSpace);}
 
-      auto BilinearForm(std::shared_ptr<current2D::FunctionSpace>
-  FunctionSpace1,
-                        std::shared_ptr<current2D::FunctionSpace>
-  FunctionSpace2) -> current2D::BilinearForm
-      {return current2D::BilinearForm(FunctionSpace1, FunctionSpace2);}
+          auto BilinearForm(std::shared_ptr<current2D::FunctionSpace>
+      FunctionSpace1,
+                            std::shared_ptr<current2D::FunctionSpace>
+      FunctionSpace2) -> current2D::BilinearForm
+          {return current2D::BilinearForm(FunctionSpace1, FunctionSpace2);}
 
-  };
+      };
 
-*/
+    */
     /*
 // Provide FunctionSpace, Linear and Bilinear Form in 3D
     template <> class DimensionWrapper<3> {
@@ -65,26 +68,33 @@ namespace Current {
             return current3DSolid::FunctionSpace(mesh);
         }
 
-        auto LinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace)
+        auto LinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace>
+FunctionSpace)
         -> current3DSolid::LinearForm {
             return current3DSolid::LinearForm(FunctionSpace);
         }
 
-        auto LinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace)
+        auto LinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace>
+FunctionSpace)
                 -> current3DLiquid::LinearForm {
             return current3DLiquid::LinearForm(FunctionSpace);
         }
 
-        auto BilinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<current3DSolid::FunctionSpace> FunctionSpace2)
+        auto BilinearFormSolid(std::shared_ptr<current3DSolid::FunctionSpace>
+FunctionSpace1,
+                          std::shared_ptr<current3DSolid::FunctionSpace>
+FunctionSpace2)
         -> current3DSolid::BilinearForm {
             return current3DSolid::BilinearForm(FunctionSpace1, FunctionSpace2);
         }
 
-        auto BilinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace1,
-                          std::shared_ptr<current3DLiquid::FunctionSpace> FunctionSpace2)
+        auto BilinearFormLiquid(std::shared_ptr<current3DLiquid::FunctionSpace>
+FunctionSpace1,
+                          std::shared_ptr<current3DLiquid::FunctionSpace>
+FunctionSpace2)
         -> current3DLiquid::BilinearForm {
-            return current3DLiquid::BilinearForm(FunctionSpace1, FunctionSpace2);
+            return current3DLiquid::BilinearForm(FunctionSpace1,
+FunctionSpace2);
         }
     };
 
@@ -94,9 +104,11 @@ namespace Current {
         DimensionWrapper<dim> dimensionWrapper;
 
         // Setup FunctionSpace, Linear and BilinearForm (based on dim)
-        auto V_l = std::make_shared<decltype(dimensionWrapper.FunctionSpaceLiquid(setup.getMesh()))>(
+        auto V_l =
+std::make_shared<decltype(dimensionWrapper.FunctionSpaceLiquid(setup.getMesh()))>(
                 dimensionWrapper.FunctionSpaceLiquid(setup.getMesh()));
-        auto V_s = std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>(
+        auto V_s =
+std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>(
                 dimensionWrapper.FunctionSpaceSolid((setup.getMesh())));
 
         auto a = dimensionWrapper.BilinearFormSolid(V_s, V_s);
@@ -142,75 +154,86 @@ namespace Current {
     }
     */
 
-    template <> class DimensionWrapper<3> {
-    public:
-        auto FunctionSpaceExperimental(std::shared_ptr<dolfin::Mesh> mesh)
-        -> current3DExperimental::FunctionSpace {
-            return current3DExperimental::FunctionSpace(mesh);
-        }
-
-        auto LinearFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace)
-        -> current3DExperimental::LinearForm {
-            return current3DExperimental::LinearForm(FunctionSpace);
-        }
-
-        auto BilinearFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace1,
-                                      std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
-        -> current3DExperimental::BilinearForm {
-            return current3DExperimental::BilinearForm(FunctionSpace1, FunctionSpace2);
-        }
-
-        auto JacobianFormExperimental(std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace1,
-                                      std::shared_ptr<current3DExperimental::FunctionSpace> FunctionSpace2)
-        -> current3DExperimental::JacobianForm {
-            return current3DExperimental::JacobianForm(FunctionSpace1,FunctionSpace2);
-        }
-
-    };
-
     template <const int dim, class SetupCase>
-    auto solvePDE(SetupCase& setup) -> void {
-
-        DimensionWrapper<dim> dimensionWrapper;
-
-        // Setup FunctionSpace, Linear and BilinearForm (based on dim)
-        auto V = std::make_shared<decltype(dimensionWrapper.FunctionSpaceExperimental(setup.getMesh()))>(
-                dimensionWrapper.FunctionSpaceExperimental((setup.getMesh())));
-
-        //auto a = dimensionWrapper.BilinearFormExperimental(V, V);
-        auto L = dimensionWrapper.LinearFormExperimental(V);
-        auto J = dimensionWrapper.JacobianFormExperimental(V,V);
-
-        setup.setU(std::make_shared<dolfin::Function>(V));
-
-        //auto ul = dolfin::Function(V_l);
-        //auto us = dolfin::Function(V_s);
-
-
-
+    auto solvePDE(SetupCase& setup) -> void
+    {
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
+        // Setup FunctionSpace, Linear and BilinearForm (based on dim)
+        auto mesh = setup.getMesh();
+        /* dolfin::SubDomain solid_domain;
+         dolfin::SubDomain electrolyte_domain;
+         solid_domain.mark(*dx, 1);
+         solid_domain.mark(*dx, 2);
+         solid_domain.mark(*dx, 3);
+         solid_domain.mark(*dx, 4);
 
-        //a.dx = dx;
-        L.dx = dx;
+         electrolyte_domain.mark(*dx, 2);
+         electrolyte_domain.mark(*dx, 3);
+         electrolyte_domain.mark(*dx, 5);
+
+         auto mesh_solid =
+             std::make_shared<dolfin::SubMesh>(*mesh, solid_domain);
+         auto mesh_electroylte =
+             std::make_shared<dolfin::SubMesh>(*mesh, electrolyte_domain);
+
+         dolfin::MultiMesh mesh_multi;
+         mesh_multi.add(mesh_solid);
+         mesh_multi.add(mesh_electroylte);
+         mesh_multi.build();*/
+        auto V =
+            std::make_shared<current3DExperimental::CoefficientSpace_u>(mesh);
+
+        // auto a = dimensionWrapper.BilinearFormExperimental(V, V);
+        //    auto L = dimensionWrapper.LinearFormExperimental(V);
+        //    auto J = dimensionWrapper.JacobianFormExperimental(V, V);
+
+        //        auto V = std::make_shared<
+        //            current3DExperimental::MultiMeshForm_F::CoefficientSpace_u>(
+        //            mesh_multi);
+
+        auto u = std::make_shared<dolfin::Function>(V);
+        //         auto u_s = std::make_shared<dolfin::Funiction>(V_solid);
+
+        u->interpolate(dolfin::Constant(2.1e-2,1e-2));
+        auto F = current3DExperimental::Form_F(V);
+        auto J = current3DExperimental::Form_J(V, V);
+
+        //        auto u = std::make_shared<dolfin::MultiMeshFunction>(V);
         J.dx = dx;
+        F.dx = dx;
 
-        //a.ds = ds;
-        L.ds = ds;
         J.ds = ds;
+        F.ds = ds;
 
-        dolfin::DirichletBC bc0(V, std::make_shared<dolfin::Constant>(0.0, 0.0), ds, 11);
-        dolfin::DirichletBC bc1(V, std::make_shared<dolfin::Constant>(6.0, 6.0), ds, 12);
-        std::vector<const dolfin::DirichletBC*> bcs{&bc0, &bc1};
+        J.dS = ds;
+        F.dS = ds;
+        dolfin::DirichletBC bc1(V->sub(0),
+                                std::make_shared<dolfin::Constant>(2e-2),
+                                ds,
+                                2);
+        std::vector<const dolfin::DirichletBC*> bcs{&bc1};
 
-        //a.sigma = setup.getSigma();
-        L.f = setup.getSource();
-        L.g = setup.getNeumann();
+        J.u = u;
         J.sigma = setup.getSigma();
+        J.U_eq = setup.getU_eq();
+        J.RT = setup.getRT();
+        J.alpha = setup.getAlpha();
+        J.i0 = setup.getI0();
+
+        F.u = u;
+        F.sigma = setup.getSigma();
+        F.U_eq = setup.getU_eq();
+        F.RT = setup.getRT();
+        F.alpha = setup.getAlpha();
+        F.i0 = setup.getI0();
+        F.n=setup.getNeumann();
+        F.k=std::make_shared<dolfin::Constant>(1e-7);
 
         dolfin::Parameters params("nonlinear_variational_solver");
         dolfin::Parameters newton_params("newton_solver");
         newton_params.add("relative_tolerance", 1e-6);
+        newton_params.add("linear_solver", "mumps");
         params.add(newton_params);
 
         /*dolfin::NewtonSolver newtonSolver;
@@ -231,22 +254,20 @@ namespace Current {
         */
 
         // Compute solutions
-        dolfin::solve(L==0, *setup.getU(), bc, J, params);
+        dolfin::solve(F == 0, *u, bcs, J,params);
 
-        //auto u = dolfin::Function(V);
-        //dolfin::solve(a==L,u,bc);
+        // auto u = dolfin::Function(V);
+        // dolfin::solve(a==L,u,bc);
 
-
-        dolfin::File file("../../output/current.pvd");
-        file << (*(setup.getU().get()));
-        dolfin::File fileXML("../../output/currrent.xml");
-        fileXML << (*(setup.getU().get()));
-        std::cout<<(*setup.getU()).value_rank()<<std::endl;
-        dolfin::File fileSolid("../../output/currentSolid.pvd", "compressed");
-        dolfin::File fileLiquid("../../output/currentLiquid.pvd", "compressed");
-        fileSolid << (*(setup.getU().get()))[1];
-        fileLiquid << (*(setup.getU().get()))[0];
-
+        dolfin::File file("../output/current.pvd");
+        file << (*u);
+        dolfin::File fileXML("../output/currrent.xml");
+        fileXML << (*u);
+        dolfin::File file_electrolyte("../output/current_electrolyte.pvd",
+                                      "compressed");
+        dolfin::File file_solid("../output/current_solid.pvd", "compressed");
+        file_solid << (*u)[0];
+        file_electrolyte << (*u)[1];
 
         /*
         dolfin::Function uSolid = u[1];
@@ -255,10 +276,7 @@ namespace Current {
         fileSolid<<uSolid;
         fileLiquid << uLiquid;
         */
-
     }
 }
 
-#endif //DIFFUSION_FENICS_CURRENTSOLVER_H
-
-
+#endif  // DIFFUSION_FENICS_CURRENTSOLVER_H

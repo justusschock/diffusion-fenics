@@ -1,28 +1,38 @@
-cell = tetrahedron
+scalar = FiniteElement("DG", tetrahedron, 2)
+cscalar = FiniteElement("DG", tetrahedron, 2)
 
-scalar = FiniteElement("DG", cell, 1)
+scalarMixed = scalar*cscalar
 
-scalarMixed = scalar * scalar
+sigma= Coefficient(scalarMixed)
+sigma_solid, sigma_electrolyte,  =split(sigma)
 
-sigma = Coefficient(scalarMixed)
-g = Coefficient(scalarMixed)
-u = TrialFunction(scalarMixed)
-v = TestFunction(scalarMixed)
-f = Coefficient(scalarMixed)
+m=Coefficient(scalarMixed)
+u=Coefficient(scalarMixed)
+u_solid,u_electrolyte=split(u)
+#u=u_solid,u_electrolyte
 
-sigmaLiquid, sigmaSolid = split(sigma)
-gLiquid, gSolid = split(g)
-uLiquid, uSolid = split(u)
-vLiquid, vSolid = split(v)
-fLiquid, fSolid = split(f)
+RT = Coefficient(scalar)
+U_eq = Coefficient(scalar)
 
-aLiquid = (-sigmaLiquid*inner(grad(uLiquid), grad(vLiquid))-uLiquid*inner(grad(sigmaLiquid), grad(vLiquid)))*(dx(2)+dx(3)+dx(5))
-aSolid = (-sigmaSolid*inner(grad(uSolid), grad(vSolid))-uSolid*inner(grad(sigmaSolid), grad(vSolid)))*(dx(1)+dx(2)+dx(3)+dx(4))
+v=TestFunction(scalarMixed)
+v_solid, v_electrolyte =split(v)
+alpha = Coefficient(scalar)
+i0= Coefficient(scalar)
+n= Coefficient(scalar)
+k= Coefficient(scalar)
 
-a = aLiquid+aSolid
-L = fSolid*vSolid*(dx(2)+dx(3))+ fLiquid*vLiquid*(dx(2)+dx(3)) + gSolid*vSolid*ds(11) + gLiquid*vLiquid*ds(11)
-F = a - L
 
-#du = TrialFunction(scalarMixed)
 
-J  = Jacobian(F)
+# basic continuity 
+a_solid = (-sigma_solid*inner(grad(u_solid), grad(v_solid))-u_solid*inner(grad(sigma_solid), grad(v_solid)))
+a_electrolyte = (-sigma_electrolyte*inner(grad(u_electrolyte), grad(v_electrolyte))-u_electrolyte*inner(grad(sigma_electrolyte), grad(v_electrolyte)))
+
+bv_solid=- i0*(exp(alpha/(RT)*(u_solid-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_solid-u_electrolyte-U_eq)))
+
+f=a_solid*dx((5,6,7,8))+ bv_solid*v_solid*dx(6)+bv_solid*v_solid*dx(7)+n("+")*v_solid("+")*dS((10,4))+n*v_solid*ds(1)+k("+")*v_solid("+")*dS(1)-k("+")*v_solid("+")*dS(2)
+g=a_electrolyte*dx((6,7,9)) -bv_solid*v_electrolyte*dx(6)-bv_solid*v_electrolyte*dx(7)+n("+")*v_electrolyte("+")*dS((2,3,10,11))+n*v_electrolyte*ds(1)
+
+F=f+g
+u_n=TrialFunction(scalarMixed)
+
+J  = derivative(F,u,u_n)

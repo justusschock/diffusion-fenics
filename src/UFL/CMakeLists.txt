@@ -16,7 +16,7 @@ add_custom_command(
         DEPENDS
             ${CMAKE_CURRENT_LIST_DIR}/${ufl_loop}
         COMMAND
-            ffc -l dolfin ${ufl_loop}
+            ffc -O -fquadrature_degree=3 -l dolfin ${ufl_loop}
         WORKING_DIRECTORY
              ${CMAKE_CURRENT_LIST_DIR}
         VERBATIM

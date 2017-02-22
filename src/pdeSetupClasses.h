@@ -14,19 +14,19 @@
 namespace Poisson {
     template <class Case>
     class SetupCase {
-    public:
+       public:
         SetupCase(std::size_t dim,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile)
-                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, subdomainFile)),
-                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, facetFile)),
-                  source(std::make_shared<typename Case::Source>()),
-                  neumann(std::make_shared<typename Case::Neumann>()),
-                  initial(std::make_shared<typename Case::Initial>())
+            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, subdomainFile)),
+              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, facetFile)),
+              source(std::make_shared<typename Case::Source>()),
+              neumann(std::make_shared<typename Case::Neumann>()),
+              initial(std::make_shared<typename Case::Initial>())
         {
         }
 
@@ -55,7 +55,7 @@ namespace Poisson {
         }
         std::shared_ptr<dolfin::Function> getU() { return u; }
         void setU(dolfin::Function *u_) { u.reset(u_); }
-    protected:
+       protected:
         //      	std::shared_ptr<dolfin::Expression> initial;
         //        	std::shared_ptr<dolfin::SubDomain> dirichletBoundary;
         std::shared_ptr<typename Case::Source> source;
@@ -69,7 +69,7 @@ namespace Poisson {
     };
 
     class General {
-    public:
+       public:
         class Initial : public dolfin::Expression {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
@@ -103,24 +103,24 @@ namespace ConvectionDiffusion {
 
     template <class Case>
     class SetupCase {
-    public:
+       public:
         SetupCase(std::size_t dim,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile,
                   dolfin::Constant dirichletValue = dolfin::Constant(0.0))
-                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-                  dirichletValue(
-                          std::make_shared<dolfin::Constant>(dirichletValue)),
-                  initial(std::make_shared<typename Case::Initial>()),
-                  velocity(std::make_shared<typename Case::Velocity>(dim)),
-                  source(std::make_shared<typename Case::Source>()),
-                  neumann(std::make_shared<typename Case::Neumann>()),
-                  diffusivity(std::make_shared<typename Case::Diffusivity>()),
-                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, subdomainFile)),
-                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, facetFile))
+            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+              dirichletValue(
+                  std::make_shared<dolfin::Constant>(dirichletValue)),
+              initial(std::make_shared<typename Case::Initial>()),
+              velocity(std::make_shared<typename Case::Velocity>(dim)),
+              source(std::make_shared<typename Case::Source>()),
+              neumann(std::make_shared<typename Case::Neumann>()),
+              diffusivity(std::make_shared<typename Case::Diffusivity>()),
+              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, subdomainFile)),
+              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, facetFile))
         {
         }
 
@@ -164,7 +164,7 @@ namespace ConvectionDiffusion {
         }
         std::shared_ptr<dolfin::Function> getU() { return u; }
         void setU(dolfin::Function *u_) { u.reset(u_); }
-    protected:
+       protected:
         std::shared_ptr<dolfin::Mesh> mesh;
         std::shared_ptr<dolfin::Constant> dirichletValue;
         std::shared_ptr<typename Case::Initial> initial;
@@ -179,7 +179,7 @@ namespace ConvectionDiffusion {
     };
 
     class General {
-    public:
+       public:
         class Initial : public dolfin::Expression {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
@@ -215,7 +215,7 @@ namespace ConvectionDiffusion {
                 }
             }
 
-        public:
+           public:
             Velocity(std::size_t dim) : dolfin::Expression(dim){};
         };
 
@@ -232,41 +232,45 @@ namespace ConvectionDiffusion {
 namespace Current {
     template <class Case>
     class SetupCase {
-    public:
+       public:
         SetupCase(std::size_t,
                   std::string meshFile,
                   std::string subdomainFile,
                   std::string facetFile)
-                : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
-                  subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, subdomainFile)),
-                  facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
-                          mesh, facetFile)),
-                  source_(std::make_shared<typename Case::Source>(u_)),
-                  sigma_(std::make_shared<typename Case::Sigma>()),
-                  neumann_(std::make_shared<typename Case::Neumann>())
+            : mesh(std::make_shared<dolfin::Mesh>(meshFile)),
+              subdomain_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, subdomainFile)),
+              facet_function(std::make_shared<dolfin::MeshFunction<size_t>>(
+                  mesh, facetFile)),
+              sigma_(std::make_shared<typename Case::Sigma>()),
+              RT_(std::make_shared<typename Case::RT>()),
+              U_eq_(std::make_shared<typename Case::U_eq>()),
+              Alpha_(std::make_shared<typename Case::Alpha>()),
+              I0_(std::make_shared<typename Case::I0>()),
+              neumann_(std::make_shared<typename Case::Neumann>())
         {
         }
 
-        virtual ~SetupCase()
-        {
-            source_.reset();
-            sigma_.reset();
-            mesh.reset();
-            subdomain_function.reset();
-            facet_function.reset();
-            u_.reset();
-            neumann_.reset();
-        }
-
-        std::shared_ptr<typename Case::Source> getSource()
-        {
-            return this->source_;
-        }
-
+        virtual ~SetupCase() {}
         std::shared_ptr<typename Case::Sigma> getSigma()
         {
             return this->sigma_;
+        }
+        std::shared_ptr<typename Case::RT> getRT()
+        {
+            return this->RT_;
+        }
+        std::shared_ptr<typename Case::U_eq> getU_eq()
+        {
+            return this->U_eq_;
+        }
+        std::shared_ptr<typename Case::I0> getI0()
+        {
+            return this->I0_;
+        }
+        std::shared_ptr<typename Case::Alpha> getAlpha()
+        {
+            return this->Alpha_;
         }
         std::shared_ptr<dolfin::Mesh> getMesh() { return this->mesh; }
         std::shared_ptr<dolfin::MeshFunction<size_t>> getSubdomainFunction()
@@ -278,7 +282,6 @@ namespace Current {
             return this->facet_function;
         }
         std::shared_ptr<dolfin::Function> getU() { return this->u_; }
-
         std::shared_ptr<typename Case::Neumann> getNeumann()
         {
             return this->neumann_;
@@ -288,218 +291,88 @@ namespace Current {
         {
             u_.reset();
             u_ = u;
-            source_->setU(u_);
         }
 
-    protected:
+       protected:
         std::shared_ptr<dolfin::Mesh> mesh;
         std::shared_ptr<dolfin::MeshFunction<size_t>> subdomain_function;
         std::shared_ptr<dolfin::MeshFunction<size_t>> facet_function;
         std::shared_ptr<dolfin::Function> u_;
-        std::shared_ptr<typename Case::Source> source_;
         std::shared_ptr<typename Case::Sigma> sigma_;
+        std::shared_ptr<typename Case::RT> RT_;
+        std::shared_ptr<typename Case::U_eq> U_eq_;
+        std::shared_ptr<typename Case::Alpha> Alpha_;
+        std::shared_ptr<typename Case::I0> I0_;
         std::shared_ptr<typename Case::Neumann> neumann_;
     };
 
     class General {
-    public:
+       public:
         static constexpr double R = 8.3144598;  // allgemeine Gaskonstante
         static constexpr double T = 293.15;     // 20°C in Kelvin
         static constexpr double F = 96485.309;  // Farady-Konstante
 
-        // sourceTerms (right-hand side)
-        /*class Source_L : public dolfin::Expression {
-           public:
-            Source_L(std::shared_ptr<dolfin::Function> u_L,
-                     std::shared_ptr<dolfin::Function> u_S)
-                : dolfin::Expression(), u_L(u_L), u_S(u_S)
-            {
-            }
-
-            virtual ~Source_L()
-            {
-                u_L.reset();
-                u_S.reset();
-            }
-
-            void setUL(std::shared_ptr<dolfin::Function> U_L)
-            {
-                u_L.reset();
-                u_L = U_L;
-            }
-
-            void setUS(std::shared_ptr<dolfin::Function> U_S)
-            {
-                u_S.reset();
-                u_S = U_S;
-            }
-
-           private:
-            double alpha = 0.3;
-            double n = 2.0;
-            double j = 0.005;
-            std::shared_ptr<dolfin::Function> u_L;
-            std::shared_ptr<dolfin::Function> u_S;
-
-            void eval(dolfin::Array<double> &values,
-                      const dolfin::Array<double> &x) const
-            {
-                dolfin::Array<double> values_L(values.size());
-                dolfin::Array<double> values_S(values.size());
-                u_L->eval(values_L, x);
-                u_S->eval(values_S, x);
-                dolfin::Array<double> diff(values.size());
-
-                for (std::size_t i = 0; i < values.size(); i++) {
-                    diff[i] = values_S[i] - values_L[i] - 1.7;
-                    values[i] =
-                        -j * (std::exp(alpha * n * F * (diff[i]) / (R * T)) -
-                              std::exp(-(1.0 - alpha) * n * F * (diff[i]) /
-                                       (R * T)));
-                }
-            }
-        };
-
-        class Source_S : public dolfin::Expression {
-           public:
-            Source_S(std::shared_ptr<dolfin::Function> u_L,
-                     std::shared_ptr<dolfin::Function> u_S)
-                : dolfin::Expression(), u_L(u_L), u_S(u_S)
-            {
-            }
-
-            virtual ~Source_S()
-            {
-                u_L.reset();
-                u_S.reset();
-            }
-
-            void setUL(std::shared_ptr<dolfin::Function> U_L)
-            {
-                u_L.reset();
-                u_L = U_L;
-            }
-
-            void setUS(std::shared_ptr<dolfin::Function> U_S)
-            {
-                u_S.reset();
-                u_S = U_S;
-            }
-
-           private:
-            double alpha = 0.3;
-            double n = 2.0;
-            double j = 0.005;
-            std::shared_ptr<dolfin::Function> u_L;
-            std::shared_ptr<dolfin::Function> u_S;
-
-            void eval(dolfin::Array<double> &values,
-                      const dolfin::Array<double> &x) const
-            {
-                dolfin::Array<double> values_S(values.size());
-                dolfin::Array<double> values_L(values.size());
-                u_L->eval(values_L, x);
-                u_S->eval(values_S, x);
-                dolfin::Array<double> diff(values.size());
-
-                for (std::size_t i = 0; i < values.size(); i++) {
-                    diff[i] = values_S[i] - values_L[i] - 1.7;
-                    values[i] =
-                        j * (std::exp(alpha * n * F * (diff[i]) / (R * T)) -
-                             std::exp(-(1.0 - alpha) * n * F * (diff[i]) /
-                                      (R * T)));
-                }
-            }
-        };*/
-
-        class Source : public dolfin::Expression {
-        public:
-            Source(std::shared_ptr<dolfin::Function> u)
-                    : dolfin::Expression(2), u_(u)
-            {
-            }
-
-            virtual ~Source()
-            {
-                u_.reset();
-            }
-
-            void setU(std::shared_ptr<dolfin::Function> U_)
-            {
-                u_.reset();
-                u_ = U_;
-            }
-
-
-        private:
-            double alpha = 0.3;
-            double n = 2.0;
-            double j = 0.005;
-            std::shared_ptr<dolfin::Function> u_;
-
-            void eval(dolfin::Array<double> &values,
-                      const dolfin::Array<double> &x) const
-            {
-                dolfin::Array<double> values_(values.size());
-                u_->eval(values_, x);
-                dolfin::Array<double> diff(values.size());
-
-
-                diff[0] = values_[0] - values_[1];
-                values[0] = -j * (std::exp(alpha * n * F * (diff[0]-1.7) / (R * T)) -
-                                  std::exp(-(1.0 - alpha) * n * F * (diff[0]-1.7) /
-                                           (R * T)));
-                values[1] = j * (std::exp(alpha * n * F * (diff[0]-0.4) / (R * T)) -
-                                 std::exp(-(1.0 - alpha) * n * F * (diff[0]-0.4) /
-                                          (R * T)));;
-
-                //values[0] = 0.2*diff[0];
-                //values[1] = -0.2*diff[0];
-            }
-        };
-
-        /*class Sigma_L : public dolfin::Expression {
-           private:
-            void eval(dolfin::Array<double> &values,
-                      const dolfin::Array<double> &) const
-            {
-                values[0] = 84.935;
-            }
-        };
-
-        class Sigma_S : public dolfin::Expression {
-           private:
-            void eval(dolfin::Array<double> &values,
-                      const dolfin::Array<double> &) const
-            {
-                values[0] = 5.3e5;
-            }
-        }; */
         class Sigma : public dolfin::Expression {
-        public:
-            Sigma(): dolfin::Expression(2) { }
-        private:
+           public:
+            Sigma() : dolfin::Expression(2) {}
+           private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 84.935; //Liquid
-                values[1] = 5.3e5; //Solid
+                values[0] = 5.3e5;   // Solid Pos
+                values[1] = 84.935;  // Liquid
+            }
+        };
+        class U_eq : public dolfin::Expression {
+           public:
+            U_eq() : dolfin::Expression() {}
+           private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = 1e-2;
+            }
+        };
+        class Alpha : public dolfin::Expression {
+           public:
+            Alpha() : dolfin::Expression() {}
+           private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = 0.5;
+            }
+        };
+        class I0 : public dolfin::Expression {
+           public:
+            I0() : dolfin::Expression() {}
+           private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = 1e-4;
+            }
+        };
+        class RT : public dolfin::Expression {
+           public:
+            RT() : dolfin::Expression() {}
+           private:
+            void eval(dolfin::Array<double> &values,
+                      const dolfin::Array<double> &) const
+            {
+                values[0] = R * T/(2.0*F);
             }
         };
 
         class Neumann : public dolfin::Expression {
-        public:
-            Neumann(): dolfin::Expression(2) { }
-
-        private:
+           public:
+            Neumann() : dolfin::Expression() {}
+           private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
                 values[0] = 0;
-                values[1] = 0;
             }
-
-
         };
     };
 }
