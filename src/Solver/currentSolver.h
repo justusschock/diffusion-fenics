@@ -161,57 +161,48 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
         auto ds = setup.getFacetFunction();
         // Setup FunctionSpace, Linear and BilinearForm (based on dim)
         auto mesh = setup.getMesh();
-        /* dolfin::SubDomain solid_domain;
-         dolfin::SubDomain electrolyte_domain;
-         solid_domain.mark(*dx, 1);
-         solid_domain.mark(*dx, 2);
-         solid_domain.mark(*dx, 3);
-         solid_domain.mark(*dx, 4);
+/*        dolfin::SubDomain solid_domain;
+        dolfin::SubDomain electrolyte_domain;
+        solid_domain.mark(*dx, 1);
+        solid_domain.mark(*dx, 2);
+        solid_domain.mark(*dx, 3);
+        solid_domain.mark(*dx, 4);
 
-         electrolyte_domain.mark(*dx, 2);
-         electrolyte_domain.mark(*dx, 3);
-         electrolyte_domain.mark(*dx, 5);
+        electrolyte_domain.mark(*dx, 2);
+        electrolyte_domain.mark(*dx, 3);
+        electrolyte_domain.mark(*dx, 5);
 
-         auto mesh_solid =
-             std::make_shared<dolfin::SubMesh>(*mesh, solid_domain);
-         auto mesh_electroylte =
-             std::make_shared<dolfin::SubMesh>(*mesh, electrolyte_domain);
+        auto mesh_solid =
+            std::make_shared<dolfin::SubMesh>(*mesh, solid_domain);
+        auto mesh_electroylte =
+            std::make_shared<dolfin::SubMesh>(*mesh, electrolyte_domain);
 
-         dolfin::MultiMesh mesh_multi;
-         mesh_multi.add(mesh_solid);
-         mesh_multi.add(mesh_electroylte);
-         mesh_multi.build();*/
-        auto V =
-            std::make_shared<current3DExperimental::CoefficientSpace_u>(mesh);
+        dolfin::MultiMesh mesh_multi;
+        mesh_multi.add(mesh_solid);
+        mesh_multi.add(mesh_electroylte);
+        mesh_multi.build();*/
+                auto V =
+                    std::make_shared<current3DExperimental::CoefficientSpace_u>(mesh);
 
-        // auto a = dimensionWrapper.BilinearFormExperimental(V, V);
-        //    auto L = dimensionWrapper.LinearFormExperimental(V);
-        //    auto J = dimensionWrapper.JacobianFormExperimental(V, V);
+       // auto V = std::make_shared<
+       //     current3DExperimental::MultiMeshForm_F::CoefficientSpace_u>(
+       //     mesh_multi);
 
-        //        auto V = std::make_shared<
-        //            current3DExperimental::MultiMeshForm_F::CoefficientSpace_u>(
-        //            mesh_multi);
-
-        auto u = std::make_shared<dolfin::Function>(V);
+              auto u = std::make_shared<dolfin::Function>(V);
         //         auto u_s = std::make_shared<dolfin::Funiction>(V_solid);
 
-        u->interpolate(dolfin::Constant(2.1e-2,1e-2));
+        u->interpolate(dolfin::Constant(1.76, 0));
         auto F = current3DExperimental::Form_F(V);
         auto J = current3DExperimental::Form_J(V, V);
 
         //        auto u = std::make_shared<dolfin::MultiMeshFunction>(V);
-        J.dx = dx;
+       J.dx = dx;
         F.dx = dx;
 
-        J.ds = ds;
         F.ds = ds;
 
-        J.dS = ds;
-        F.dS = ds;
-        dolfin::DirichletBC bc1(V->sub(0),
-                                std::make_shared<dolfin::Constant>(2e-2),
-                                ds,
-                                2);
+        dolfin::DirichletBC bc1(
+            V->sub(0), std::make_shared<dolfin::Constant>(1.76), ds, 2);
         std::vector<const dolfin::DirichletBC*> bcs{&bc1};
 
         J.u = u;
@@ -227,8 +218,8 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
         F.RT = setup.getRT();
         F.alpha = setup.getAlpha();
         F.i0 = setup.getI0();
-        F.n=setup.getNeumann();
-        F.k=std::make_shared<dolfin::Constant>(1e-7);
+       // F.n = setup.getNeumann();
+       // F.k = std::make_shared<dolfin::Constant>(1e-7);
 
         dolfin::Parameters params("nonlinear_variational_solver");
         dolfin::Parameters newton_params("newton_solver");
@@ -254,7 +245,9 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
         */
 
         // Compute solutions
-        dolfin::solve(F == 0, *u, bcs, J,params);
+         F.check();
+         J.check();
+        dolfin::solve(F == 0, *u, bcs,J);
 
         // auto u = dolfin::Function(V);
         // dolfin::solve(a==L,u,bc);

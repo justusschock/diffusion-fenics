@@ -330,7 +330,7 @@ namespace Current {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 1e-2;
+                values[0] = 1.75;
             }
         };
         class Alpha : public dolfin::Expression {

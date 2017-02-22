@@ -1,7 +1,6 @@
-scalar = FiniteElement("DG", tetrahedron, 2)
-cscalar = FiniteElement("DG", tetrahedron, 2)
+scalar = FiniteElement("DG", tetrahedron, 1)
 
-scalarMixed = scalar*cscalar
+scalarMixed = scalar*scalar
 
 sigma= Coefficient(scalarMixed)
 sigma_solid, sigma_electrolyte,  =split(sigma)
@@ -24,13 +23,13 @@ k= Coefficient(scalar)
 
 
 # basic continuity 
-a_solid = (-sigma_solid*inner(grad(u_solid), grad(v_solid))-u_solid*inner(grad(sigma_solid), grad(v_solid)))
-a_electrolyte = (-sigma_electrolyte*inner(grad(u_electrolyte), grad(v_electrolyte))-u_electrolyte*inner(grad(sigma_electrolyte), grad(v_electrolyte)))
+a_solid = inner(sigma_solid*grad(u_solid), grad(v_solid))
+a_electrolyte = inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte))
 
 bv_solid=- i0*(exp(alpha/(RT)*(u_solid-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_solid-u_electrolyte-U_eq)))
 
-f=a_solid*dx((5,6,7,8))+ bv_solid*v_solid*dx(6)+bv_solid*v_solid*dx(7)+n("+")*v_solid("+")*dS((10,4))+n*v_solid*ds(1)+k("+")*v_solid("+")*dS(1)-k("+")*v_solid("+")*dS(2)
-g=a_electrolyte*dx((6,7,9)) -bv_solid*v_electrolyte*dx(6)-bv_solid*v_electrolyte*dx(7)+n("+")*v_electrolyte("+")*dS((2,3,10,11))+n*v_electrolyte*ds(1)
+f=a_solid*(dx(5)+dx(6)+dx(7)+dx(8))+ bv_solid*v_solid*dx(6)-bv_solid*v_solid*dx(7)
+g=a_electrolyte*(dx(6)+dx(7)+dx(9)) -bv_solid*v_electrolyte*dx(6)+bv_solid*v_electrolyte*dx(7)
 
 F=f+g
 u_n=TrialFunction(scalarMixed)
