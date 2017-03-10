@@ -3,6 +3,11 @@
 #ifndef DIFFUSION_FENICS_CURRENTSOLVER_H
 #define DIFFUSION_FENICS_CURRENTSOLVER_H
 
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <random>
+
 #include "current3DExperimental.h"
 #include "current3DLiquid.h"
 #include "current3DSolid.h"
@@ -157,111 +162,122 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
     template <const int dim, class SetupCase>
     auto solvePDE(SetupCase& setup) -> void
     {
+        /*        // First create an instance of an engine.
+                std::random_device rnd_device;
+                // Specify the engine and distribution.
+                std::mt19937 mersenne_engine(rnd_device());
+                std::uniform_real_distribution<double> dist(-0.5, 0.5);
+                auto gen = std::bind(dist, mersenne_engine);
+        */
         auto dx = setup.getSubdomainFunction();
         auto ds = setup.getFacetFunction();
         // Setup FunctionSpace, Linear and BilinearForm (based on dim)
         auto mesh = setup.getMesh();
-/*        dolfin::SubDomain solid_domain;
-        dolfin::SubDomain electrolyte_domain;
-        solid_domain.mark(*dx, 1);
-        solid_domain.mark(*dx, 2);
-        solid_domain.mark(*dx, 3);
-        solid_domain.mark(*dx, 4);
+        auto V = std::make_shared<current3DExperimental::FunctionSpace>(mesh);
 
-        electrolyte_domain.mark(*dx, 2);
-        electrolyte_domain.mark(*dx, 3);
-        electrolyte_domain.mark(*dx, 5);
+        // auto V = std::make_shared<
+        //     current3DExperimental::MultiMeshForm_F::CoefficientSpace_u>(
+        //     mesh_multi);
 
-        auto mesh_solid =
-            std::make_shared<dolfin::SubMesh>(*mesh, solid_domain);
-        auto mesh_electroylte =
-            std::make_shared<dolfin::SubMesh>(*mesh, electrolyte_domain);
-
-        dolfin::MultiMesh mesh_multi;
-        mesh_multi.add(mesh_solid);
-        mesh_multi.add(mesh_electroylte);
-        mesh_multi.build();*/
-                auto V =
-                    std::make_shared<current3DExperimental::CoefficientSpace_u>(mesh);
-
-       // auto V = std::make_shared<
-       //     current3DExperimental::MultiMeshForm_F::CoefficientSpace_u>(
-       //     mesh_multi);
-
-              auto u = std::make_shared<dolfin::Function>(V);
+        auto u = std::make_shared<dolfin::Function>(V);
         //         auto u_s = std::make_shared<dolfin::Funiction>(V_solid);
 
-        u->interpolate(dolfin::Constant(1.76, 0));
-        auto F = current3DExperimental::Form_F(V);
-        auto J = current3DExperimental::Form_J(V, V);
+        /*        std::vector<double> tmp(u->vector()->size());
+                std::generate(tmp.begin(), tmp.end(), gen);
+                u->vector()->set_local(tmp);
+                u->vector()->apply("");
+        */
+                u->interpolate(dolfin::Constant(0.9, 0.00, -0.9));
+
+    //    auto umin = std::make_shared<dolfin::Function>(V);
+    //    umin->interpolate(dolfin::Constant(0.0, -1.0, -2.0));
+
+      //  auto umax = std::make_shared<dolfin::Function>(V);
+      //  umax->interpolate(dolfin::Constant(2.0, 1.0, 0.0));
+
+        auto F = std::make_shared<current3DExperimental::Form_F>(V);
+        auto J = std::make_shared<current3DExperimental::Form_J>(V, V);
 
         //        auto u = std::make_shared<dolfin::MultiMeshFunction>(V);
-       J.dx = dx;
-        F.dx = dx;
+        J->dx = dx;
+        F->dx = dx;
 
-        F.ds = ds;
+ //       F->ds = ds;
+ //       F->dS = ds;
 
-        dolfin::DirichletBC bc1(
-            V->sub(0), std::make_shared<dolfin::Constant>(1.76), ds, 2);
-        std::vector<const dolfin::DirichletBC*> bcs{&bc1};
+   //     J->ds = ds;
+   //     J->dS = ds;
 
-        J.u = u;
-        J.sigma = setup.getSigma();
-        J.U_eq = setup.getU_eq();
-        J.RT = setup.getRT();
-        J.alpha = setup.getAlpha();
-        J.i0 = setup.getI0();
+        auto bc1 = std::make_shared<const dolfin::DirichletBC>(
+            V->sub(0),
+            std::make_shared<dolfin::Constant>(1.),
+            ds,
+            137,
+            "geometric");
+        auto bc2 = std::make_shared<const dolfin::DirichletBC>(
+            V->sub(1),
+            std::make_shared<dolfin::Constant>(0.),
+            ds,
+            139,
+            "geometric");
+        auto bc3 = std::make_shared<const dolfin::DirichletBC>(
+            V->sub(2),
+            std::make_shared<dolfin::Constant>(-1.),
+            ds,
+            136,
+            "geometric");
+        std::vector<std::shared_ptr<const dolfin::DirichletBC>> bcs{bc1,bc3};
 
-        F.u = u;
-        F.sigma = setup.getSigma();
-        F.U_eq = setup.getU_eq();
-        F.RT = setup.getRT();
-        F.alpha = setup.getAlpha();
-        F.i0 = setup.getI0();
-       // F.n = setup.getNeumann();
-       // F.k = std::make_shared<dolfin::Constant>(1e-7);
+        J->u = u;
+        F->u = u;
 
-        dolfin::Parameters params("nonlinear_variational_solver");
-        dolfin::Parameters newton_params("newton_solver");
-        newton_params.add("relative_tolerance", 1e-6);
-        newton_params.add("linear_solver", "mumps");
-        params.add(newton_params);
+        J->sigma = setup.getSigma();
+        F->sigma = setup.getSigma();
 
-        /*dolfin::NewtonSolver newtonSolver;
-        newtonSolver.parameters = params;
+        J->U_eq = setup.getU_eq();
+        J->RT = setup.getRT();
+        J->alpha = setup.getAlpha();
+        J->i0 = setup.getI0();
 
-        // Linear system
-        std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);
-        dolfin::Vector b;
-
-        // Assemble matrix
-        assemble(*A, a);
-        assemble(b, L);
-        bc0.apply(*A);
-        bc0.apply(b);
-
-        dolfin::NonlinearProblem;
-        newtonSolver.solve(A,setup.getU()->vector(),b);
-        */
+        F->U_eq = setup.getU_eq();
+        F->RT = setup.getRT();
+        F->alpha = setup.getAlpha();
+        F->i0 = setup.getI0();
+        // F.n = setup.getNeumann();
+        // F.k = std::make_shared<dolfin::Constant>(1e-7);
 
         // Compute solutions
-         F.check();
-         J.check();
-        dolfin::solve(F == 0, *u, bcs,J);
-
-        // auto u = dolfin::Function(V);
-        // dolfin::solve(a==L,u,bc);
-
+        auto problem =
+            std::make_shared<dolfin::NonlinearVariationalProblem>(F, u, bcs, J);
+        dolfin::NonlinearVariationalSolver solver(problem);
+        solver.parameters["nonlinear_solver"] = "snes";
+        solver.parameters("snes_solver")["linear_solver"] = "bicgstab";
+        solver.parameters("snes_solver")["maximum_iterations"] = 20;
+        solver.parameters("snes_solver")["relative_tolerance"] = 1e-8;
+        solver.parameters("snes_solver")["absolute_tolerance"] = 1e-8;
+        solver.parameters("snes_solver")["preconditioner"] = "icc";
+        solver.parameters("snes_solver")["report"] = true;
+        solver.parameters("snes_solver")["line_search"] = "basic";
+        solver.parameters("snes_solver")["error_on_nonconvergence"] = false;
+        solver.solve();
         dolfin::File file("../output/current.pvd");
         file << (*u);
         dolfin::File fileXML("../output/currrent.xml");
         fileXML << (*u);
+
+        dolfin::File file_pos("../output/current_pos.pvd", "compressed");
+        file_pos << (*u)[0];
+
         dolfin::File file_electrolyte("../output/current_electrolyte.pvd",
                                       "compressed");
-        dolfin::File file_solid("../output/current_solid.pvd", "compressed");
-        file_solid << (*u)[0];
         file_electrolyte << (*u)[1];
 
+        dolfin::File file_neg("../output/current_neg.pvd", "compressed");
+        file_neg << (*u)[2];
+
+        dolfin::File file_domains("../output/current_domains.pvd",
+                                  "compressed");
+        file_domains << *dx;
         /*
         dolfin::Function uSolid = u[1];
         dolfin::Function uLiquid = u[0];

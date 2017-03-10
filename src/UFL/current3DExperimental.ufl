@@ -1,35 +1,38 @@
-scalar = FiniteElement("DG", tetrahedron, 1)
+scalar = FiniteElement("CG", tetrahedron, 1)
 
-scalarMixed = scalar*scalar
+scalarMixed = MixedElement(scalar,scalar,scalar)
 
 sigma= Coefficient(scalarMixed)
-sigma_solid, sigma_electrolyte,  =split(sigma)
+sigma_pos, sigma_electrolyte,sigma_neg  =split(sigma)
 
-m=Coefficient(scalarMixed)
 u=Coefficient(scalarMixed)
-u_solid,u_electrolyte=split(u)
-#u=u_solid,u_electrolyte
+u_pos,u_electrolyte, u_neg=split(u)
+#u=u_pos,u_electrolyte
 
 RT = Coefficient(scalar)
 U_eq = Coefficient(scalar)
 
 v=TestFunction(scalarMixed)
-v_solid, v_electrolyte =split(v)
+v_pos, v_electrolyte,v_neg =split(v)
 alpha = Coefficient(scalar)
 i0= Coefficient(scalar)
-n= Coefficient(scalar)
-k= Coefficient(scalar)
 
+n = FacetNormal(tetrahedron)
 
 
 # basic continuity 
-a_solid = inner(sigma_solid*grad(u_solid), grad(v_solid))
+a_pos = inner(sigma_pos*grad(u_pos), grad(v_pos))
+a_neg = inner(sigma_neg*grad(u_neg), grad(v_neg))
 a_electrolyte = inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte))
 
-bv_solid=- i0*(exp(alpha/(RT)*(u_solid-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_solid-u_electrolyte-U_eq)))
+bv_pos=i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq)))
+bv_neg=i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq)))
 
-f=a_solid*(dx(5)+dx(6)+dx(7)+dx(8))+ bv_solid*v_solid*dx(6)-bv_solid*v_solid*dx(7)
-g=a_electrolyte*(dx(6)+dx(7)+dx(9)) -bv_solid*v_electrolyte*dx(6)+bv_solid*v_electrolyte*dx(7)
+f=a_neg*dx((2,4))+ a_pos*dx((1,3)) +bv_pos*v_pos*dx(3)+bv_neg*v_neg*dx(4)#+avg(sigma_pos)*dot(grad(u_pos)("+"),n("+"))*v_pos("+")*dS(141)+avg(sigma_neg)*dot(grad(u_neg)("+"),n("+"))*v_neg("+")*dS(140)
+
+
+g=a_electrolyte*dx((3,4,135))-bv_pos*v_electrolyte*dx(3)-bv_neg*v_electrolyte*dx(4)#+avg(sigma_electrolyte)*dot(grad(u_electrolyte)("+"),n("+"))*v_electrolyte("+")*(dS(142)+dS(143))#+0*v_electrolyte*ds(139)+0*v_electrolyte("+")*(dS(140)+dS(141))
+
 
 F=f+g
 u_n=TrialFunction(scalarMixed)

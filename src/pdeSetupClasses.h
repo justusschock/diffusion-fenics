@@ -314,13 +314,14 @@ namespace Current {
 
         class Sigma : public dolfin::Expression {
            public:
-            Sigma() : dolfin::Expression(2) {}
+            Sigma() : dolfin::Expression(3) {}
            private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
                 values[0] = 5.3e5;   // Solid Pos
-                values[1] = 84.935;  // Liquid
+                values[1] =84.935;  // Liquid
+                values[2] = 1e6;  // Solid Neg
             }
         };
         class U_eq : public dolfin::Expression {
@@ -330,7 +331,7 @@ namespace Current {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 1.75;
+                values[0] = 1.;
             }
         };
         class Alpha : public dolfin::Expression {
@@ -350,7 +351,7 @@ namespace Current {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 1e-4;
+                values[0] = 1e-2;
             }
         };
         class RT : public dolfin::Expression {
