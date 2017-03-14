@@ -250,6 +250,7 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
         auto problem =
             std::make_shared<dolfin::NonlinearVariationalProblem>(F, u, bcs, J);
         dolfin::NonlinearVariationalSolver solver(problem);
+
         solver.parameters["nonlinear_solver"] = "snes";
         solver.parameters("snes_solver")["linear_solver"] = "bicgstab";
         solver.parameters("snes_solver")["maximum_iterations"] = 20;
@@ -259,6 +260,12 @@ std::make_shared<decltype(dimensionWrapper.FunctionSpaceSolid(setup.getMesh()))>
         solver.parameters("snes_solver")["report"] = true;
         solver.parameters("snes_solver")["line_search"] = "basic";
         solver.parameters("snes_solver")["error_on_nonconvergence"] = false;
+        solver.parameters("snes_solver")("krylov_solver")["relative_tolerance"] = 1e-8;
+        solver.parameters("snes_solver")("krylov_solver")["absolute_tolerance"] = 1e-8;
+        solver.parameters("snes_solver")("krylov_solver")["error_on_nonconvergence"] = false;
+        solver.parameters("snes_solver")("krylov_solver")["maximum_iterations"] = 100;
+        //solver.parameters("snes_solver")["linear_solver"]["relative_tolerance"] = 1e-8;
+        //dolfin::info(solver.parameters,true);
         solver.solve();
         dolfin::File file("../output/current.pvd");
         file << (*u);

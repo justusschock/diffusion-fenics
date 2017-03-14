@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
         dolfin::init(argc, argv);
         dolfin::list_linear_solver_methods();
         dolfin::list_krylov_solver_preconditioners();
+        dolfin::list_krylov_solver_methods();
 
         // dimension
         const int dim = 3;
