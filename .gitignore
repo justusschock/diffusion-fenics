@@ -4,3 +4,4 @@ output
 *swp
 src/*.py
 src/*.pyc
+cmake-build*

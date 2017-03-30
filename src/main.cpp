@@ -25,9 +25,11 @@ int main(int argc, char *argv[]) {
         std::string facetFile = "../test_mesh/test_mesh_facet_region.xml";
 
         std::cout<<"Simulation running"<<std::endl;
-        Current::SetupCase<Current::General> setup(dim,meshFile,subdomainFile,facetFile);
+        Current::SetupCase<Current::FixPotentialDifference> setupFixPotentialDifference(dim,meshFile,subdomainFile,facetFile);
+        Current::SetupCase<Current::FixCurrent> setupFixCurrent(dim,meshFile,subdomainFile,facetFile);
 
-        Current::solvePDE<dim, Current::SetupCase<Current::General>>(setup);
+        Current::solvePDE<dim, Current::SetupCase<Current::FixPotentialDifference>,Current::SetupCase<Current::FixCurrent>>
+                (setupFixPotentialDifference, setupFixCurrent);
         // dolfin::plot(u);
         // dolfin::interactive();
     } catch (std::exception &e) {
