@@ -23,6 +23,7 @@ neumann = Coefficient(scalar)
 
 
 # basic continuity
+# TODO add parallel capacity
 a_pos = inner(sigma_pos*grad(u_pos), grad(v_pos))
 a_neg = inner(sigma_neg*grad(u_neg), grad(v_neg))
 a_electrolyte = inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte))

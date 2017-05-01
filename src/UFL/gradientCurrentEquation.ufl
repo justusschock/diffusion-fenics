@@ -1,0 +1,28 @@
+# TODO fix UFL
+
+cell = tetrahedron
+
+scalar = FiniteElement("CG", cell, 1)
+vector = VectorElement("CG", cell, 1)
+
+element     = MixedElement(scalar,scalar,scalar)
+velement    = MixedElement(vector, vector, vector)
+
+solution    = Coefficient(element)
+v           = TestFunction(velement)  # Test Function
+u           = TrialFunction(velement) # Trial Function
+
+solution_pos, solution_elec, solution_neg = split(solution)
+u_pos, u_elec, u_neg = split(u)
+v_pos, v_elec, v_neg = split(v)
+
+a_pos = inner(u_pos,v_pos)*dx(1,3)
+a_neg = inner(u_neg,v_neg)*dx(2,4)
+a_elec = inner(u_elec,v_elec)*dx(3,4,135)
+
+L_pos = inner(grad(solution_pos),v_pos)*dx(1,3)
+L_neg = inner(grad(solution_neg),v_neg)*dx(2,4)
+L_elec = inner(grad(solution_elec),v_elec)*dx(3,4,135)
+
+L = L_pos + L_neg + L_elec
+a = a_pos + a_neg + a_elec

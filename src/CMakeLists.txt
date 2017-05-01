@@ -37,7 +37,7 @@ include_directories(SYSTEM ${DOLFIN_3RD_PARTY_INCLUDE_DIRS})
 include_directories(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/UFL)
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
-set(SOURCE_FILES main.cpp)# pdeSetupClasses.h)
+set(SOURCE_FILES main.cpp Solver/rungeKuttaCurrentEquation.h)# pdeSetupClasses.h)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${build_dir}/bin)
 
 # Executable

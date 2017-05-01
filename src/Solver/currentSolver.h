@@ -8,6 +8,7 @@
 #include <iterator>
 #include <random>
 
+#include "rungeKuttaCurrentEquation.h"
 #include "current3DFixPotential.h"
 #include "current3DFixCurrent.h"
 
@@ -166,7 +167,8 @@ namespace Current {
                 }
 
                 p = t / T;
-                t += dt;
+                dt = rungeKutta(u, dt, meshFixPotential);
+                t += dt
                 setupFixPotential.setTime(t);
                 setupFixCurrent.setTime(t);
             }
