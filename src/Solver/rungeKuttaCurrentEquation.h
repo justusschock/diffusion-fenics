@@ -10,47 +10,93 @@
 #include "UFL/l2ErrorCurrentEquation.h"
 #include <cmath>
 
-double rungeKutta(std::shared_ptr<dolfin::Function> y, double max_stepsize, std::shared_ptr<dolfin::Mesh> mesh, double tol=1e-3){
-    double b[] = {16/135, 0, 6656/12825, 28561/56430, (-9)/50, 2/55};
-    double b_[] = {25/216, 0, 1408/2565, 2197/4104, (-1)/5, 0};
+/*
+class CustomFunction: public dolfin::Function{
 
-    // TODO Find Way to multiply Functions
-    auto V = std::make_shared<gradientCurrentEquation::FunctionSpace>(mesh);
+    explicit CustomFunction(std::shared_ptr<const dolfin::FunctionSpace> V)
+            : dolfin::Function(V) { };
 
-    auto gradY1 = std::make_shared<dolfin::Function>(V);
-    auto L    = std::make_shared<gradientCurrentEquation::LinearForm>(V);
-    auto a    = std::make_shared<gradientCurrentEquation::BilinearForm>(V,V);
-    L->u = y;
+    CustomFunction(std::shared_ptr<const dolfin::FunctionSpace> V,
+                   std::shared_ptr<dolfin::GenericVector> x) : dolfin::Function(V, x) { };
 
-    dolfin::solve(a == L, gradY1);
+    CustomFunction(std::shared_ptr<const dolfin::FunctionSpace> V,
+                   std::string filename) : dolfin::Function(V, filename) { };
 
-    dolfin::Function k1((*gradY1)*max_stepsize);
+    CustomFunction(const dolfin::Function& v) : dolfin::Function(v) { };
 
-    auto gradY2 = std::make_shared<dolfin::Function>(V);
-    L->u = std::make_shared<dolfin::Function>((*y+(k1*(1/3.0))+((*gradY1)*k1)*(max_stepsize/18.0));
-    dolfin::solve(a==L, gradY2);
+    CustomFunction(const dolfin::Function& v, std::size_t i) : dolfin::Function(v, i) { };
 
-    dolfin::Function k2((*gradY2)*max_stepsize);
+    CustomFunction operator*(dolfin::Function func, dolfin::Mesh mesh){
+        dolfin::Function f(this->function_space())
 
-    auto gradY3 = std::make_shared<dolfin::Function>(V);
-    L->u = std::make_shared<dolfin::Function>(*y-(k1*152/125.0)+(k2*252/125.0)-(((*gradY1)*k1)*(max_stepsize*44/125.0)));
-    dolfin::solve(a==L, gradY3);
-    dolfin::Function k3((*gradY3)*max_stepsize);
+        for (dolfin::MeshEntityIterator e(mesh, 0); !e.end(); ++e)
+        {
+            auto tmp = func.vector();
+            for (dolfin::MeshEntityIterator e(mesh, 0); !e.end(); ++e)
+            {
+                for (dolfin::MeshEntityIterator e(mesh, 0); !e.end(); ++e)
+                {
+                    f[e->index()] = (*this)[e->index()]*func[e->index()]
+                }
+            }
+        }
+    }
+};
+ */
 
-    auto gradY4 = std::make_shared<dolfin::Function>(V);
-    L->u = std::make_shared<dolfin::Function>(*y+(k1*19/2.0)-(k2*72/7.0)+(k3*25/14.0)+(((*gradY1)*k1)*(max_stepsize*15/2.0)));
-    dolfin::solve(a==L, gradY4);
-    dolfin::Function k4((*gradY4)*max_stepsize);
+auto calc_grad(std::shared_ptr<dolfin::Function> f, std::shared_ptr<dolfin::Mesh> mesh, double grad_faktor) -> std::shared_ptr<dolfin::Function>
+{
+    using gradient=gradientCurrentEquation;
+    auto V = std::make_shared<gradient::FunctionSpace>(mesh);
+    auto L = std::make_shared<gradient::LinearForm>(V);
+    auto a = std::make_shared<gradient::BilinearForm>(V, V);
+    auto grad_func = std::make_shared<dolfin::Function>(V);
 
-    dolfin::Function y_next(*y + (k1*5/48.0) + (k2*27/56.0) + (k3*125/336.0) + (k4/24.0));
+    L->u = f;
+    L->factor = grad_faktor;
+    dolfin::solve(a == L, grad_func);
 
-    l2ErrorCurrentEquation::Functional L2error_form (mesh);
-    L2error_form.Function1 = y;
-    L2error_form.Function2= y_next;
-    double L2Error = sqrt(dolfin::assemble(L2error_form));
-
-    return max_stepsize*std::pow(tol/L2Error, 0.25);
-
+    return grad_func;
 }
 
+double rungeKuttaFifthOrder(std::shared_ptr<dolfin::Function> y, double max_stepsize, std::shared_ptr<dolfin::Mesh> mesh, double tol=1e-3) {
+    unsigned int N = 6;
+
+    std::vector<std::shared_ptr<dolfin::FunctionAXPY>> k(N);
+    std::vector<std::vector<double>> factors = {std::vector<double>{0.0},
+                                                std::vector<double>{0.25},
+                                                std::vector<double>{3.0 / 32.0, 9.0 / 32.0},
+                                                std::vector<double>{1932.0 / 2197.0, -7200.0 / 2197.0, 7296.0 / 2197.0},
+                                                std::vector<double>{439.0 / 216.0, 8.0, 3680.0 / 513.0, 845.0 / 4104.0},
+                                                std::vector<double>{-8.0 / 27.0, 2.0, -3544.0 / 2565.0, 1859.0 / 4104,
+                                                                    -11.0 / 40.0}};
+    std::vector<double> grad_factors = {0, 1.0 / 4.0, 3.0 / 8.0, 12.0 / 13.0, 1.0, 0.5};
+    std::vector<double> y_factors = {25.0/216.0, 0.0, 1408.0/2565.0, 2197.0/4104.0, -1.0/5.0, 0.0};
+    std::vector<double> z_factors = {16.0/135.0, 0.0, 6656.0/12825.0, 28561.0/56430.0, -9.0/50.0, 2.0/55.0};
+    auto z_next = dolfin::FunctionAXPY(y, 1.0);
+    auto y_next = dolfin::FunctionAXPY(y, 1.0);
+    for (unsigned int i = 0; i < N; i++) {
+        auto grad_fkt_axpy = dolfin::FunctionAXPY(y, 1.0);
+        for (unsigned int j = 0; j < i - 1; j++) {
+            grad_fkt_axpy = grad_fkt_axpy + (*k.at(j) * factors.at(i).at(j));
+        }
+        std::shared_ptr<dolfin::Function> grad_fkt = std::make_shared<dolfin::Function>(grad_fkt_axpy);
+
+        auto grad_factor = max_stepsize * grad_factors.at(i);
+        k.at(i) = calc_grad(grad_fkt, mesh, grad_factor);
+
+        y_next = y_next + (*k.at(i)* y_factors.at(i));
+        z_next = z_next + (*k.at(i)* z_factors.at(i));
+
+    }
+
+    auto diff = z_next-y_next;
+    auto diff_func = dolfin::Function(y->function_space());
+    diff_func = diff;
+    double norm_diff = dolfin::norm(*diff_func.vector(), std::string("l1"));
+    double s = tol/(2.0*norm_diff);
+    s = pow(s, 0.25);
+
+    return s;
+}
 #endif //PROJECT_RUNGEKUTTA_H
