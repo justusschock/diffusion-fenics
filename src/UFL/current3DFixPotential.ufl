@@ -1,5 +1,5 @@
 from ufl import *
-    set_level(DEBUG)
+set_level(DEBUG)
 
 
 cell = tetrahedron
@@ -39,8 +39,8 @@ a_electrolyte = 0.5*k*(inner(sigma_electrolyte*grad(u_electrolyte), grad(v_elect
 bv_pos=0.5*k*(i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq))))+(u_pos-u_electrolyte)*C_pos \
         -(u0_pos-u0_electrolyte)*C_pos-0.5*k*(i0*(exp(alpha/(RT)*(u0_pos-u0_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u0_pos-u0_electrolyte-U_eq))))
 
-bv_neg=0.5*k*(i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq))))+(u_neg-u_electrolyte)*C_neg \
-        -(u0_neg-u0_electrolyte)*C_neg-0.5*k*(i0*(exp(alpha/(RT)*(u0_neg-u0_electrolyte+U_eq))-exp(-(a-alpha)/(RT)*(u_neg-u0_electrolyte+U_eq)))
+bv_neg=k*(i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq))))\
+        -(u0_neg-u0_electrolyte)*C_neg +(u_neg-u_electrolyte)*C_neg
 
 f=(a_neg*(dx(2)+dx(4))+a_pos*(dx(1)+dx(3)) +bv_pos*v_pos*dx(3)+bv_neg*v_neg*dx(4))#\
 #+avg(sigma_pos)*dot(grad(u_pos)("+"),n("+"))*v_pos("+")*dS(141)+avg(sigma_neg)*dot(grad(u_neg)("+"),n("+"))*v_neg("+")*dS(140)
