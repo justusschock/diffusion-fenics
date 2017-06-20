@@ -15,6 +15,7 @@
 //#include "velocity2D.h"
 #include "pdeSetupClasses.h"
 #include "velocity3D.h"
+#include "rungeKuttaDiffusionEquation.h"
 
 namespace ConvectionDiffusion {
 
@@ -158,7 +159,7 @@ namespace ConvectionDiffusion {
         dolfin::Vector b;
 
         // Assemble matrix
-        assemble(*A, a);
+        dolfin::assemble(*A, a);
         //        bc.apply(*A);
 
         // LU solver
@@ -173,7 +174,7 @@ namespace ConvectionDiffusion {
         while (t < T) {
             std::cout << "Simulating time: " << t << " of " << T << std::endl;
             // Assemble vector and apply boundary conditions
-            assemble(b, L);
+            dolfin::assemble(b, L);
             // bc.apply(b);
 
             // Solve the linear system (re-use the already factorized matrix A)
@@ -184,6 +185,17 @@ namespace ConvectionDiffusion {
 
             // Move to next interval
             p = t / T;
+
+            dt = rungeKuttaFifthOrder(setup.getU(), 0.01, 1e-3, t, std::make_shared<convectionDiffusion3D::Form_L>(L), std::make_shared<convectionDiffusion3D::Form_a>(a));
+            k = std::make_shared<dolfin::Constant>(dt);
+            a.k = k;
+            L.k = k;
+
+            dolfin::assemble(*A, a);
+
+            lu = dolfin::LUSolver(A);
+            lu.parameters["reuse_factorization"] = true;
+
             t += dt;
         }
     }

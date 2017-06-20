@@ -4,7 +4,7 @@
 
 // includes for PDEs:
 //#include "Solver/poissonSolver.h"
-//#include "Solver/convectionDiffusionSolver.h"
+#include "Solver/convectionDiffusionSolver.h"
 #include "pdeSetupClasses.h"
 #include "Solver/currentSolver.h"
 
@@ -25,11 +25,17 @@ int main(int argc, char *argv[]) {
         std::string facetFile = "../test_mesh/test_mesh_facet_region.xml";
 
         std::cout<<"Simulation running"<<std::endl;
-        Current::SetupCase<Current::FixPotentialDifference> setupFixPotentialDifference(dim,meshFile,subdomainFile,facetFile);
+        
+        ConvectionDiffusion::SetupCase<ConvectionDiffusion::General> setupGeneral(dim, meshFile, subdomainFile, facetFile);
+        ConvectionDiffusion::solvePDE<3, ConvectionDiffusion::SetupCase<ConvectionDiffusion::General>>(setupGeneral);
+        
+        
+        /* Current::SetupCase<Current::FixPotentialDifference> setupFixPotentialDifference(dim,meshFile,subdomainFile,facetFile);
         Current::SetupCase<Current::FixCurrent> setupFixCurrent(dim,meshFile,subdomainFile,facetFile);
 
         Current::solvePDE<dim, Current::SetupCase<Current::FixPotentialDifference>,Current::SetupCase<Current::FixCurrent>>
                 (setupFixPotentialDifference, setupFixCurrent);
+               */
         // dolfin::plot(u);
         // dolfin::interactive();
     } catch (std::exception &e) {
