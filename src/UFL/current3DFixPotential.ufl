@@ -29,18 +29,17 @@ C_neg = Constant(cell)
 
 n = FacetNormal(cell)
 
-# TODO fix parallel capacity
 # basic continuity 
-a_pos = 0.5*k*(inner(sigma_pos*grad(u_pos), grad(v_pos))) - 0.5*k*(inner(sigma_pos*grad(u0_pos), grad(v_pos)))
-a_neg = 0.5*k*(inner(sigma_neg*grad(u_neg), grad(v_neg))) - 0.5*k*(inner(sigma_neg* grad(u0_neg), grad(v_neg)))
-a_electrolyte = 0.5*k*(inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte))) - 0.5*k*(inner(sigma_electrolyte * grad(u0_electrolyte), grad(v_electrolyte)))
+a_pos = k*(inner(sigma_pos*grad(u_pos), grad(v_pos)))
+a_neg = k*(inner(sigma_neg*grad(u_neg), grad(v_neg)))
+a_electrolyte = k*(inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte)))
 
 #Butler-Volmer-Equation with parallel capacity
-bv_pos=0.5*k*(i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq))))+(u_pos-u_electrolyte)*C_pos \
-        -(u0_pos-u0_electrolyte)*C_pos-0.5*k*(i0*(exp(alpha/(RT)*(u0_pos-u0_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u0_pos-u0_electrolyte-U_eq))))
-
 bv_neg=k*(i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq))))\
         -(u0_neg-u0_electrolyte)*C_neg +(u_neg-u_electrolyte)*C_neg
+
+bv_pos=k*(i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq))))\
+        -(u0_pos-u0_electrolyte)*C_pos +(u_pos-u_electrolyte)*C_pos
 
 f=(a_neg*(dx(2)+dx(4))+a_pos*(dx(1)+dx(3)) +bv_pos*v_pos*dx(3)+bv_neg*v_neg*dx(4))#\
 #+avg(sigma_pos)*dot(grad(u_pos)("+"),n("+"))*v_pos("+")*dS(141)+avg(sigma_neg)*dot(grad(u_neg)("+"),n("+"))*v_neg("+")*dS(140)

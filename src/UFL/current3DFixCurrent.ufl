@@ -1,4 +1,6 @@
-scalar = FiniteElement("CG", tetrahedron, 1)
+cell = tetrahedron
+
+scalar = FiniteElement("CG", cell, 1)
 
 scalarMixed = MixedElement(scalar,scalar,scalar)
 
@@ -6,8 +8,9 @@ sigma= Coefficient(scalarMixed)
 sigma_pos, sigma_electrolyte,sigma_neg  =split(sigma)
 
 u=Coefficient(scalarMixed)
-u_pos,u_electrolyte, u_neg=split(u)
-#u=u_pos,u_electrolyte
+u0=Coefficient(scalarMixed)
+u_pos, u_electrolyte, u_neg=split(u)
+u0_pos, u0_electrolyte, u0_neg=split(u0)
 
 RT = Coefficient(scalar)
 U_eq = Coefficient(scalar)
@@ -16,25 +19,32 @@ v=TestFunction(scalarMixed)
 v_pos, v_electrolyte,v_neg =split(v)
 alpha = Coefficient(scalar)
 i0= Coefficient(scalar)
+k = Constant(cell)
+C_pos = Constant(cell)
+C_neg = Constant(cell)
 
-n = FacetNormal(tetrahedron)
+n = FacetNormal(cell)
 
 neumann = Coefficient(scalar)
 
-
 # basic continuity
-# TODO add parallel capacity
-a_pos = inner(sigma_pos*grad(u_pos), grad(v_pos))
-a_neg = inner(sigma_neg*grad(u_neg), grad(v_neg))
-a_electrolyte = inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte))
+a_pos = k*(inner(sigma_pos*grad(u_pos), grad(v_pos)))
+a_neg = k*(inner(sigma_neg*grad(u_neg), grad(v_neg)))
+a_electrolyte = k*(inner(sigma_electrolyte*grad(u_electrolyte), grad(v_electrolyte)))
 
-bv_pos=i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq)))
-bv_neg=i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq)))
+#Butler-Volmer-Equation with parallel capacity
+bv_neg=k*(i0*(exp(alpha/(RT)*(u_neg-u_electrolyte+U_eq))-exp(-(1-alpha)/(RT)*(u_neg-u_electrolyte+U_eq))))\
+        -(u0_neg-u0_electrolyte)*C_neg +(u_neg-u_electrolyte)*C_neg
 
-f=a_neg*dx((2,4))+ a_pos*dx((1,3)) +bv_pos*v_pos*dx(3)+bv_neg*v_neg*dx(4)+neumann*v_neg*ds(136)#+avg(sigma_pos)*dot(grad(u_pos)("+"),n("+"))*v_pos("+")*dS(141)+avg(sigma_neg)*dot(grad(u_neg)("+"),n("+"))*v_neg("+")*dS(140)
+bv_pos=k*(i0*(exp(alpha/(RT)*(u_pos-u_electrolyte-U_eq))-exp(-(1-alpha)/(RT)*(u_pos-u_electrolyte-U_eq))))\
+        -(u0_pos-u0_electrolyte)*C_pos +(u_pos-u_electrolyte)*C_pos
+
+f=a_neg*(dx(2)+dx(4))+a_pos*(dx(1)+dx(3)) +bv_pos*v_pos*dx(3)+bv_neg*v_neg*dx(4) + neumann*v_neg*ds(136)#\
+#+avg(sigma_pos)*dot(grad(u_pos)("+"),n("+"))*v_pos("+")*dS(141)+avg(sigma_neg)*dot(grad(u_neg)("+"),n("+"))*v_neg("+")*dS(140)
 
 
-g=a_electrolyte*dx((3,4,135))-bv_pos*v_electrolyte*dx(3)-bv_neg*v_electrolyte*dx(4)#+avg(sigma_electrolyte)*dot(grad(u_electrolyte)("+"),n("+"))*v_electrolyte("+")*(dS(142)+dS(143))#+0*v_electrolyte*ds(139)+0*v_electrolyte("+")*(dS(140)+dS(141))
+g=a_electrolyte*(dx(3)+dx(4)+dx(135))-bv_pos*v_electrolyte*dx(3)-bv_neg*v_electrolyte*dx(4)#\
+#+avg(sigma_electrolyte)*dot(grad(u_electrolyte)("+"),n("+"))*v_electrolyte("+")*(dS(142)+dS(143))#+0*v_electrolyte*ds(139)+0*v_electrolyte("+")*(dS(140)+dS(141))
 
 
 F=f+g
