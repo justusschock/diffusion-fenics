@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         std::cout<<"Simulation running"<<std::endl;
         
         ConvectionDiffusion::SetupCase<ConvectionDiffusion::General> setupGeneral(dim, meshFile, subdomainFile, facetFile);
-        ConvectionDiffusion::solvePDE<3, ConvectionDiffusion::SetupCase<ConvectionDiffusion::General>>(setupGeneral);
+        ConvectionDiffusion::solvePDE<3, ConvectionDiffusion::SetupCase<ConvectionDiffusion::General>>(setupGeneral, dolfin::Constant(1e-3));
         
         
         /* Current::SetupCase<Current::FixPotentialDifference> setupFixPotentialDifference(dim,meshFile,subdomainFile,facetFile);

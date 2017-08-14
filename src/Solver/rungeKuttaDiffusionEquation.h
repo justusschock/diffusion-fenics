@@ -94,7 +94,20 @@ double rungeKuttaFifthOrder(std::shared_ptr<dolfin::Function> y,
     auto diff = z_next - y_next;
     auto diff_func = dolfin::Function(y->function_space());
     diff_func = diff;
-    double norm_diff = dolfin::norm(*diff_func.vector(), std::string("l1"));
+    std::vector<double> values;
+
+    //manually calculate norm after set NaNs to zero
+    diff_func.vector()->get_local(values);
+    for(unsigned int i = 0; i < values.size(); i++){
+        if (values[i] != values[i]){
+            values[i] = 0.0;
+        }
+    }
+    double norm_diff = 0;
+    for(auto i: values){
+        norm_diff += std::abs(i);
+    }
+    //double norm_diff = dolfin::norm(*diff_func.vector(), std::string("l1"));
     double s = tol / (2.0 * norm_diff);
     s = pow(s, 0.25);
 
