@@ -1,0 +1,12 @@
+cell = tetrahedron
+
+scalar = FiniteElement("Lagrange", cell, 1)
+vector = VectorElement("Lagrange", cell, 2)
+
+
+y   = Coefficient(scalar)
+v           = TestFunction(vector)  # Test Function
+u           = TrialFunction(vector) # Trial Function
+
+a = inner(u, v)*(dx(2)+dx(3)+dx(5))
+L = (inner(grad(y),v) + dot(b, grad(y)*v) + c*dot(grad(u), grad(v))))*(dx(2)+dx(3)+dx(5))

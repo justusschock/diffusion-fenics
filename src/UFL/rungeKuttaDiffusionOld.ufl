@@ -1,0 +1,29 @@
+from ufl import *
+set_level(DEBUG)
+
+cell = tetrahedron
+
+scalar = FiniteElement("Lagrange", cell, 1)
+vector = VectorElement("Lagrange", cell, 2)
+
+u = TrialFunction(scalar)
+v  = TestFunction(scalar)
+u0 = Coefficient(scalar)
+y = Coefficient(scalar)
+g = Coefficient(scalar)
+f = Coefficient(scalar)
+k = Constant(cell)
+
+# b  = Coefficient(vector)
+# c = Coefficient(scalar)
+
+# Not sure whether source term, diffusivity, velocity and constraints should be inside
+
+a = (u*v +k*dot(b, grad(u)*v) + k*c*dot(grad(u), grad(v)))*(dx(2)+dx(3)+dx(5))
+L = (u0*v - k*y*v)*(dx(2)+dx(3)+dx(5)) + k*f*v*(dx(2)+dx(3)) + k*g*v*(ds(6)+ds(9)+ds(10)+ds(11)+ds(12))
+
+
+# a = (u*v + 0.5*k*(dot(b, grad(u)*v) + c*dot(grad(u), grad(v))))*(dx(2)+dx(3)+dx(5))
+# L = (u0*v - 0.5*k*(dot(b, grad(u0)*v) + c*dot( grad(u0), grad(v))))*(dx(2)+dx(3)+dx(5)) \
+#     + k*f*v*(dx(2)+dx(3)) + k*g*v*(ds(6)+ds(9)+ds(10)+ds(11)+ds(12))
+
