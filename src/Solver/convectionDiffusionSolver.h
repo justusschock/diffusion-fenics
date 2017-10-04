@@ -106,98 +106,100 @@ namespace ConvectionDiffusion {
     };
 
     template <const int dim, class SetupCase>
-    void solvePDE(SetupCase& setup,
-                  dolfin::Constant _k = dolfin::Constant(0.01),
-                  const double T = 2.0,
-                  double t = 0.00)
-    {
-        DimensionWrapper<dim> dimensionwrapper;
-
-        // Create velocity FunctionSpace and velocity function
-        auto V_u = std::make_shared<decltype(
-            dimensionwrapper.VelocityFunctionSpace(setup.getMesh()))>(
-            dimensionwrapper.VelocityFunctionSpace(setup.getMesh()));
-        //    auto velocity = std::make_shared<dolfin::Function>(V_u);
-        //   *velocity = velocityFunction;
-
-        // Create function space and function (to store solution)
-        auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(
-            setup.getMesh()))>(dimensionwrapper.FunctionSpace(setup.getMesh()));
-
-        setup.setU(new dolfin::Function(V));
-
-        auto k = std::make_shared<dolfin::Constant>(_k);
-        // Set up forms
-        auto a = dimensionwrapper.BilinearForm(V, V);
-        a.b = setup.getVelocity();
-        a.c = setup.getDiffusivity();
-        a.k = k;
-
-        // Set velocityfunction, initial values and source term
-        auto L = dimensionwrapper.LinearForm(V);
-
-        auto ds = setup.getFacetFunction();
-        auto dx = setup.getSubDomainFunction();
-        L.u0 = setup.getInitial();
-        L.b = setup.getVelocity();
-        L.f = setup.getSource();
-        L.g = setup.getNeumann();
-        L.k = k;
-        L.c = setup.getDiffusivity();
-
-        a.ds = ds;
-        L.ds = ds;
-        a.dx = dx;
-        L.dx = dx;
-
-        // Set up boundary condition
-        //      dolfin::DirichletBC bc(V, setup.getDirichletValue(), ds,6); //
-        //      works only without bc
-
-        // Linear system
-        std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);
-        dolfin::Vector b;
-
-        // Assemble matrix
-        dolfin::assemble(*A, a);
-        //        bc.apply(*A);
-
-        // LU solver
-        dolfin::LUSolver lu(A);
-        lu.parameters["reuse_factorization"] = true;
-
-        double dt = _k;
+    void solvePdeRungeKutta(SetupCase& setup, dolfin::Constant k = dolfin::Constant(1e-3), const double T= 2.0,
+                            double t = 0.00, double tol = 1e-3, double eps_abs = 1e-0, double eps_rel = 1e-2){
+        auto _k = std::make_shared<dolfin::Constant> (k);
+        double dt = k;
         dolfin::File file("../../output/convection_diffusion.pvd", "compressed");
 
-        // Time-stepping
-        dolfin::Progress p("Time-stepping");
-        while (t < T) {
-            std::cout << "Simulating time: " << t << " of " << T << std::endl;
+//        auto tmp = new dolfin::Function(setup.getInitial()->function_space());
+  //      *tmp = *setup.getInitial();
+    //    setup.setU(tmp);
+        //file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
+
+
+        //Initial solving
+        {
+            std::cout << "Initial solving" << std::endl;
+            DimensionWrapper<dim> dimensionwrapper;
+
+            // Create velocity FunctionSpace and velocity function
+            auto V_u = std::make_shared<decltype(
+            dimensionwrapper.VelocityFunctionSpace(setup.getMesh()))>(
+                    dimensionwrapper.VelocityFunctionSpace(setup.getMesh()));
+            //    auto velocity = std::make_shared<dolfin::Function>(V_u);
+            //   *velocity = velocityFunction;
+
+            // Create function space and function (to store solution)
+            auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(
+                    setup.getMesh()))>(dimensionwrapper.FunctionSpace(setup.getMesh()));
+
+            setup.setU(new dolfin::Function(V));
+
+            // Set up forms
+            auto a = dimensionwrapper.BilinearForm(V, V);
+            a.b = setup.getVelocity();
+            a.c = setup.getDiffusivity();
+            a.k = _k;
+
+            // Set velocityfunction, initial values and source term
+            auto L = dimensionwrapper.LinearForm(V);
+
+            auto ds = setup.getFacetFunction();
+            auto dx = setup.getSubDomainFunction();
+            L.u0 = setup.getInitial();
+            L.b = setup.getVelocity();
+            L.f = setup.getSource();
+            L.g = setup.getNeumann();
+            L.k = _k;
+            L.c = setup.getDiffusivity();
+
+            a.ds = ds;
+            L.ds = ds;
+            a.dx = dx;
+            L.dx = dx;
+
+            // Set up boundary condition
+            //      dolfin::DirichletBC bc(V, setup.getDirichletValue(), ds,6); //
+            //      works only without bc
+
+            // Linear system
+            std::shared_ptr<dolfin::Matrix> A(new dolfin::Matrix);
+            dolfin::Vector b;
+
+            // Assemble matrix
+            dolfin::assemble(*A, a);
+            //        bc.apply(*A);
+
+            // LU solver
+            dolfin::LUSolver lu(A);
+            lu.parameters["reuse_factorization"] = true;
+
             // Assemble vector and apply boundary conditions
             dolfin::assemble(b, L);
             // bc.apply(b);
 
             // Solve the linear system (re-use the already factorized matrix A)
             lu.solve(*(setup.getU()->vector()), b);
+        }
+        file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
 
-            file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
-            L.u0 = setup.getU();
+        // Time-stepping
+        dolfin::Progress p("Time-stepping");
+        while (t < T) {
+            std::cout << "Simulating time: " << t << " of " << T << std::endl;
+            dt = rungeKuttaFifthOrder(setup.getMesh(), setup.getFacetFunction(), setup.getSubDomainFunction(),
+                                      setup.getU(), setup.getSource(), setup.getDiffusivity(), setup.getVelocity(), setup.getU(), k, tol,
+                                      eps_rel, eps_abs);
+            file << std::pair<dolfin::Function *, double>(&(*setup.getU()), t);
 
             // Move to next interval
             p = t / T;
-
-            dt = rungeKuttaFifthOrder(setup.getU(), 0.01, 1e-3, t, std::make_shared<convectionDiffusion3D::Form_L>(L), std::make_shared<convectionDiffusion3D::Form_a>(a));
-            k = std::make_shared<dolfin::Constant>(dt);
-            a.k = k;
-            L.k = k;
-
-            dolfin::assemble(*A, a);
-
-            lu = dolfin::LUSolver(A);
-            lu.parameters["reuse_factorization"] = true;
-
             t += dt;
         }
+
+
     }
+
 }
 #endif  // DIFFUSION_FENICS_CONVECTIONDIFFUSIONSOLVER_H

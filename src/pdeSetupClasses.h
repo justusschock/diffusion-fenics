@@ -184,7 +184,7 @@ namespace ConvectionDiffusion {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 0;
+                values[0] = 10;
             }
         };
 
