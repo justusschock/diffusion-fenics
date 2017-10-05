@@ -184,7 +184,7 @@ namespace ConvectionDiffusion {
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = 10;
+                values[0] = 1;
             }
         };
 
@@ -257,18 +257,9 @@ namespace Current {
         {
             return this->sigma_;
         }
-        std::shared_ptr<typename Case::RT> getRT()
-        {
-            return this->RT_;
-        }
-        std::shared_ptr<typename Case::U_eq> getU_eq()
-        {
-            return this->U_eq_;
-        }
-        std::shared_ptr<typename Case::I0> getI0()
-        {
-            return this->I0_;
-        }
+        std::shared_ptr<typename Case::RT> getRT() { return this->RT_; }
+        std::shared_ptr<typename Case::U_eq> getU_eq() { return this->U_eq_; }
+        std::shared_ptr<typename Case::I0> getI0() { return this->I0_; }
         std::shared_ptr<typename Case::Alpha> getAlpha()
         {
             return this->Alpha_;
@@ -282,10 +273,7 @@ namespace Current {
         {
             return this->facet_function;
         }
-        std::shared_ptr<dolfin::Function> getU() {
-            return this->u_;
-        }
-
+        std::shared_ptr<dolfin::Function> getU() { return this->u_; }
         std::shared_ptr<typename Case::Neumann> getNeumann()
         {
             return this->neumann_;
@@ -297,7 +285,8 @@ namespace Current {
             u_ = u;
         }
 
-        void setTime(double time) {
+        void setTime(double time)
+        {
             t = time;
             Alpha_->setTime(time);
             I0_->setTime(time);
@@ -332,8 +321,8 @@ namespace Current {
                       const dolfin::Array<double> &) const
             {
                 values[0] = 5.3e5;   // Solid Pos
-                values[1] =84.935;  // Liquid
-                values[2] = 1e6;  // Solid Neg
+                values[1] = 84.935;  // Liquid
+                values[2] = 1e6;     // Solid Neg
             }
         };
         class U_eq : public dolfin::Expression {
@@ -349,11 +338,7 @@ namespace Current {
         class Alpha : public dolfin::Expression {
            public:
             Alpha() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
+            void setTime(double t) { time = t; }
            private:
             double time;
 
@@ -366,12 +351,8 @@ namespace Current {
         class I0 : public dolfin::Expression {
            public:
             I0() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
-        private:
+            void setTime(double t) { time = t; }
+           private:
             double time;
 
             void eval(dolfin::Array<double> &values,
@@ -383,18 +364,14 @@ namespace Current {
         class RT : public dolfin::Expression {
            public:
             RT() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
-        private:
+            void setTime(double t) { time = t; }
+           private:
             double time;
 
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = R * T/(2.0*F);
+                values[0] = R * T / (2.0 * F);
             }
         };
 
@@ -411,27 +388,27 @@ namespace Current {
     };
 
     class FixCurrent {
-    public:
+       public:
         static constexpr double R = 8.3144598;  // allgemeine Gaskonstante
         static constexpr double T = 293.15;     // 20°C in Kelvin
         static constexpr double F = 96485.309;  // Farady-Konstante
 
         class Sigma : public dolfin::Expression {
-        public:
+           public:
             Sigma() : dolfin::Expression(3) {}
-        private:
+           private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
                 values[0] = 5.3e5;   // Solid Pos
-                values[1] =84.935;  // Liquid
-                values[2] = 1e6;  // Solid Neg
+                values[1] = 84.935;  // Liquid
+                values[2] = 1e6;     // Solid Neg
             }
         };
         class U_eq : public dolfin::Expression {
-        public:
+           public:
             U_eq() : dolfin::Expression() {}
-        private:
+           private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
@@ -439,14 +416,10 @@ namespace Current {
             }
         };
         class Alpha : public dolfin::Expression {
-        public:
+           public:
             Alpha() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
-        private:
+            void setTime(double t) { time = t; }
+           private:
             double time;
 
             void eval(dolfin::Array<double> &values,
@@ -456,14 +429,10 @@ namespace Current {
             }
         };
         class I0 : public dolfin::Expression {
-        public:
+           public:
             I0() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
-        private:
+            void setTime(double t) { time = t; }
+           private:
             double time;
 
             void eval(dolfin::Array<double> &values,
@@ -473,27 +442,23 @@ namespace Current {
             }
         };
         class RT : public dolfin::Expression {
-        public:
+           public:
             RT() : dolfin::Expression() {}
-
-            void setTime(double t){
-                time = t;
-            }
-
-        private:
+            void setTime(double t) { time = t; }
+           private:
             double time;
 
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {
-                values[0] = R * T/(2.0*F);
+                values[0] = R * T / (2.0 * F);
             }
         };
 
         class Neumann : public dolfin::Expression {
-        public:
+           public:
             Neumann() : dolfin::Expression() {}
-        private:
+           private:
             void eval(dolfin::Array<double> &values,
                       const dolfin::Array<double> &) const
             {

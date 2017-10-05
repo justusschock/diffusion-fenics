@@ -14,8 +14,8 @@
 //#include "velocity1D.h"
 //#include "velocity2D.h"
 #include "pdeSetupClasses.h"
-#include "velocity3D.h"
 #include "rungeKuttaDiffusionEquation.h"
+#include "velocity3D.h"
 
 namespace ConvectionDiffusion {
 
@@ -106,33 +106,40 @@ namespace ConvectionDiffusion {
     };
 
     template <const int dim, class SetupCase>
-    void solvePdeRungeKutta(SetupCase& setup, dolfin::Constant k = dolfin::Constant(1e-3), const double T= 2.0,
-                            double t = 0.00, double tol = 1e-3, double eps_abs = 1e-0, double eps_rel = 1e-2){
-        auto _k = std::make_shared<dolfin::Constant> (k);
+    void solvePdeRungeKutta(SetupCase& setup,
+                            dolfin::Constant k = dolfin::Constant(1e-3),
+                            const double T = 1e-4,
+                            double t = 0.00,
+                            double eps_abs = 1e-0,
+                            double eps_rel = 1e-9)
+    {
+        auto _k = std::make_shared<dolfin::Constant>(k);
         double dt = k;
-        dolfin::File file("../../output/convection_diffusion.pvd", "compressed");
+        dolfin::File file("../../output/convection_diffusion.pvd",
+                          "compressed");
 
-//        auto tmp = new dolfin::Function(setup.getInitial()->function_space());
-  //      *tmp = *setup.getInitial();
-    //    setup.setU(tmp);
-        //file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
+        //        auto tmp = new
+        //        dolfin::Function(setup.getInitial()->function_space());
+        //      *tmp = *setup.getInitial();
+        //    setup.setU(tmp);
+        // file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
 
-
-        //Initial solving
+        // Initial solving
         {
             std::cout << "Initial solving" << std::endl;
             DimensionWrapper<dim> dimensionwrapper;
 
             // Create velocity FunctionSpace and velocity function
             auto V_u = std::make_shared<decltype(
-            dimensionwrapper.VelocityFunctionSpace(setup.getMesh()))>(
-                    dimensionwrapper.VelocityFunctionSpace(setup.getMesh()));
+                dimensionwrapper.VelocityFunctionSpace(setup.getMesh()))>(
+                dimensionwrapper.VelocityFunctionSpace(setup.getMesh()));
             //    auto velocity = std::make_shared<dolfin::Function>(V_u);
             //   *velocity = velocityFunction;
 
             // Create function space and function (to store solution)
-            auto V = std::make_shared<decltype(dimensionwrapper.FunctionSpace(
-                    setup.getMesh()))>(dimensionwrapper.FunctionSpace(setup.getMesh()));
+            auto V = std::make_shared<decltype(
+                dimensionwrapper.FunctionSpace(setup.getMesh()))>(
+                dimensionwrapper.FunctionSpace(setup.getMesh()));
 
             setup.setU(new dolfin::Function(V));
 
@@ -160,7 +167,8 @@ namespace ConvectionDiffusion {
             L.dx = dx;
 
             // Set up boundary condition
-            //      dolfin::DirichletBC bc(V, setup.getDirichletValue(), ds,6); //
+            //      dolfin::DirichletBC bc(V, setup.getDirichletValue(), ds,6);
+            //      //
             //      works only without bc
 
             // Linear system
@@ -188,18 +196,23 @@ namespace ConvectionDiffusion {
         dolfin::Progress p("Time-stepping");
         while (t < T) {
             std::cout << "Simulating time: " << t << " of " << T << std::endl;
-            dt = rungeKuttaFifthOrder(setup.getMesh(), setup.getFacetFunction(), setup.getSubDomainFunction(),
-                                      setup.getU(), setup.getSource(), setup.getDiffusivity(), setup.getVelocity(), setup.getU(), k, tol,
-                                      eps_rel, eps_abs);
-            file << std::pair<dolfin::Function *, double>(&(*setup.getU()), t);
+            dt = rungeKuttaFifthOrder(setup.getMesh(),
+                                      setup.getFacetFunction(),
+                                      setup.getSubDomainFunction(),
+                                      setup.getU(),
+                                      setup.getSource(),
+                                      setup.getDiffusivity(),
+                                      setup.getVelocity(),
+                                      setup.getU(),
+                                      k,
+                                      eps_rel,
+                                      eps_abs);
+            file << std::pair<dolfin::Function*, double>(&(*setup.getU()), t);
 
             // Move to next interval
             p = t / T;
             t += dt;
         }
-
-
     }
-
 }
 #endif  // DIFFUSION_FENICS_CONVECTIONDIFFUSIONSOLVER_H

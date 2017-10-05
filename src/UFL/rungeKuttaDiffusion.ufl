@@ -8,6 +8,7 @@ u = TrialFunction(scalar) # Trial Function
 y = Coefficient(scalar)
 b = Coefficient(vector)
 D = Coefficient(scalar)
+S = Coefficient(scalar)
 
 a = inner(u, v)*(dx(2)+dx(3)+dx(5))
-L = (dot(b, grad(y)*v) + D*dot(grad(y), grad(v)))*(dx(2)+dx(3)+dx(5)) # Computes \nabla(D \nabla(y)) with velocity b
+L = (S*v+dot(b, grad(y)*v) + D*dot(grad(y), grad(v)))*(dx(2)+dx(3)+dx(5)) # Computes \nabla(D \nabla(y)) with velocity b

@@ -14,8 +14,8 @@ g = Coefficient(scalar)
 f = Coefficient(scalar)
 k = Constant(cell)
 
-# b  = Coefficient(vector)
-# c = Coefficient(scalar)
+b  = Coefficient(vector)
+c = Coefficient(scalar)
 
 # Not sure whether source term, diffusivity, velocity and constraints should be inside
 
