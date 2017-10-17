@@ -11,4 +11,4 @@ D = Coefficient(scalar)
 S = Coefficient(scalar)
 
 a = inner(u, v)*(dx(2)+dx(3)+dx(5))
-L = (S*v+dot(b, grad(y)*v) + D*dot(grad(y), grad(v)))*(dx(2)+dx(3)+dx(5)) # Computes \nabla(D \nabla(y)) with velocity b
+L = (dot(b, grad(y)*v) + D*dot(grad(y), grad(v)))*(dx(2)+dx(3)+dx(5)) + S*v*(dx(2)+dx(3)) + g*v*(ds(6)+ds(9)+ds(10)+ds(11)+ds(12))
