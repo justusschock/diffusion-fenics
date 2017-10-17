@@ -45,7 +45,8 @@ auto evaluate_func(std::shared_ptr<dolfin::Mesh> mesh,
                    std::shared_ptr<dolfin::Function> y,
                    std::shared_ptr<dolfin::Expression> diffusivity,
                    std::shared_ptr<dolfin::Expression> velocity,
-                   std::shared_ptr<dolfin::Expression> source)
+                   std::shared_ptr<dolfin::Expression> source,
+                    std::shared_ptr<dolfin::Expression> neumann)
     -> std::shared_ptr<dolfin::Function>
 {
     std::shared_ptr<dolfin::Function> u =
@@ -62,6 +63,7 @@ auto evaluate_func(std::shared_ptr<dolfin::Mesh> mesh,
     L.D = diffusivity;
     L.b = velocity;
     L.S = source;
+    L.g = neumann;
 
     a.ds = facets;
     L.ds = facets;
@@ -130,6 +132,7 @@ double rungeKuttaFifthOrder(
     std::shared_ptr<dolfin::Expression> source,
     std::shared_ptr<dolfin::Expression> diffusivity,
     std::shared_ptr<dolfin::Expression> velocity,
+    std::shared_ptr<dolfin::Expression> neumann,
     std::shared_ptr<dolfin::Function> u,
     double max_stepsize,
     double eps_rel,
@@ -164,7 +167,7 @@ double rungeKuttaFifthOrder(
                               rhs,
                               diffusivity,
                               velocity,
-                              source),
+                              source, neumann),
                 1.0);
             *tmp = (*tmp + source_fkt) * max_stepsize;
             k.at(i) = tmp;

@@ -1,11 +1,8 @@
 #include <dolfin.h>
-#include <iostream>
-#include </usr/include/dolfin/la/solve.h>
 
 // includes for PDEs:
 //#include "Solver/poissonSolver.h"
 #include "Solver/convectionDiffusionSolver.h"
-#include "pdeSetupClasses.h"
 #include "Solver/currentSolver.h"
 
 int main(int argc, char *argv[]) {
@@ -28,7 +25,6 @@ int main(int argc, char *argv[]) {
         
         ConvectionDiffusion::SetupCase<ConvectionDiffusion::General> setupGeneral(dim, meshFile, subdomainFile, facetFile);
         ConvectionDiffusion::solvePdeRungeKutta<3, ConvectionDiffusion::SetupCase<ConvectionDiffusion::General>>(setupGeneral, dolfin::Constant(1e-3));
-
         
         /* Current::SetupCase<Current::FixPotentialDifference> setupFixPotentialDifference(dim,meshFile,subdomainFile,facetFile);
         Current::SetupCase<Current::FixCurrent> setupFixCurrent(dim,meshFile,subdomainFile,facetFile);

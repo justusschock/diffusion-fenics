@@ -203,6 +203,7 @@ namespace ConvectionDiffusion {
                                       setup.getSource(),
                                       setup.getDiffusivity(),
                                       setup.getVelocity(),
+                                      setup.getNeumann(),
                                       setup.getU(),
                                       k,
                                       eps_rel,
